@@ -1,0 +1,204 @@
+.container {
+  display: flex;
+  height: 100vh;
+  background-color: #1b5f54;
+
+  .left-column {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    position: relative;
+
+    .content-container {
+      text-align: left;
+    }
+
+    .register_heading {
+      color: white;
+      font-size: 2.5rem;
+    }
+
+    .register_paragraph {
+      color: white;
+      margin-bottom: 6rem;
+      font-size: 1.2rem;
+    }
+
+    .logo-container {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 470px;
+      height: 250px;
+
+      .background-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.3;
+        object-fit: cover;
+        z-index: 1;
+      }
+
+      .logo {
+        position: relative;
+        z-index: 2;
+        width: 200px;
+        height: auto;
+      }
+    }
+  }
+
+  .right-column {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+  }
+}
+
+.form-card {
+  background-color: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+
+  .Registerform_heading {
+    margin: 0;
+    font-size: 1.5rem;
+    text-align: left;
+    font-weight: 100;
+  }
+  .Register_account_sub {
+    margin-bottom: 25px;
+
+    .Register_account_sub_Text {
+      font-size: 0.9em;
+      font-weight: 100 !important;
+    }
+    .registerSign_up_link {
+      font-size: 0.9em;
+      color: #1b5f54;
+      text-decoration: underline;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+  .checkbox-group {
+    margin-bottom: 1em;
+    display: flex;
+    align-items: center; /* Vertically center the checkbox and label */
+
+    /* Ensure the checkbox is aligned to the top of the label */
+    .checkbox_input {
+      max-width: 18px; /* Set width for checkbox */
+      height: 18px; /* Set height for checkbox */
+      margin-right: 10px; /* Space between checkbox and label */
+      vertical-align: middle; /* Ensures checkbox aligns with the middle of the label text */
+      cursor: pointer;
+
+      &:checked {
+        background-color: #1b5f54; /* Background color when checked */
+        border-color: black; /* Border color when checked */
+      }
+    }
+
+    .checkbox_label {
+      font-size: 1rem; /* Make label text a reasonable size */
+    }
+  }
+
+  .Register_form {
+    display: flex;
+    flex-direction: column;
+    padding-right: 2em;
+  }
+
+  .input_halfWidth {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 50px;
+
+    .input-group {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+
+      .registerInput_label {
+        color: #666666;
+        margin-bottom: 5px;
+        font-weight: 100;
+        font-size: 0.9rem;
+      }
+
+      .inputfield_halfwidth {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        margin-bottom: 1em;
+        &:focus {
+          outline: none;
+          border-color: #4caf50;
+        }
+      }
+    }
+  }
+  .registeremail_input_group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+
+    .registerInput_label {
+      color: #666666;
+      margin-bottom: 5px;
+      font-weight: 100;
+      font-size: 0.9rem;
+    }
+    .email_inputfield {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      &:focus {
+        outline: none;
+        border-color: #4caf50;
+      }
+    }
+  }
+  .error-message {
+    color: red;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+
+  .submit_button {
+    margin-top: 1em;
+    font-weight: 500;
+    width: 50%;
+    padding: 10px;
+    background-color: #1b5f54;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+
+    &:hover {
+      cursor: pointer;
+      background-color: #1b5f54;
+    }
+  }
+}

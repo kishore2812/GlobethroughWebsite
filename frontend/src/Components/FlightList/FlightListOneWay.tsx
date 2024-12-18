@@ -1,0 +1,39 @@
+import React from "react";
+
+interface Flight {
+  id: string;
+  flightNumber: string;
+  price: number;
+  duration: number;
+  startTime: string;
+  endTime: string;
+}
+
+interface FlightListOneWayProps {
+  flights: Flight[];
+}
+
+const FlightListOneWay: React.FC<FlightListOneWayProps> = ({ flights }) => {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+      {flights.map((flight) => (
+        <div
+          key={flight.id}
+          style={{
+            border: "1px solid #ccc",
+            padding: "1rem",
+            borderRadius: "8px",
+          }}
+        >
+          <h3>Flight: {flight.flightNumber}</h3>
+          <p>Price: ₹{flight.price}</p>
+          <p>Duration: {flight.duration} hrs</p>
+          <p>Start Time: {new Date(flight.startTime).toLocaleTimeString()}</p>
+          <p>End Time: {new Date(flight.endTime).toLocaleTimeString()}</p>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default FlightListOneWay;

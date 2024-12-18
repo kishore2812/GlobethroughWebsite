@@ -1,0 +1,71 @@
+// General Header Styling
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #01493e;
+  color: white;
+  padding: 20px 80px;
+  .logo img {
+    width: 160px; // Adjust as needed
+    height: auto;
+  }
+}
+
+// Navigation
+.nav {
+  display: flex;
+  align-items: center;
+
+  .nav-links {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    gap: 3rem;
+
+    li {
+      a {
+        text-decoration: none;
+        color: white;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .account-btn {
+    width: 180px; // Adjust width to accommodate chevron
+    height: 40px;
+    display: flex;
+    justify-content: space-between; // Space elements equally
+    align-items: center; // Center vertically
+    margin-left: 3rem;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    color: #333;
+    background-color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    .icon {
+      width: 20px;
+    }
+
+    .text {
+      flex-grow: 1; // Allow text to take available space
+      text-align: center; // Center text
+      font-size: small;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .chevron-icon {
+      width: 12px;
+      height: 12px;
+      color: #333;
+    }
+  }
+}

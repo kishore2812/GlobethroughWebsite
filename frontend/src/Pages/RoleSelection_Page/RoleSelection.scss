@@ -1,0 +1,210 @@
+/* General container styles */
+body {
+  margin: 0;
+}
+
+.role-selection-container {
+  background-color: #1b5f54;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  text-align: center;
+  justify-content: center; /* Ensure content is vertically centered */
+}
+
+/* Top section styles */
+.top-section {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  .gif-container {
+    opacity: 0.3;
+    position: absolute;
+    width: 30%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      z-index: 1; /* Ensures it is behind the logo */
+    }
+  }
+
+  .logo {
+    position: relative;
+    z-index: 2; /* Ensures it is above the GIF */
+    max-width: 250px;
+    height: auto;
+    transition: max-width 0.3s ease; /* Smooth transition on resize */
+  }
+}
+
+/* Bottom section styles */
+.bottom-section {
+  flex: 1;
+  display: flex;
+  justify-content: center; /* Center the big card horizontally */
+}
+
+.big-card {
+  display: flex;
+  justify-content: space-evenly;
+  background-color: white;
+  padding: 20px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  border-radius: 30px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  width: 80%; /* Controls the size of the big card */
+  max-width: 800px; /* Max width for large screens */
+  height: fit-content;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 250px;
+  height: 150px;
+  background-color: #f2f2f2; /* Grey background for the small cards */
+  border: 1px solid #ddd;
+  border-radius: 30px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.icon {
+  width: 70px;
+  height: 70px;
+  margin-bottom: 5px;
+}
+
+h2 {
+  font-size: 1.2rem;
+  color: #1b5f54;
+}
+
+/* Responsive Design for Tablets and Mobile */
+
+/* For Tablets */
+@media (max-width: 1024px) {
+  .role-selection-container {
+    padding: 20px;
+  }
+
+  .top-section .logo {
+    max-width: 200px; /* Smaller logo for tablets */
+  }
+  .top-section .gif-container {
+    max-width: 100%;
+  }
+  .bottom-section {
+    padding: 20px;
+  }
+
+  .big-card {
+    flex-direction: row;
+    width: 90%;
+    max-width: 700px; /* Adjust size for tablets */
+  }
+
+  .card {
+    width: 200px; /* Smaller cards for tablets */
+    height: 120px;
+  }
+
+  .icon {
+    width: 60px;
+    height: 60px;
+  }
+
+  h2 {
+    font-size: 1rem; /* Smaller text size for tablets */
+  }
+}
+
+/* For Mobile Devices */
+@media (max-width: 768px) {
+  .role-selection-container {
+    padding: 10px;
+  }
+
+  .top-section {
+    flex: 0.7; /* Allow top section to take more space on mobile */
+  }
+
+  .top-section .logo {
+    max-width: 180px; /* Smaller logo for mobile */
+  }
+  .top-section .gif-container {
+    max-width: 100%;
+  }
+
+  .bottom-section {
+    padding: 10px;
+  }
+
+  .big-card {
+    flex-direction: row;
+    width: 100%; /* Full width for mobile */
+    max-width: none;
+    padding: 15px;
+  }
+
+  .card {
+    width: 180px; /* Smaller cards for mobile */
+    height: 110px;
+    margin-bottom: 20px; /* Space between cards */
+  }
+
+  .icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  h2 {
+    font-size: 0.9rem; /* Smaller text for mobile */
+  }
+}
+
+/* For very small screens (extra mobile devices) */
+@media (max-width: 480px) {
+  .top-section .logo {
+    max-width: 200px; /* Even smaller logo */
+  }
+  .top-section .gif-container {
+    width: 100%;
+  }
+
+  .big-card {
+    flex-direction: column;
+    background-color: transparent;
+    padding: 10px;
+  }
+
+  .card {
+    padding: 10px;
+
+    width: 250px; /* Even smaller cards for very small screens */
+    height: 150px;
+  }
+
+  .icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  h2 {
+    font-size: 0.8rem; /* Further reduce font size */
+  }
+}

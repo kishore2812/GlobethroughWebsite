@@ -1,0 +1,198 @@
+.container {
+  display: flex;
+  height: 100vh;
+  background-color: #1b5f54;
+
+  .left-column {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    position: relative;
+
+    .content {
+      text-align: left;
+    }
+
+    .heading1 {
+      color: white;
+      font-size: 2.5rem;
+    }
+
+    .paragraph1 {
+      color: white;
+      margin-bottom: 6rem;
+      font-size: 1.2rem;
+    }
+
+    .logo-container {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 470px;
+      height: 250px;
+
+      .background-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.3;
+        object-fit: cover;
+        z-index: 1;
+      }
+
+      .logo {
+        position: relative;
+        z-index: 2;
+        width: 200px;
+        height: auto;
+      }
+    }
+  }
+
+  .right-column {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+
+    .form-card {
+      width: 100%;
+      max-width: 400px;
+      background-color: white;
+      padding: 2.5rem;
+      border-radius: 24px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+      .right_columnHeading {
+        text-align: left;
+        font-size: 1.5em;
+        font-weight: 100;
+        margin-bottom: 1em;
+      }
+
+      .signin_form {
+        display: flex;
+        flex-direction: column;
+
+        .google-signin {
+          color: black;
+          width: 100%;
+          padding: 0.8rem;
+          border-width: 1px;
+          border-style: solid;
+          border-color: black;
+          border-radius: 25px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 0.5rem;
+
+          .google_image {
+            width: 20px;
+            margin-right: 10px;
+          }
+        }
+
+        .divider {
+          display: flex;
+          align-items: center;
+          text-align: center;
+          color: #555; // Text color for "OR"
+          margin: 1rem 0;
+
+          &::before,
+          &::after {
+            content: "";
+            flex: 1;
+            border-bottom: 1px solid #666666; // Line color
+            margin: 0 0.5rem; // Space around the "OR"
+          }
+        }
+
+        .sign_input_label {
+          margin-bottom: 0.5rem;
+          font-size: 1rem;
+        }
+
+        .signin_input {
+          width: 100%;
+          padding: 0.8rem;
+          margin-bottom: 0.5rem;
+          border-radius: 5px;
+          border: 1px solid #ccc;
+          font-size: 1rem;
+        }
+
+        .password-container {
+          position: relative;
+          margin-bottom: 1rem; // Ensure spacing below the input field
+
+          .signin_input {
+            width: calc(100% - 30px); // Leave space for the eye icon
+          }
+
+          .eye-icon {
+            color: #666666;
+            position: absolute;
+            top: -20%;
+            right: 1rem; // Position at the right end of the input
+            transform: translateY(-50%);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+
+            .eye-icon_span {
+              font-size: 0.9rem;
+              color: #666666; // Adjust the text color
+            }
+          }
+
+          .forgot-password {
+            text-align: right;
+
+            .forgot_password_text {
+              color: #4285f4;
+              text-decoration: none;
+              font-size: 14px;
+            }
+          }
+        }
+
+        .submit-btn {
+          width: 60%;
+          padding: 0.8rem;
+          background-color: #1b5f54;
+          color: white;
+          border: none;
+          border-radius: 25px;
+          margin-bottom: 1rem;
+          font-size: 1rem;
+          cursor: pointer;
+        }
+
+        .error {
+          color: red;
+          margin-top: 1rem;
+        }
+
+        .create-account {
+          text-align: left;
+          font-size: 1rem;
+
+          .sign_up_link {
+            text-decoration: underline;
+            color: #1b5f54;
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  }
+}
