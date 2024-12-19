@@ -1,32 +1,56 @@
-const UserService = require("../services/userService");
+// controllers/subUserController.js
+const subUserService = require("../services/subUserService");
+const SubUser = require("../models/subUser");
+const bcrypt = require("bcrypt");
 
-exports.createSubUser = async (req, res) => {
-  const { firstName, lastName, email, phone, role } = req.body;
+async function createSubUser(req, res) {
+  const { firstName, lastName, email, role } = req.body;
+  const parentUserId = req.user.id; // This comes from the authenticated main user
 
   try {
-    // Assume req.user.id contains the admin's user ID (sent via JWT)
-    const adminId = req.user.id;
-
-    // Call the service layer to create the subuser
-    const newUser = await UserService.createSubUser(
-      adminId,
+    const subUser = await subUserService.createSubUser(
+      parentUserId,
       firstName,
       lastName,
       email,
-      phone,
       role
     );
-
-    // Respond with success
-    res.status(201).json({
-      message:
-        "Subuser created successfully. An email has been sent to set up their password.",
-      user: newUser,
-    });
-  } catch (err) {
-    console.error("Error creating subuser:", err);
     res
-      .status(500)
-      .json({ message: err.message || "Failed to create subuser." });
+      .status(201)
+      .json({ message: "Sub user created successfully!", subUser });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to create subuser." });
   }
-};
+}
+
+async function setPassword(req, res) {
+  try {
+    const { id } = req.params; // Get subuser ID from the URL
+    const { password } = req.body; // Get the new password from the request body
+
+    if (!password) {
+      return res.status(400).json({ error: "Password is required." });
+    }
+
+    // Hash the password before saving
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Find the subuser and update their password
+    const updatedSubUser = await SubUser.findByIdAndUpdate(
+      id,
+      { password: hashedPassword },
+      { new: true }
+    );
+
+    if (!updatedSubUser) {
+      return res.status(404).json({ error: "Subuser not found." });
+    }
+
+    res.status(200).json({ message: "Password set successfully." });
+  } catch (error) {
+    console.error("Error setting password:", error);
+    res.status(500).json({ error: "Failed to set password." });
+  }
+}
+
+module.exports = { createSubUser, setPassword };

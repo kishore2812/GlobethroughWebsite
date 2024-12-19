@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const AccountPage: React.FC = () => {
   const [userInfo, setUserInfo] = useState({
@@ -13,6 +14,8 @@ const AccountPage: React.FC = () => {
   const [isEditingPhone, setIsEditingPhone] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+
+  const navigate = useNavigate();
 
   // Fetch user information on component mount
   useEffect(() => {
@@ -117,6 +120,14 @@ const AccountPage: React.FC = () => {
     }
   };
 
+  const handleSeeSubUsers = () => {
+    navigate("/sub-users");
+  };
+
+  const handleAddSubUser = () => {
+    navigate("/add-sub-user");
+  };
+
   return (
     <div className="account-page">
       <h1>Account Information</h1>
@@ -171,6 +182,10 @@ const AccountPage: React.FC = () => {
         <div className="info-item">
           <strong>Email:</strong> {userInfo.email}
         </div>
+      </div>
+      <div>
+        <button onClick={handleSeeSubUsers}>See Sub-Users</button>
+        <button onClick={handleAddSubUser}>Add Sub-User</button>
       </div>
     </div>
   );

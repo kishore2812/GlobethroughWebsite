@@ -23,17 +23,6 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  role: {
-    type: String,
-    enum: ["admin", "editor"],
-    default: "admin", // Default to admin for direct account creation
-  },
-  subusers: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-  ],
 });
 
 const User = mongoose.model("User", UserSchema);

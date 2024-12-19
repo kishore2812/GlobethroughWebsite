@@ -8,6 +8,9 @@ import HomePage from "./Pages/HomePage/Homepage";
 import BookTickets from "./Pages/BookTickets/BookTickets";
 import FlightListPage from "./Pages/FlightListPage/FlightListPage";
 import AccountPage from "./Pages/AccountPage/AccountPage";
+import SeeSubUsersPage from "./Pages/AccountPage/subUsersPage";
+import AddSubUsersPage from "./Pages/AccountPage/addSubUsers";
+import SetPasswordPage from "./Pages/SetPasswordPage/SetPasswordPage";
 
 const App: React.FC = () => {
   return (
@@ -20,6 +23,9 @@ const App: React.FC = () => {
         <Route path="/flightsListPage" element={<FlightListPage />} />
         <Route path="/book-tickets" element={<BookTickets />} />
         <Route path="/account" element={<AccountPage />} />
+        <Route path="/sub-users" element={<SeeSubUsersPage />} />
+        <Route path="/add-sub-user" element={<AddSubUsersPage />} />
+        <Route path="/set-password/:id" element={<SetPasswordPage />} />
       </Routes>
     </Router>
   );

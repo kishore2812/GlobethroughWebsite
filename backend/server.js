@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const authRouter = require("./routes/authRoutes");
 const userRouter = require("./routes/userRoutes"); // Import the user routes
+const subuserRouter = require("./routes/subUserRoutes");
+const setPasswordRouter = require("./routes/setPasswordRoutes");
 
 // Load environment variables
 dotenv.config();
@@ -27,7 +29,8 @@ mongoose
 // Routes
 app.use("/auth", authRouter); // Authentication routes
 app.use("/api", userRouter); // User-related routes (protected)
-
+app.use("/subuser", subuserRouter);
+app.use("/setpassword", setPasswordRouter);
 // Server Start
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
