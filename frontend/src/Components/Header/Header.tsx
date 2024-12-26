@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { FaChevronRight, FaRegUserCircle } from "react-icons/fa"; // Importing the user icon
 import axios from "axios"; // Using axios for HTTP requests
+import { useNavigate } from "react-router-dom"; // Importing react-router's useNavigate
 import "./Header.scss";
-import { useNavigate } from "react-router-dom";
 
 const Header: React.FC = () => {
   const [firstName, setFirstName] = useState<string | null>(null); // Store first name
+  const [parentFirstName, setParentFirstName] = useState<string | null>(null); // Store parent's first name
+  const [userType, setUserType] = useState<string | null>(null); // Store user type (subuser or user)
   const [error, setError] = useState<string | null>(null); // Handle errors
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Use navigate hook for navigation
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -19,18 +21,25 @@ const Header: React.FC = () => {
       }
 
       try {
+        // Make an API call to get user info
         const response = await axios.get(
           "http://localhost:5000/api/user/info",
           {
             headers: {
-              Authorization: `Bearer ${token}`, // Send token in Authorization header
+              Authorization: `Bearer ${token}`,
             },
           }
         );
 
-        // Assuming response contains user info such as firstName
-        setFirstName(response.data.firstName);
-      } catch {
+        // Log the entire response to see what is being returned
+        console.log("Response from API: ", response.data);
+
+        // Assuming response contains subuserFirstName and parentUserFirstName
+        setFirstName(response.data.subuserFirstName || response.data.firstName);
+        setParentFirstName(response.data.parentUserFirstName || null);
+        setUserType(response.data.userType); // Log this to verify it's being returned
+      } catch (error) {
+        console.error("Error fetching user info:", error);
         setError("Failed to fetch user info. Please log in.");
       }
     };
@@ -63,11 +72,14 @@ const Header: React.FC = () => {
         </ul>
 
         {/* Account Info Button */}
-
         <button className="account-btn" onClick={() => navigate("/account")}>
           <FaRegUserCircle className="icon" />
           <span className="text">
-            {firstName ? `Hello, ${firstName}` : error || "Loading..."}
+            {userType === "subuser" && parentFirstName
+              ? `Hello, ${parentFirstName} (Parent) & ${firstName} (Subuser)`
+              : firstName
+              ? `Hello, ${firstName}`
+              : error || "Loading..."}
           </span>
           <FaChevronRight className="chevron-icon" />
         </button>
