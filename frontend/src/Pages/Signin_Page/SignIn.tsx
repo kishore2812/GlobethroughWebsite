@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./SignIn.scss";
 import { IoEye } from "react-icons/io5";
@@ -58,6 +58,10 @@ const SignIn: React.FC = () => {
       <div className="right-column">
         <div className="form-card">
           <h1 className="right_columnHeading">Sign In</h1>
+          <p>
+            Are you a subuser?
+            <Link to="/subuser-login">Click here to log in as Subuser</Link>
+          </p>
           <form className="signin_form" onSubmit={handleSignIn}>
             <label className="sign_input_label" htmlFor="email">
               Email
