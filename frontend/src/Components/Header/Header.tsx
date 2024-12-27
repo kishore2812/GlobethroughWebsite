@@ -1,50 +1,46 @@
-import React, { useEffect, useState } from "react";
-import { FaChevronRight, FaRegUserCircle } from "react-icons/fa"; // Importing the user icon
-import axios from "axios"; // Using axios for HTTP requests
-import { useNavigate } from "react-router-dom"; // Importing react-router's useNavigate
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; // For navigation
+import { jwtDecode } from "jwt-decode"; // To decode JWT token
+import { FaRegUserCircle, FaChevronRight } from "react-icons/fa"; // For icons
 import "./Header.scss";
 
-const Header: React.FC = () => {
-  const [firstName, setFirstName] = useState<string | null>(null); // Store first name
-  const [parentFirstName, setParentFirstName] = useState<string | null>(null); // Store parent's first name
-  const [userType, setUserType] = useState<string | null>(null); // Store user type (subuser or user)
-  const [error, setError] = useState<string | null>(null); // Handle errors
-  const navigate = useNavigate(); // Use navigate hook for navigation
+// Define the expected structure of the decoded token
+interface DecodedToken {
+  userType: string;
+  firstName?: string;
+  subuserFirstName?: string;
+  parentUserFirstName?: string;
+}
+
+const Header = () => {
+  const [userType, setUserType] = useState<string>("");
+  const [firstName, setFirstName] = useState<string | undefined>(undefined);
+  const [parentFirstName, setParentFirstName] = useState<string | undefined>(
+    undefined
+  );
+  const [error, setError] = useState<string | undefined>(undefined);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchUserInfo = async () => {
-      const token = localStorage.getItem("token"); // Get JWT token from localStorage
+    const token = localStorage.getItem("token");
 
-      if (!token) {
-        setError("User not authenticated.");
-        return;
-      }
-
+    if (token) {
       try {
-        // Make an API call to get user info
-        const response = await axios.get(
-          "http://localhost:5000/api/user/info",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        // Decode the token to extract data
+        const decodedToken: DecodedToken = jwtDecode(token);
+        setUserType(decodedToken.userType);
 
-        // Log the entire response to see what is being returned
-        console.log("Response from API: ", response.data);
-
-        // Assuming response contains subuserFirstName and parentUserFirstName
-        setFirstName(response.data.subuserFirstName || response.data.firstName);
-        setParentFirstName(response.data.parentUserFirstName || null);
-        setUserType(response.data.userType); // Log this to verify it's being returned
-      } catch (error) {
-        console.error("Error fetching user info:", error);
-        setError("Failed to fetch user info. Please log in.");
+        // Based on userType, set the firstName and parentFirstName
+        if (decodedToken.userType === "subuser") {
+          setFirstName(decodedToken.subuserFirstName);
+          setParentFirstName(decodedToken.parentUserFirstName); // For subuser, set parent's firstName
+        } else if (decodedToken.userType === "user") {
+          setFirstName(decodedToken.firstName); // For user, set the user's firstName
+        }
+      } catch {
+        setError("Error decoding token");
       }
-    };
-
-    fetchUserInfo();
+    }
   }, []);
 
   return (
@@ -75,8 +71,8 @@ const Header: React.FC = () => {
         <button className="account-btn" onClick={() => navigate("/account")}>
           <FaRegUserCircle className="icon" />
           <span className="text">
-            {userType === "subuser" && parentFirstName
-              ? `Hello, ${parentFirstName} (Parent) & ${firstName} (Subuser)`
+            {userType === "subuser" && parentFirstName && firstName
+              ? `Hello, ${firstName} (Subuser)`
               : firstName
               ? `Hello, ${firstName}`
               : error || "Loading..."}

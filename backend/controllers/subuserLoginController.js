@@ -6,8 +6,6 @@ exports.subuserLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    console.log("Login attempt for email:", email); // Log the email being verified
-
     if (!email || !password) {
       return res
         .status(400)
@@ -24,11 +22,8 @@ exports.subuserLogin = async (req, res) => {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    console.log("Subuser found:", subuser); // Log the subuser details
-
     // Ensure the password exists for the subuser
     if (!subuser.password || subuser.password === "") {
-      console.log("Password not set for subuser:", subuser.firstName);
       return res.status(400).json({
         message: "Please set your password before logging in",
         resetPasswordLink: `${process.env.FRONTEND_URL}/set-password/${subuser._id}`,
@@ -43,28 +38,23 @@ exports.subuserLogin = async (req, res) => {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    console.log("Password verified for subuser:", subuser.firstName);
-
     // Generate a JWT token
     const token = jwt.sign(
       {
         id: subuser._id,
         email: subuser.email,
-        userType: "subuser",
-        parentUser: subuser.parentUser,
+        userType: "subuser", // Indicate subuser type
+        subuserFirstName: subuser.firstName, // Add subuser's firstName
+        parentUserFirstName: subuser.parentUser.firstName, // Add parent's firstName
       },
       process.env.JWT_SECRET,
       { expiresIn: "10h" }
     );
 
-    console.log("Generated token for subuser:", subuser.firstName);
-
     res.status(200).json({
       message: "Subuser login successful",
       token,
       userType: "subuser", // Send userType as subuser
-      parentUser: subuser.parentUser?.firstName || "No Parent", // Include parent user first name if available
-      subuserFirstName: subuser.firstName,
     });
   } catch (error) {
     console.error("Error during subuser login:", error);

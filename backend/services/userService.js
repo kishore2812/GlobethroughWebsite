@@ -41,9 +41,13 @@ exports.authenticateUser = async ({ email, password }) => {
     throw new Error("Invalid credentials");
   }
 
-  // Generate a JWT token for the authenticated user
   const token = jwt.sign(
-    { id: user._id, email: user.email },
+    {
+      id: user._id,
+      email: user.email,
+      userType: "user", // Add the userType (can be "user" or "subuser", or any other relevant type)
+      firstName: user.firstName, // Add the user's firstName to the token
+    },
     process.env.JWT_SECRET,
     { expiresIn: "10h" }
   );
