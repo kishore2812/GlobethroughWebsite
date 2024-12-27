@@ -15,7 +15,7 @@ exports.subuserLogin = async (req, res) => {
     // Find subuser by email and populate parentUser
     const subuser = await SubUser.findOne({ email })
       .populate("parentUser")
-      .select("password firstName parentUser");
+      .select("password firstName parentUser role");
 
     if (!subuser) {
       console.log("No subuser found for email:", email);
@@ -43,6 +43,7 @@ exports.subuserLogin = async (req, res) => {
       {
         id: subuser._id,
         email: subuser.email,
+        role: subuser.role,
         userType: "subuser", // Indicate subuser type
         subuserFirstName: subuser.firstName, // Add subuser's firstName
         parentUserFirstName: subuser.parentUser.firstName, // Add parent's firstName

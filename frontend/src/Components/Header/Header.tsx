@@ -10,10 +10,12 @@ interface DecodedToken {
   firstName?: string;
   subuserFirstName?: string;
   parentUserFirstName?: string;
+  role?: string;
 }
 
 const Header = () => {
   const [userType, setUserType] = useState<string>("");
+  const [role, setRole] = useState<string | undefined>(undefined);
   const [firstName, setFirstName] = useState<string | undefined>(undefined);
   const [parentFirstName, setParentFirstName] = useState<string | undefined>(
     undefined
@@ -28,14 +30,17 @@ const Header = () => {
       try {
         // Decode the token to extract data
         const decodedToken: DecodedToken = jwtDecode(token);
+        console.log("Decoded Token:", decodedToken);
         setUserType(decodedToken.userType);
 
-        // Based on userType, set the firstName and parentFirstName
+        // Based on userType, set the firstName, parentFirstName, and role
         if (decodedToken.userType === "subuser") {
           setFirstName(decodedToken.subuserFirstName);
           setParentFirstName(decodedToken.parentUserFirstName); // For subuser, set parent's firstName
+          setRole(decodedToken.role);
         } else if (decodedToken.userType === "user") {
           setFirstName(decodedToken.firstName); // For user, set the user's firstName
+          setRole(decodedToken.role);
         }
       } catch {
         setError("Error decoding token");
@@ -71,12 +76,13 @@ const Header = () => {
         <button className="account-btn" onClick={() => navigate("/account")}>
           <FaRegUserCircle className="icon" />
           <span className="text">
-            {userType === "subuser" && parentFirstName && firstName
-              ? `Hello, ${firstName} (Subuser)`
-              : firstName
+            {userType === "subuser" && parentFirstName && firstName && role
+              ? `Hello, ${firstName} (${role}) & Parent: ${parentFirstName}`
+              : userType === "user" && firstName
               ? `Hello, ${firstName}`
               : error || "Loading..."}
           </span>
+
           <FaChevronRight className="chevron-icon" />
         </button>
       </nav>
