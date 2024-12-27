@@ -17,13 +17,9 @@ const SubUserLoginPage = () => {
         email,
         password,
       });
-      // Store the token (and other data if needed) in localStorage or state
-      localStorage.setItem("authToken", response.data.token);
-      localStorage.setItem("subuserFirstName", response.data.subuserFirstName);
-      localStorage.setItem(
-        "parentUserFirstName",
-        response.data.parentUser.firstName
-      );
+      const { token } = response.data;
+      // Store token in localStorage
+      localStorage.setItem("token", token);
 
       // Redirect to homepage after successful login
       navigate("/homepage"); // Using navigate to redirect

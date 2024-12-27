@@ -29,14 +29,6 @@ async function sendInvitationEmail(to, link) {
 
 async function createSubUser(parentUserId, firstName, lastName, email, role) {
   try {
-    console.log("Creating subuser with details:", {
-      parentUserId,
-      firstName,
-      lastName,
-      email,
-      role,
-    });
-
     const subUser = new SubUser({
       firstName,
       lastName,
