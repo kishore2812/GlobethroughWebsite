@@ -65,7 +65,6 @@ exports.getUserInfo = async (userId) => {
     lastName: user.lastName,
     email: user.email,
     phone: user.phone,
-    userType: "user",
   };
 };
 
