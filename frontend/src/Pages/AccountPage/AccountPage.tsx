@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { FaEdit, FaSave, FaUsers, FaUserPlus } from "react-icons/fa";
 import AccountHeader from "../../Components/Header/AccountHeader";
 import "./AccountPage.scss";
+
+interface DecodedToken {
+  userType: string;
+}
 
 const AccountPage: React.FC = () => {
   const [userInfo, setUserInfo] = useState({
@@ -24,13 +29,21 @@ const AccountPage: React.FC = () => {
         const token = localStorage.getItem("token");
         if (!token) return;
 
-        const response = await axios.get(
-          "http://localhost:5000/api/user/info",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        // Decode the token to get user type
+        const decoded: DecodedToken = jwtDecode(token);
+        const userType = decoded.userType;
 
+        // Determine the endpoint based on userType
+        const endpoint =
+          userType === "user"
+            ? "http://localhost:5000/api/user/info"
+            : "http://localhost:5000/api/subuser/info";
+
+        const response = await axios.get(endpoint, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        // Update user information
         setUserInfo({
           firstName: response.data.firstName,
           email: response.data.email,
@@ -40,6 +53,7 @@ const AccountPage: React.FC = () => {
         console.error("Error fetching details:", err);
       }
     };
+
     fetchUserInfo();
   }, []);
 
@@ -48,8 +62,16 @@ const AccountPage: React.FC = () => {
       const token = localStorage.getItem("token");
       if (!token) return;
 
+      const decoded: DecodedToken = jwtDecode(token);
+      const userType = decoded.userType;
+
+      const endpoint =
+        userType === "user"
+          ? "http://localhost:5000/api/user/update"
+          : "http://localhost:5000/api/subuser/update";
+
       const response = await axios.put(
-        "http://localhost:5000/api/user/update",
+        endpoint,
         { firstName: newFirstName },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -69,8 +91,16 @@ const AccountPage: React.FC = () => {
       const token = localStorage.getItem("token");
       if (!token) return;
 
+      const decoded: DecodedToken = jwtDecode(token);
+      const userType = decoded.userType;
+
+      const endpoint =
+        userType === "user"
+          ? "http://localhost:5000/api/user/update"
+          : "http://localhost:5000/api/subuser/update";
+
       const response = await axios.put(
-        "http://localhost:5000/api/user/update",
+        endpoint,
         { phone: newPhone },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -98,6 +128,7 @@ const AccountPage: React.FC = () => {
                 value={newFirstName}
                 onChange={(e) => setNewFirstName(e.target.value)}
                 placeholder="Enter new first name"
+                autoFocus
               />
             ) : (
               <span>{userInfo.firstName}</span>
@@ -129,6 +160,7 @@ const AccountPage: React.FC = () => {
                 value={newPhone}
                 onChange={(e) => setNewPhone(e.target.value)}
                 placeholder="Enter new phone"
+                autoFocus
               />
             ) : (
               <span>{userInfo.phone}</span>
