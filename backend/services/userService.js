@@ -48,6 +48,7 @@ exports.authenticateUser = async ({ email, password }) => {
       userType: "user", // Add the userType (can be "user" or "subuser", or any other relevant type)
       firstName: user.firstName, // Add the user's firstName to the token
       lastName: user.lastName,
+      phone: user.phone,
     },
     process.env.JWT_SECRET,
     { expiresIn: "10h" }

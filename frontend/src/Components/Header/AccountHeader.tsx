@@ -13,6 +13,7 @@ interface UserData {
   firstName: string;
   lastName: string;
   email: string;
+  phone: string;
 }
 
 const AccountHeader: React.FC = () => {
@@ -21,6 +22,7 @@ const AccountHeader: React.FC = () => {
     firstName: "",
     lastName: "",
     email: "",
+    phone: "",
   });
   const [uploading, setUploading] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -35,6 +37,7 @@ const AccountHeader: React.FC = () => {
           firstName: decodedToken.firstName || "John",
           lastName: decodedToken.lastName || "Doe",
           email: decodedToken.email || "example@gmail.com",
+          phone: decodedToken.phone || "xxxxx",
         });
       } catch (error) {
         console.error("Error decoding token:", error);
