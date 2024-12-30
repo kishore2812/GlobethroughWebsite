@@ -29,20 +29,38 @@ const AccountHeader: React.FC = () => {
 
   // Decode the token to fetch user data
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      try {
-        const decodedToken: UserData = jwtDecode(token);
-        setUserData({
-          firstName: decodedToken.firstName || "John",
-          lastName: decodedToken.lastName || "Doe",
-          email: decodedToken.email || "example@gmail.com",
-          phone: decodedToken.phone || "xxxxx",
-        });
-      } catch (error) {
-        console.error("Error decoding token:", error);
+    const fetchUserData = async () => {
+      const token = localStorage.getItem("token");
+
+      if (token) {
+        try {
+          const decodedToken: { userType: string } = jwtDecode(token);
+
+          // Fetch data based on userType
+          const endpoint =
+            decodedToken.userType === "user"
+              ? "http://localhost:5000/api/user/info"
+              : "http://localhost:5000/subuser/subuserinfo";
+
+          const response = await axios.get(endpoint, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          setUserData({
+            firstName: response.data.firstName || "John",
+            lastName: response.data.lastName || "Doe",
+            email: response.data.email || "example@gmail.com",
+            phone: response.data.phone || "xxxxx",
+          });
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
       }
-    }
+    };
+
+    fetchUserData();
   }, []);
 
   // Fetch profile image when component mounts

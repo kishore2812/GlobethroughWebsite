@@ -2,14 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"; // For navigation
 import { jwtDecode } from "jwt-decode"; // To decode JWT token
 import { FaRegUserCircle, FaChevronRight } from "react-icons/fa"; // For icons
+import axios from "axios"; // To make API requests
 import "./Header.scss";
 
-// Define the expected structure of the decoded token
 interface DecodedToken {
   userType: string;
-  firstName?: string;
-  subuserFirstName?: string;
-  parentUserFirstName?: string;
   role?: string;
 }
 
@@ -28,20 +25,46 @@ const Header = () => {
 
     if (token) {
       try {
-        // Decode the token to extract data
+        // Decode the token to extract userType
         const decodedToken: DecodedToken = jwtDecode(token);
-
         setUserType(decodedToken.userType);
+        setRole(decodedToken.role);
 
-        // Based on userType, set the firstName, parentFirstName, and role
-        if (decodedToken.userType === "subuser") {
-          setFirstName(decodedToken.subuserFirstName);
-          setParentFirstName(decodedToken.parentUserFirstName); // For subuser, set parent's firstName
-          setRole(decodedToken.role);
-        } else if (decodedToken.userType === "user") {
-          setFirstName(decodedToken.firstName); // For user, set the user's firstName
-          setRole(decodedToken.role);
-        }
+        // Fetch user info based on userType
+        const fetchUserData = async () => {
+          try {
+            let response;
+            if (decodedToken.userType === "user") {
+              // Fetch data for user type
+              response = await axios.get(
+                "http://localhost:5000/api/user/info",
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
+              );
+              setFirstName(response.data.firstName);
+            } else if (decodedToken.userType === "subuser") {
+              // Fetch data for subuser type
+              response = await axios.get(
+                "http://localhost:5000/subuser/subuserinfo",
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
+              );
+              setFirstName(response.data.firstName);
+              setParentFirstName(response.data.parentFirstName); // Assuming the parent's first name is returned
+            }
+          } catch (error) {
+            setError("Error fetching user data");
+            console.error("Error fetching user data:", error);
+          }
+        };
+
+        fetchUserData();
       } catch {
         setError("Error decoding token");
       }
@@ -76,7 +99,8 @@ const Header = () => {
         <button className="account-btn" onClick={() => navigate("/account")}>
           <FaRegUserCircle className="icon" />
           <span className="text">
-            {userType === "subuser" && parentFirstName && firstName && role
+            {/* Conditionally render the message based on userType */}
+            {userType === "subuser" && firstName && parentFirstName && role
               ? `Hello, ${firstName} (${role}) & Parent: ${parentFirstName}`
               : userType === "user" && firstName
               ? `Hello, ${firstName}`

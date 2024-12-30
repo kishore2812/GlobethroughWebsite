@@ -56,8 +56,26 @@ async function createSubUser(parentUserId, firstName, lastName, email, role) {
 
 async function getSubUserInfoById(id) {
   try {
-    const subUser = await SubUser.findById(id).select("firstName email phone");
-    return subUser;
+    // Fetch subuser details along with parent user's first name
+    const subUser = await SubUser.findById(id)
+      .select("firstName email phone parentUser") // Include parentUser reference
+      .populate("parentUser", "firstName"); // Populate the parent's firstName field
+
+    if (!subUser) {
+      throw new Error("SubUser not found");
+    }
+
+    // Include parentFirstName in the result
+    const parentFirstName = subUser.parentUser
+      ? subUser.parentUser.firstName
+      : "";
+
+    return {
+      firstName: subUser.firstName,
+      email: subUser.email,
+      phone: subUser.phone,
+      parentFirstName, // Add parentFirstName to the response
+    };
   } catch (error) {
     console.error("Error in SubUserService:", error);
     throw error;
