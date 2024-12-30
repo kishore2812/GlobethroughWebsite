@@ -5,12 +5,13 @@ import { FiLogOut } from "react-icons/fi"; // Log out icon
 import { MdArrowBack } from "react-icons/md"; // Back arrow icon
 import "./AccountHeader.scss"; // Import SCSS file
 
+// Import the default profile image
+import defaultProfileImage from "../../assets/images/defaultprofileimage.webp";
+
 const AccountHeader: React.FC = () => {
-  const [profileImage, setProfileImage] = useState<string>(
-    "default-profile.png"
-  );
-  const navigate = useNavigate();
+  const [profileImage, setProfileImage] = useState<string>(defaultProfileImage); // Default image is shown initially
   const [uploading, setUploading] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   // Handle navigating back
   const handleBack = (): void => {
@@ -38,9 +39,7 @@ const AccountHeader: React.FC = () => {
 
         // If the user has a profile image in the database, use it
         if (response.data.profileImage) {
-          setProfileImage(response.data.profileImage);
-        } else {
-          setProfileImage("default-profile.png"); // Use default image if not found
+          setProfileImage(response.data.profileImage); // If there's an image, set it
         }
       } catch (error) {
         console.error("Error fetching profile image:", error);
@@ -61,7 +60,7 @@ const AccountHeader: React.FC = () => {
         const base64Image = reader.result as string;
 
         try {
-          setUploading(true);
+          setUploading(true); // Set uploading state to true to show the default image
 
           // Send the base64 image to the backend
           const response = await axios.post(
@@ -75,12 +74,12 @@ const AccountHeader: React.FC = () => {
             }
           );
 
-          // Update the profile image URL with the response from the backend
-          setProfileImage(response.data.profileImage);
+          // Once the image is uploaded successfully, update the profile image URL
+          setProfileImage(response.data.profileImage); // Update with the new image URL
         } catch (error) {
           console.error("Error uploading profile image:", error);
         } finally {
-          setUploading(false);
+          setUploading(false); // Reset the uploading state once done
         }
       };
       reader.readAsDataURL(file); // Convert the image to Base64
@@ -97,7 +96,11 @@ const AccountHeader: React.FC = () => {
       {/* Profile Image Section */}
       <div className="profile-image-container">
         <label htmlFor="profileImageInput">
-          <img src={profileImage} alt="Profile" className="profile-image" />
+          <img
+            src={profileImage} // Display profile image (default or fetched from db)
+            alt="Profile"
+            className="profile-image"
+          />
         </label>
         <input
           type="file"
