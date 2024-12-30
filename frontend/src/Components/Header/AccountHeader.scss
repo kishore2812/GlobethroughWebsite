@@ -1,0 +1,53 @@
+// AccountHeader.scss
+
+.account-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: green; /* Background color for the header */
+  color: white;
+  padding: 10px 20px;
+  height: 80px; /* Increased height for the header */
+}
+
+.back-button {
+  cursor: pointer;
+}
+
+.profile-image-container {
+  position: relative;
+}
+
+.profile-image {
+  width: 70px; /* Bigger profile image */
+  height: 70px; /* Bigger profile image */
+  border-radius: 50%; /* Circular shape */
+  cursor: pointer;
+  border: 2px solid white; /* White border around profile image */
+  transition: opacity 0.3s;
+
+  &:hover {
+    opacity: 0.8; /* Slight opacity change on hover */
+  }
+}
+
+.sign-out-button {
+  background-color: white;
+  color: green;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Add space between the icon and text */
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #f0f0f0; /* Light gray background on hover */
+  }
+
+  svg {
+    margin-right: 8px; /* Space between icon and text */
+  }
+}

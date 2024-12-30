@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import AccountHeader from "../../Components/Header/AccountHeader";
 
 const AddSubUsersPage: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -44,7 +45,7 @@ const AddSubUsersPage: React.FC = () => {
 
   return (
     <div className="add-subusers-page">
-      <h1>Add Sub User</h1>
+      <AccountHeader />
       {error && <p className="error">{error}</p>}
       {message && <p className="message">{message}</p>}
       <form>

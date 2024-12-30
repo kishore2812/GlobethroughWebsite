@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import AccountHeader from "../../Components/Header/AccountHeader";
 
 const AccountPage: React.FC = () => {
   const [userInfo, setUserInfo] = useState({
@@ -130,7 +131,7 @@ const AccountPage: React.FC = () => {
 
   return (
     <div className="account-page">
-      <h1>Account Information</h1>
+      <AccountHeader />
       {error && <p className="error">{error}</p>}
       {message && <p className="message">{message}</p>}
 

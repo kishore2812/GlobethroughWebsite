@@ -30,7 +30,7 @@ const Header = () => {
       try {
         // Decode the token to extract data
         const decodedToken: DecodedToken = jwtDecode(token);
-        console.log("Decoded Token:", decodedToken);
+
         setUserType(decodedToken.userType);
 
         // Based on userType, set the firstName, parentFirstName, and role

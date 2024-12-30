@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import AccountHeader from "../../Components/Header/AccountHeader";
 
 interface SubUser {
   id: string;
@@ -38,7 +39,7 @@ const SeeSubUsersPage: React.FC = () => {
 
   return (
     <div className="see-subusers-page">
-      <h1>Sub Users</h1>
+      <AccountHeader />
       {error && <p className="error">{error}</p>}
       <ul>
         {subUsers.map((user) => (
