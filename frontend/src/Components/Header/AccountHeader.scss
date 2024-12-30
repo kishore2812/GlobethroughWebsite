@@ -1,53 +1,73 @@
-// AccountHeader.scss
-
-.account-header {
+.accountheader-header {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: center;
-  background-color: green; /* Background color for the header */
+  background-color: #01493e; // Header background color
   color: white;
-  padding: 10px 20px;
-  height: 80px; /* Increased height for the header */
-}
+  padding: 20px 100px;
+  height: 80px;
+  position: relative; // To handle the overlap of the profile image
+  z-index: 10;
 
-.back-button {
-  cursor: pointer;
-}
-
-.profile-image-container {
-  position: relative;
-}
-
-.profile-image {
-  width: 70px; /* Bigger profile image */
-  height: 70px; /* Bigger profile image */
-  border-radius: 50%; /* Circular shape */
-  cursor: pointer;
-  border: 2px solid white; /* White border around profile image */
-  transition: opacity 0.3s;
-
-  &:hover {
-    opacity: 0.8; /* Slight opacity change on hover */
-  }
-}
-
-.sign-out-button {
-  background-color: white;
-  color: green;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 5px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px; /* Add space between the icon and text */
-  transition: background-color 0.3s;
-
-  &:hover {
-    background-color: #f0f0f0; /* Light gray background on hover */
+  .accountheader-back-arrow {
+    font-size: 30px; // Increased size of the arrow
+    cursor: pointer;
+    margin-right: 20px; // Spacing between the arrow and the profile image
   }
 
-  svg {
-    margin-right: 8px; /* Space between icon and text */
+  .accountheader-profile-image-container {
+    position: absolute;
+    top: 100%; // Position 50% of the image's content below the header
+    left: 50%;
+    transform: translate(-50%, -50%); // Centering the image
+    z-index: 5; // Ensures it overlaps the header
+
+    .accountheader-profile-image {
+      width: 120px; // Larger image
+      height: 120px;
+      border-radius: 50%; // Circular shape
+      border: 4px solid white; // White border for a cleaner look
+      object-fit: cover; // Ensures the image fills the circular container
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); // Subtle shadow for better visibility
+      transition: opacity 0.3s, transform 0.3s;
+    }
+
+    .accountheader-edit-icon {
+      position: absolute;
+      bottom: 10px; // Positioned at the bottom-right corner
+      right: 10px;
+      background-color: white; // White background for the icon
+      border-radius: 50%; // Circular shape for the icon
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); // Subtle shadow for better visibility
+      cursor: pointer;
+      transition: transform 0.3s;
+
+      svg {
+        font-size: 24px; // Adjust the size of the edit icon
+        color: black; // Green icon color
+      }
+    }
+  }
+
+  .accountheader-sign-out-button {
+    background-color: white;
+    color: #112211;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 25px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px; // Add space between the icon and text
+    transition: background-color 0.3s, color 0.3s;
+
+    svg {
+      margin-right: 2px; // Space between icon and text
+    }
   }
 }

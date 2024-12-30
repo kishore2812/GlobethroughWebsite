@@ -2,14 +2,12 @@ import React, { useState, useEffect, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FiLogOut } from "react-icons/fi"; // Log out icon
-import { MdArrowBack } from "react-icons/md"; // Back arrow icon
+import { MdArrowBack, MdEdit } from "react-icons/md"; // Back arrow icon
+import defaultProfileImage from "../../assets/images/defaultprofileimage.webp"; // Import default image
 import "./AccountHeader.scss"; // Import SCSS file
 
-// Import the default profile image
-import defaultProfileImage from "../../assets/images/defaultprofileimage.webp";
-
 const AccountHeader: React.FC = () => {
-  const [profileImage, setProfileImage] = useState<string>(defaultProfileImage); // Default image is shown initially
+  const [profileImage, setProfileImage] = useState<string>(defaultProfileImage);
   const [uploading, setUploading] = useState<boolean>(false);
   const navigate = useNavigate();
 
@@ -37,9 +35,9 @@ const AccountHeader: React.FC = () => {
           }
         );
 
-        // If the user has a profile image in the database, use it
+        // Check if profile image exists in the database, if so, set it
         if (response.data.profileImage) {
-          setProfileImage(response.data.profileImage); // If there's an image, set it
+          setProfileImage(response.data.profileImage); // Set the profile image from the DB
         }
       } catch (error) {
         console.error("Error fetching profile image:", error);
@@ -47,7 +45,7 @@ const AccountHeader: React.FC = () => {
     };
 
     fetchProfileImage();
-  }, []);
+  }, []); // Empty array to only run once when component mounts
 
   // Handle profile image change (upload)
   const handleProfileImageChange = async (
@@ -60,8 +58,7 @@ const AccountHeader: React.FC = () => {
         const base64Image = reader.result as string;
 
         try {
-          setUploading(true); // Set uploading state to true to show the default image
-
+          setUploading(true);
           // Send the base64 image to the backend
           const response = await axios.post(
             "http://localhost:5000/api/upload-image",
@@ -74,12 +71,12 @@ const AccountHeader: React.FC = () => {
             }
           );
 
-          // Once the image is uploaded successfully, update the profile image URL
-          setProfileImage(response.data.profileImage); // Update with the new image URL
+          // Update the profile image URL with the backend response
+          setProfileImage(response.data.profileImage);
         } catch (error) {
           console.error("Error uploading profile image:", error);
         } finally {
-          setUploading(false); // Reset the uploading state once done
+          setUploading(false);
         }
       };
       reader.readAsDataURL(file); // Convert the image to Base64
@@ -87,20 +84,21 @@ const AccountHeader: React.FC = () => {
   };
 
   return (
-    <header className="account-header">
-      {/* Back Button (Arrow Icon) */}
-      <button className="back-button" onClick={handleBack}>
-        <MdArrowBack size={24} />
-      </button>
+    <header className="accountheader-header">
+      {/* Back Arrow */}
+      <MdArrowBack className="accountheader-back-arrow" onClick={handleBack} />
 
       {/* Profile Image Section */}
-      <div className="profile-image-container">
+      <div className="accountheader-profile-image-container">
         <label htmlFor="profileImageInput">
           <img
-            src={profileImage} // Display profile image (default or fetched from db)
+            src={profileImage}
             alt="Profile"
-            className="profile-image"
+            className="accountheader-profile-image"
           />
+          <div className="accountheader-edit-icon">
+            <MdEdit />
+          </div>
         </label>
         <input
           type="file"
@@ -109,13 +107,15 @@ const AccountHeader: React.FC = () => {
           onChange={handleProfileImageChange}
           style={{ display: "none" }}
         />
-        {uploading && <span className="uploading">Uploading...</span>}
+        {uploading && (
+          <span className="accountheader-uploading">Uploading...</span>
+        )}
       </div>
 
       {/* Sign Out Button */}
-      <button className="sign-out-button" onClick={handleSignOut}>
+      <button className="accountheader-sign-out-button" onClick={handleSignOut}>
         <FiLogOut size={18} />
-        Sign Out
+        Signout
       </button>
     </header>
   );

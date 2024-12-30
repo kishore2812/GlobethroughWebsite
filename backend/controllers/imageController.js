@@ -40,22 +40,17 @@ const updateProfileImage = async (req, res) => {
 // Controller to get user profile image
 const getUserProfile = async (req, res) => {
   try {
-    const userId = req.user.id; // Extract user ID from the authenticated token (assuming JWT authentication)
-
-    // Fetch the user from the database
-    const user = await User.findById(userId);
+    const user = await User.findById(req.user.id); // Assuming user authentication
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ msg: "User not found" });
     }
 
-    // Check if user has a profile image, otherwise send the default image
-    const profileImage = user.profileImage || "default-profile.png";
-
-    res.status(200).json({ profileImage });
+    // Send the profile image or a default image path (if not set)
+    res.json({ profileImage: user.profileImage || null });
   } catch (error) {
-    console.error("Error fetching user profile:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
+    console.error(error);
+    res.status(500).send("Server Error");
   }
 };
 
