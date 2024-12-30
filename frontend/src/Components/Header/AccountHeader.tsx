@@ -1,26 +1,46 @@
 import React, { useState, useEffect, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import { FiLogOut } from "react-icons/fi"; // Log out icon
-import { MdArrowBack, MdEdit } from "react-icons/md"; // Back arrow icon
-import defaultProfileImage from "../../assets/images/defaultprofileimage.webp"; // Import default image
+import { MdArrowBack, MdEdit } from "react-icons/md"; // Back arrow and edit icon
 import "./AccountHeader.scss"; // Import SCSS file
+
+// Import the default profile image
+import defaultProfileImage from "../../assets/images/defaultprofileimage.webp";
+
+interface UserData {
+  firstName: string;
+  lastName: string;
+  email: string;
+}
 
 const AccountHeader: React.FC = () => {
   const [profileImage, setProfileImage] = useState<string>(defaultProfileImage);
+  const [userData, setUserData] = useState<UserData>({
+    firstName: "",
+    lastName: "",
+    email: "",
+  });
   const [uploading, setUploading] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  // Handle navigating back
-  const handleBack = (): void => {
-    navigate(-1); // Go back to the previous page
-  };
-
-  // Handle sign out
-  const handleSignOut = (): void => {
-    localStorage.removeItem("token"); // Clear the authentication token
-    navigate("/signin"); // Redirect to sign-in page
-  };
+  // Decode the token to fetch user data
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decodedToken: UserData = jwtDecode(token);
+        setUserData({
+          firstName: decodedToken.firstName || "John",
+          lastName: decodedToken.lastName || "Doe",
+          email: decodedToken.email || "example@gmail.com",
+        });
+      } catch (error) {
+        console.error("Error decoding token:", error);
+      }
+    }
+  }, []);
 
   // Fetch profile image when component mounts
   useEffect(() => {
@@ -35,9 +55,10 @@ const AccountHeader: React.FC = () => {
           }
         );
 
-        // Check if profile image exists in the database, if so, set it
         if (response.data.profileImage) {
-          setProfileImage(response.data.profileImage); // Set the profile image from the DB
+          setProfileImage(response.data.profileImage); // Use DB image if available
+        } else {
+          setProfileImage(defaultProfileImage); // Use default image if not found
         }
       } catch (error) {
         console.error("Error fetching profile image:", error);
@@ -45,7 +66,7 @@ const AccountHeader: React.FC = () => {
     };
 
     fetchProfileImage();
-  }, []); // Empty array to only run once when component mounts
+  }, []);
 
   // Handle profile image change (upload)
   const handleProfileImageChange = async (
@@ -59,6 +80,7 @@ const AccountHeader: React.FC = () => {
 
         try {
           setUploading(true);
+
           // Send the base64 image to the backend
           const response = await axios.post(
             "http://localhost:5000/api/upload-image",
@@ -71,7 +93,7 @@ const AccountHeader: React.FC = () => {
             }
           );
 
-          // Update the profile image URL with the backend response
+          // Update the profile image URL with the response from the backend
           setProfileImage(response.data.profileImage);
         } catch (error) {
           console.error("Error uploading profile image:", error);
@@ -83,41 +105,66 @@ const AccountHeader: React.FC = () => {
     }
   };
 
+  // Handle navigating back
+  const handleBack = (): void => {
+    navigate(-1); // Go back to the previous page
+  };
+
+  // Handle sign out
+  const handleSignOut = (): void => {
+    localStorage.removeItem("token"); // Clear the authentication token
+    navigate("/signin/:role"); // Redirect to sign-in page
+  };
+
   return (
-    <header className="accountheader-header">
-      {/* Back Arrow */}
-      <MdArrowBack className="accountheader-back-arrow" onClick={handleBack} />
-
-      {/* Profile Image Section */}
-      <div className="accountheader-profile-image-container">
-        <label htmlFor="profileImageInput">
-          <img
-            src={profileImage}
-            alt="Profile"
-            className="accountheader-profile-image"
-          />
-          <div className="accountheader-edit-icon">
-            <MdEdit />
-          </div>
-        </label>
-        <input
-          type="file"
-          id="profileImageInput"
-          accept="image/*"
-          onChange={handleProfileImageChange}
-          style={{ display: "none" }}
+    <div className="accountheader-container">
+      <header className="accountheader-header">
+        {/* Back Arrow */}
+        <MdArrowBack
+          className="accountheader-back-arrow"
+          onClick={handleBack}
         />
-        {uploading && (
-          <span className="accountheader-uploading">Uploading...</span>
-        )}
-      </div>
 
-      {/* Sign Out Button */}
-      <button className="accountheader-sign-out-button" onClick={handleSignOut}>
-        <FiLogOut size={18} />
-        Signout
-      </button>
-    </header>
+        {/* Profile Image Section */}
+        <div className="accountheader-profile-image-container">
+          <label htmlFor="profileImageInput">
+            <img
+              src={profileImage}
+              alt="Profile"
+              className="accountheader-profile-image"
+            />
+            <div className="accountheader-edit-icon">
+              <MdEdit size={18} />
+            </div>
+          </label>
+          <input
+            type="file"
+            id="profileImageInput"
+            accept="image/*"
+            onChange={handleProfileImageChange}
+            style={{ display: "none" }}
+          />
+          {uploading && <span className="accountheader-uploading"></span>}
+        </div>
+
+        {/* Sign Out Button */}
+        <button
+          className="accountheader-sign-out-button"
+          onClick={handleSignOut}
+        >
+          <FiLogOut size={18} />
+          Signout
+        </button>
+      </header>
+
+      {/* User Info Section */}
+      <div className="accountheader-user-info">
+        <h2 className="accountheader-user-name">
+          {userData.firstName} {userData.lastName}
+        </h2>
+        <p className="accountheader-user-email">{userData.email}</p>
+      </div>
+    </div>
   );
 };
 
