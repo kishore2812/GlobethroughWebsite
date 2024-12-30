@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from "jwt-decode"; // Correct the import for jwtDecode
 import { useNavigate } from "react-router-dom";
 import { FaEdit, FaSave, FaUsers, FaUserPlus } from "react-icons/fa";
 import AccountHeader from "../../Components/Header/AccountHeader";
@@ -8,6 +8,7 @@ import "./AccountPage.scss";
 
 interface DecodedToken {
   userType: string;
+  role: string;
 }
 
 const AccountPage: React.FC = () => {
@@ -20,6 +21,7 @@ const AccountPage: React.FC = () => {
   const [newPhone, setNewPhone] = useState("");
   const [isEditingFirstName, setIsEditingFirstName] = useState(false);
   const [isEditingPhone, setIsEditingPhone] = useState(false);
+  const [role, setRole] = useState(""); // State to store the role
 
   const navigate = useNavigate();
 
@@ -29,21 +31,18 @@ const AccountPage: React.FC = () => {
         const token = localStorage.getItem("token");
         if (!token) return;
 
-        // Decode the token to get user type
         const decoded: DecodedToken = jwtDecode(token);
-        const userType = decoded.userType;
+        setRole(decoded.role); // Set the role from the token
 
-        // Determine the endpoint based on userType
         const endpoint =
-          userType === "user"
+          decoded.userType === "user"
             ? "http://localhost:5000/api/user/info"
-            : "http://localhost:5000/api/subuser/info";
+            : "http://localhost:5000/subuser/subuserinfo";
 
         const response = await axios.get(endpoint, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        // Update user information
         setUserInfo({
           firstName: response.data.firstName,
           email: response.data.email,
@@ -63,12 +62,10 @@ const AccountPage: React.FC = () => {
       if (!token) return;
 
       const decoded: DecodedToken = jwtDecode(token);
-      const userType = decoded.userType;
-
       const endpoint =
-        userType === "user"
+        decoded.userType === "user"
           ? "http://localhost:5000/api/user/update"
-          : "http://localhost:5000/api/subuser/update";
+          : "http://localhost:5000/subuser/update";
 
       const response = await axios.put(
         endpoint,
@@ -92,12 +89,10 @@ const AccountPage: React.FC = () => {
       if (!token) return;
 
       const decoded: DecodedToken = jwtDecode(token);
-      const userType = decoded.userType;
-
       const endpoint =
-        userType === "user"
+        decoded.userType === "user"
           ? "http://localhost:5000/api/user/update"
-          : "http://localhost:5000/api/subuser/update";
+          : "http://localhost:5000/subuser/update";
 
       const response = await axios.put(
         endpoint,
@@ -190,20 +185,22 @@ const AccountPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="accountpage-info-item">
-          <div className="accountpage-left-col">
-            <strong>Members:</strong>
-            <span>Edit members</span>
+        {role === "admin" && ( // Only display for admin role
+          <div className="accountpage-info-item">
+            <div className="accountpage-left-col">
+              <strong>Members:</strong>
+              <span>Edit members</span>
+            </div>
+            <div className="accountpage-right-col members-btn-row">
+              <button className="members-btn" onClick={handleSeeSubUsers}>
+                <FaUsers /> Members
+              </button>
+              <button className="members-btn" onClick={handleAddSubUser}>
+                <FaUserPlus /> Add Member
+              </button>
+            </div>
           </div>
-          <div className="accountpage-right-col members-btn-row">
-            <button className="members-btn" onClick={handleSeeSubUsers}>
-              <FaUsers /> Members
-            </button>
-            <button className="members-btn" onClick={handleAddSubUser}>
-              <FaUserPlus /> Add Member
-            </button>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

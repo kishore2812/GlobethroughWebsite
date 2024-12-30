@@ -54,4 +54,14 @@ async function createSubUser(parentUserId, firstName, lastName, email, role) {
   }
 }
 
-module.exports = { createSubUser };
+async function getSubUserInfoById(id) {
+  try {
+    const subUser = await SubUser.findById(id).select("firstName email phone");
+    return subUser;
+  } catch (error) {
+    console.error("Error in SubUserService:", error);
+    throw error;
+  }
+}
+
+module.exports = { createSubUser, getSubUserInfoById };

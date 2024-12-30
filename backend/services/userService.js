@@ -49,6 +49,7 @@ exports.authenticateUser = async ({ email, password }) => {
       firstName: user.firstName, // Add the user's firstName to the token
       lastName: user.lastName,
       phone: user.phone,
+      role: "admin",
     },
     process.env.JWT_SECRET,
     { expiresIn: "10h" }
