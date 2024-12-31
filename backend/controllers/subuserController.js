@@ -4,7 +4,7 @@ const SubUser = require("../models/subUser");
 const bcrypt = require("bcrypt");
 
 async function createSubUser(req, res) {
-  const { firstName, lastName, email, role } = req.body;
+  const { firstName, lastName, email, role, phone } = req.body;
   const parentUserId = req.user.id; // This comes from the authenticated main user
 
   try {
@@ -13,12 +13,15 @@ async function createSubUser(req, res) {
       firstName,
       lastName,
       email,
-      role
+      role,
+      phone
     );
-    res
-      .status(201)
-      .json({ message: "Sub user created successfully!", subUser });
+    res.status(201).json({
+      message: "Sub user added successfully. Invitation sent!",
+      subUser,
+    });
   } catch (err) {
+    console.error("Error in controller:", err); // Log the error
     res.status(500).json({ error: "Failed to create subuser." });
   }
 }

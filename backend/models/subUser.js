@@ -14,7 +14,8 @@ const SubUserSchema = new mongoose.Schema({
   },
   phone: {
     type: String,
-    default: "xxxxxxxxxx",
+    required: true, // Marked as required
+    match: [/^\+?[1-9]\d{1,14}$/, "Please enter a valid phone number"],
   },
   email: {
     type: String,

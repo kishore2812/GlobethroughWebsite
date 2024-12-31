@@ -27,7 +27,14 @@ async function sendInvitationEmail(to, link) {
   }
 }
 
-async function createSubUser(parentUserId, firstName, lastName, email, role) {
+async function createSubUser(
+  parentUserId,
+  firstName,
+  lastName,
+  email,
+  role,
+  phone
+) {
   try {
     const subUser = new SubUser({
       firstName,
@@ -35,6 +42,7 @@ async function createSubUser(parentUserId, firstName, lastName, email, role) {
       email,
       role,
       parentUser: parentUserId,
+      phone, // Add phone here
     });
 
     const savedSubUser = await subUser.save();
@@ -50,6 +58,7 @@ async function createSubUser(parentUserId, firstName, lastName, email, role) {
 
     return savedSubUser;
   } catch (error) {
+    console.error("Error creating subuser:", error.message); // Log the specific error
     throw error;
   }
 }

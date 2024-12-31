@@ -8,6 +8,7 @@ const AddSubUsersPage: React.FC = () => {
     lastName: "",
     email: "",
     role: "editor", // Default role
+    phone: "", // Add phone field to state
   });
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -36,7 +37,13 @@ const AddSubUsersPage: React.FC = () => {
       );
 
       setMessage("Sub user added successfully. Invitation sent!");
-      setFormData({ firstName: "", lastName: "", email: "", role: "editor" });
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        role: "editor",
+        phone: "", // Reset phone field after form submission
+      });
     } catch (err) {
       console.error("Error adding sub user:", err);
       setError("Failed to add sub user.");
@@ -81,6 +88,19 @@ const AddSubUsersPage: React.FC = () => {
               name="email"
               value={formData.email}
               onChange={handleInputChange}
+              required
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+            Phone:
+            <input
+              type="tel"
+              name="phone"
+              value={formData.phone}
+              onChange={handleInputChange}
+              placeholder="Phone Number"
               required
             />
           </label>
