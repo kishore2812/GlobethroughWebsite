@@ -58,7 +58,7 @@ async function getSubUserInfoById(id) {
   try {
     // Fetch subuser details along with parent user's first name
     const subUser = await SubUser.findById(id)
-      .select("firstName email phone parentUser") // Include parentUser reference
+      .select("firstName lastName email phone parentUser") // Include parentUser reference
       .populate("parentUser", "firstName"); // Populate the parent's firstName field
 
     if (!subUser) {
@@ -72,6 +72,7 @@ async function getSubUserInfoById(id) {
 
     return {
       firstName: subUser.firstName,
+      lastName: subUser.lastName,
       email: subUser.email,
       phone: subUser.phone,
       parentFirstName, // Add parentFirstName to the response
