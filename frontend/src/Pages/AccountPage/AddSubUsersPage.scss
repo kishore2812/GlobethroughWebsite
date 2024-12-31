@@ -1,0 +1,122 @@
+.add-subusers-page {
+  max-width: 1000px;
+  margin: 80px auto;
+  padding: 20px 100px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+
+  .message,
+  .error {
+    text-align: center;
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 5px;
+  }
+
+  .message {
+    background-color: #d4edda;
+    color: #155724;
+  }
+
+  .error {
+    background-color: #f8d7da;
+    color: #721c24;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+
+      label {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: #333;
+      }
+
+      input,
+      select {
+        padding: 10px;
+        font-size: 14px;
+        border: none;
+        border-bottom: 2px solid #ccc;
+        outline: none;
+        background-color: transparent;
+        transition: border-color 0.3s ease;
+        margin-bottom: 5px;
+
+        &::placeholder {
+          color: black;
+          opacity: 0.3;
+          font-weight: 400;
+        }
+
+        &:focus {
+          border-bottom-color: #01493e;
+        }
+      }
+
+      // Custom styling for the Role select field
+      .role-select {
+        appearance: none;
+        background-color: transparent;
+        border: none;
+        padding-right: 30px;
+        font-size: 14px;
+        position: relative;
+        width: 100%;
+        padding: 10px;
+        border-bottom: 2px solid #ccc; // You can adjust the border color here
+
+        // Custom arrow for the select dropdown
+        &::after {
+          content: " ▼";
+          font-size: 12px;
+          position: absolute;
+          right: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+          color: #333;
+        }
+
+        // Option styling
+        option {
+          background-color: transparent;
+          color: #333;
+
+          &:hover {
+            background-color: #01493e; // Green on hover
+            color: white;
+          }
+        }
+      }
+    }
+
+    // Add Sub User button
+    .add-button {
+      align-self: flex-end;
+      background-color: #01493e;
+      color: #fff;
+      padding: 5px 20px;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+
+      i {
+        font-size: 18px;
+      }
+    }
+  }
+}

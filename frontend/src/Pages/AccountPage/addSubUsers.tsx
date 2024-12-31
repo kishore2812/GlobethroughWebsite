@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import AccountHeader from "../../Components/Header/AccountHeader";
+import { AiFillPlusSquare } from "react-icons/ai";
+import "./AddSubUsersPage.scss";
 
 const AddSubUsersPage: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -51,50 +53,50 @@ const AddSubUsersPage: React.FC = () => {
   };
 
   return (
-    <div className="add-subusers-page">
+    <div>
       <AccountHeader />
-      {error && <p className="error">{error}</p>}
-      {message && <p className="message">{message}</p>}
-      <form>
-        <div>
-          <label>
-            First Name:
+      <div className="add-subusers-page">
+        {error && <p className="error">{error}</p>}
+        {message && <p className="message">{message}</p>}
+        <form>
+          <div className="form-group">
+            <label>First Name:</label>
             <input
               type="text"
               name="firstName"
               value={formData.firstName}
               onChange={handleInputChange}
+              placeholder="Enter First Name"
               required
             />
-          </label>
-        </div>
-        <div>
-          <label>
-            Last Name:
+          </div>
+
+          <div className="form-group">
+            <label>Last Name:</label>
             <input
               type="text"
               name="lastName"
               value={formData.lastName}
               onChange={handleInputChange}
+              placeholder="Enter Last Name"
               required
             />
-          </label>
-        </div>
-        <div>
-          <label>
-            Email:
+          </div>
+
+          <div className="form-group">
+            <label>Email:</label>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleInputChange}
+              placeholder="Enter Email Address"
               required
             />
-          </label>
-        </div>
-        <div>
-          <label>
-            Phone:
+          </div>
+
+          <div className="form-group">
+            <label>Phone:</label>
             <input
               type="tel"
               name="phone"
@@ -103,25 +105,33 @@ const AddSubUsersPage: React.FC = () => {
               placeholder="Phone Number"
               required
             />
-          </label>
-        </div>
-        <div>
-          <label>
-            Role:
+          </div>
+
+          <div className="form-group">
+            <label>Role:</label>
             <select
               name="role"
               value={formData.role}
               onChange={handleInputChange}
+              className="select-role"
             >
               <option value="admin">Admin</option>
               <option value="editor">Editor</option>
             </select>
-          </label>
-        </div>
-        <button type="button" onClick={handleAddSubUser}>
-          Add Sub User
-        </button>
-      </form>
+          </div>
+
+          <button
+            type="button"
+            className="add-button"
+            onClick={handleAddSubUser}
+          >
+            <span className="icon-container">
+              <AiFillPlusSquare size={18} />{" "}
+            </span>
+            Add
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
