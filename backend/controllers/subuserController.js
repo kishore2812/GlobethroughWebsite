@@ -72,4 +72,94 @@ async function getSubUserInfo(req, res) {
   }
 }
 
-module.exports = { createSubUser, setPassword, getSubUserInfo };
+// Controller method to fetch subusers for the logged-in parent user
+async function getSubUsers(req, res) {
+  try {
+    const parentUserId = req.user.id; // This comes from the authenticated main user
+
+    // Find all subusers that have the same parentUserId
+    const subUsers = await SubUser.find({ parentUser: parentUserId });
+
+    if (!subUsers || subUsers.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No subusers found for this parent user." });
+    }
+
+    res.status(200).json({ subUsers });
+  } catch (error) {
+    console.error("Error fetching subusers:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+}
+// Controller method to delete a subuser
+async function deleteSubUser(req, res) {
+  const { userId } = req.params; // Get subuser ID from the URL
+
+  if (!userId) {
+    return res.status(400).json({ error: "Subuser ID is required." });
+  }
+
+  try {
+    // Find the subuser by ID and ensure that the parentUser matches the logged-in user's ID
+    const deletedSubUser = await SubUser.findOneAndDelete({
+      _id: userId,
+      parentUser: req.user.id, // Ensure the logged-in user is the parent
+    });
+
+    if (!deletedSubUser) {
+      console.log("Subuser not found or not authorized to delete.");
+      return res.status(404).json({
+        error: "Subuser not found or you don't have permission to delete.",
+      });
+    }
+
+    res
+      .status(200)
+      .json({ message: "Subuser deleted successfully.", deletedSubUser });
+  } catch (error) {
+    console.error("Error deleting subuser:", error);
+    res.status(500).json({ error: "Failed to delete subuser." });
+  }
+}
+
+// Controller method to update the role of a subuser
+async function updateSubUserRole(req, res) {
+  const { userId } = req.params; // Get the subuser ID from the URL
+  const { role } = req.body; // Get the new role from the request body
+
+  if (!userId || !role) {
+    return res.status(400).json({ error: "Subuser ID and role are required." });
+  }
+
+  try {
+    // Find the subuser by ID and ensure that the parentUser matches the logged-in user's ID
+    const updatedSubUser = await SubUser.findOneAndUpdate(
+      { _id: userId, parentUser: req.user.id }, // Ensure the parentUser matches the logged-in user's ID
+      { role: role },
+      { new: true } // Return the updated subuser document
+    );
+
+    if (!updatedSubUser) {
+      return res.status(404).json({
+        error: "Subuser not found or you don't have permission to update.",
+      });
+    }
+
+    res
+      .status(200)
+      .json({ message: "Role updated successfully.", updatedSubUser });
+  } catch (error) {
+    console.error("Error updating role:", error);
+    res.status(500).json({ error: "Failed to update role." });
+  }
+}
+
+module.exports = {
+  createSubUser,
+  setPassword,
+  getSubUserInfo,
+  getSubUsers,
+  deleteSubUser,
+  updateSubUserRole,
+};

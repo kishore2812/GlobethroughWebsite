@@ -93,7 +93,7 @@ const AddSubUsersPage: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="add-subusers-page-background">
       <AccountHeader />
       <div className="add-subusers-page">
         {error && <p className="error">{error}</p>}

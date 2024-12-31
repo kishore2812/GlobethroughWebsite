@@ -1,0 +1,79 @@
+.subusers-background {
+  background-color: #f2f2f2;
+  min-height: 100vh; /* Ensures the background covers at least the entire viewport height */
+  display: flex;
+  flex-direction: column;
+
+  .see-subusers-page {
+    font-family: Arial, sans-serif;
+    padding: 20px 100px;
+
+    .error {
+      color: red;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .subuser-list {
+      list-style-type: none;
+      padding: 20px 60px;
+
+      background-color: #fff;
+    }
+
+    .subuser-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      padding: 10px;
+
+      border-radius: 5px;
+
+      .subuser-details {
+        display: flex;
+        align-items: center;
+
+        .subuser-name {
+          font-size: 16px;
+          font-weight: 700;
+          margin-right: 10px; // Space between the name and the role
+        }
+
+        .role {
+          font-weight: 400;
+          opacity: 0.7;
+          font-size: 14px;
+          color: black;
+        }
+      }
+
+      .actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        .delete-btn,
+        .role-select {
+          padding: 8px 12px;
+          border: 1px solid black;
+          border-radius: 5px;
+          cursor: pointer;
+          color: #fff;
+          font-size: 14px;
+        }
+
+        .role-select {
+          background-color: transparent;
+          color: black;
+        }
+
+        .delete-btn {
+          background-color: transparent;
+          color: black;
+          border-color: black;
+        }
+      }
+    }
+  }
+}
