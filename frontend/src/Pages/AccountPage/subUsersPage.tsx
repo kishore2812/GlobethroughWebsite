@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { FaMinusSquare } from "react-icons/fa";
+import { MdEditSquare } from "react-icons/md";
 import AccountHeader from "../../Components/Header/AccountHeader";
 import "./subUsersPage.scss";
 
@@ -16,6 +18,9 @@ interface SubUser {
 const SeeSubUsersPage: React.FC = () => {
   const [subUsers, setSubUsers] = useState<SubUser[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [editingUserId, setEditingUserId] = useState<string | null>(null);
+  const [isRoleActive, setIsRoleActive] = useState<boolean>(false);
+  const [activeUserId, setActiveUserId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchSubUsers = async () => {
@@ -55,7 +60,6 @@ const SeeSubUsersPage: React.FC = () => {
         return;
       }
 
-      // Send the request to delete the subuser
       await axios.delete(
         `http://localhost:5000/subuser/subusers/delete/${userId}`,
         {
@@ -63,7 +67,6 @@ const SeeSubUsersPage: React.FC = () => {
         }
       );
 
-      // Update the subUser state to reflect the deletion
       setSubUsers(subUsers.filter((user) => user._id !== userId));
     } catch (err) {
       console.error("Error deleting subuser:", err);
@@ -79,14 +82,13 @@ const SeeSubUsersPage: React.FC = () => {
         return;
       }
 
-      // Validate role before sending
       if (newRole !== "admin" && newRole !== "editor") {
         setError("Invalid role. Please select either 'admin' or 'editor'.");
         return;
       }
 
       const response = await axios.put(
-        `http://localhost:5000/subuser/subusers/changeRole/${userId}`, // Ensure the userId is passed here
+        `http://localhost:5000/subuser/subusers/changeRole/${userId}`,
         { role: newRole },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -94,12 +96,13 @@ const SeeSubUsersPage: React.FC = () => {
       );
 
       console.log(response.data);
-      // Update the subUser in state
       setSubUsers(
         subUsers.map((user) =>
           user._id === userId ? { ...user, role: newRole } : user
         )
       );
+      setEditingUserId(null); // Exit edit mode after updating the role
+      setIsRoleActive(false); // Close role selection cards
     } catch (err) {
       console.error("Error changing role:", err);
       setError("Failed to change role.");
@@ -112,8 +115,8 @@ const SeeSubUsersPage: React.FC = () => {
       <div className="see-subusers-page">
         {error && <p className="error">{error}</p>}
 
+        <h2 className="members-heading">Members</h2>
         <ul className="subuser-list">
-          <h2 className="members-heading">Members</h2>
           {subUsers.map((user) => (
             <li className="subuser-item" key={user._id}>
               <div className="subuser-details">
@@ -123,20 +126,57 @@ const SeeSubUsersPage: React.FC = () => {
                 </span>
               </div>
               <div className="actions">
-                <button
-                  className="delete-btn"
-                  onClick={() => deleteSubUser(user._id)}
-                >
-                  Remove
-                </button>
-                <select
-                  className="role-select"
-                  value={user.role}
-                  onChange={(e) => changeRole(user._id, e.target.value)}
-                >
-                  <option value="admin">Admin</option>
-                  <option value="editor">Editor</option>
-                </select>
+                <div className="remove-container">
+                  <button
+                    className="delete-btn"
+                    onClick={() => deleteSubUser(user._id)}
+                  >
+                    <FaMinusSquare className="icon-remove" /> Remove
+                  </button>
+                </div>
+
+                <div className="change-role-container">
+                  {editingUserId === user._id ? (
+                    <button
+                      className="edit-role-btn"
+                      onClick={() => {
+                        setIsRoleActive(!isRoleActive);
+                        setActiveUserId(user._id);
+                      }}
+                    >
+                      <MdEditSquare className="icon-edit" /> Change Role
+                    </button>
+                  ) : (
+                    <button
+                      className="edit-role-btn"
+                      onClick={() => setEditingUserId(user._id)}
+                    >
+                      <MdEditSquare className="icon-edit" /> Change Role
+                    </button>
+                  )}
+
+                  {/* Role cards inside the Change Role button */}
+                  {isRoleActive && activeUserId === user._id && (
+                    <div className="role-selection">
+                      <div
+                        className="role-card"
+                        onClick={() => {
+                          changeRole(user._id, "admin");
+                        }}
+                      >
+                        Admin
+                      </div>
+                      <div
+                        className="role-card"
+                        onClick={() => {
+                          changeRole(user._id, "editor");
+                        }}
+                      >
+                        Editor
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             </li>
           ))}
