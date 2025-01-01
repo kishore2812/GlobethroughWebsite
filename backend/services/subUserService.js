@@ -87,7 +87,7 @@ async function getSubUserInfoById(id) {
       parentFirstName, // Add parentFirstName to the response
     };
   } catch (error) {
-    console.error("Error in SubUserService:", error);
+    console.error("Error in SubUserService", error);
     throw error;
   }
 }
