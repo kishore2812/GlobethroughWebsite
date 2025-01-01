@@ -44,7 +44,7 @@ const SeeSubUsersPage: React.FC = () => {
           setError("No subusers found.");
         }
       } catch (err) {
-        console.error("Error fetching subusers:", err);
+        console.error("Error fetching subusers", err);
         setError("Failed to fetch subusers.");
       }
     };
