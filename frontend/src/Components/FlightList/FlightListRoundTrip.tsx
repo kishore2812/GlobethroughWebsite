@@ -1,6 +1,7 @@
 import React from "react";
 
 interface Flight {
+  logo: string;
   id: string;
   flightNumber: string;
   price: number;
@@ -38,6 +39,11 @@ const FlightListRoundTrip: React.FC<FlightListRoundTripProps> = ({
               marginBottom: "1rem",
             }}
           >
+            <img
+              src={flight.logo}
+              alt={flight.flightNumber}
+              style={{ width: "50px", marginRight: "1rem" }}
+            />
             <h3>Flight: {flight.flightNumber}</h3>
             <p>Price: ₹{flight.price}</p>
             <p>Duration: {flight.duration} hrs</p>
@@ -61,6 +67,11 @@ const FlightListRoundTrip: React.FC<FlightListRoundTripProps> = ({
               marginBottom: "1rem",
             }}
           >
+            <img
+              src={flight.logo}
+              alt={flight.flightNumber}
+              style={{ width: "50px", marginRight: "1rem" }}
+            />
             <h3>Flight: {flight.flightNumber}</h3>
             <p>Price: ₹{flight.price}</p>
             <p>Duration: {flight.duration} hrs</p>

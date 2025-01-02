@@ -3,6 +3,7 @@ import FlightFilter from "../../Components/FlightFilter/FlightFilter";
 import FlightListOneWay from "../../Components/FlightList/FlightListOneWay";
 import FlightListRoundTrip from "../../Components/FlightList/FlightListRoundTrip";
 import useFlightStore from "../../Stores/FlightStore";
+import AirIndia from "../../assets/images/AirIndia.png";
 
 const flightData = [
   {
@@ -14,6 +15,7 @@ const flightData = [
     endTime: "2024-12-10T10:00:00",
     type: "departure",
     stops: 0,
+    logo: AirIndia,
   },
   {
     id: "2",
@@ -24,6 +26,7 @@ const flightData = [
     endTime: "2024-12-10T10:00:00",
     type: "departure",
     stops: 2,
+    logo: AirIndia,
   },
   {
     id: "3",
@@ -34,6 +37,7 @@ const flightData = [
     endTime: "2024-12-10T10:00:00",
     type: "return",
     stops: 0,
+    logo: AirIndia,
   },
   {
     id: "4",
@@ -44,6 +48,7 @@ const flightData = [
     endTime: "2024-12-10T10:00:00",
     type: "departure",
     stops: 1,
+    logo: AirIndia,
   },
   {
     id: "5",
@@ -54,6 +59,7 @@ const flightData = [
     endTime: "2024-12-10T10:00:00",
     type: "return",
     stops: 2,
+    logo: AirIndia,
   },
   {
     id: "6",
@@ -64,6 +70,7 @@ const flightData = [
     endTime: "2024-12-10T10:00:00",
     type: "return",
     stops: 1,
+    logo: AirIndia,
   },
   {
     id: "7",
@@ -74,6 +81,7 @@ const flightData = [
     endTime: "2024-12-15T20:30:00",
     type: "return",
     stops: 0,
+    logo: AirIndia,
   },
 ] as const;
 
