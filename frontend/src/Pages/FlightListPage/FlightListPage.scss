@@ -1,0 +1,81 @@
+// FlightListPage.scss
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; // Full screen height
+  overflow: hidden;
+  background: linear-gradient(
+    to bottom,
+    #01493e 50%,
+    #f2f2f2 50%
+  ); // 50% split color background
+
+  .mainContent {
+    padding: 0px 100px;
+    display: flex;
+    flex-direction: row; // Create a horizontal layout
+    margin-top: 20px; // Adjust margin to prevent overlap with the header
+    height: calc(100vh - 120px); // Ensure this takes full height minus header
+
+    .filterContainer {
+      width: 20%; // Set the filter width to 25% of the screen
+      padding: 1rem;
+      border-right: 1px solid #ddd;
+      height: 100%;
+      overflow-y: auto;
+    }
+
+    .flightListContainer {
+      width: 75%; // Set the flight list width to 75% of the screen
+      padding: 1rem;
+      height: 100%;
+      overflow-y: auto;
+    }
+  }
+
+  .infoContainer {
+    width: 20%; // Match the width of the filterContainer
+    color: white;
+    padding: 20px 100px;
+    margin-bottom: 20px; // Spacing between info and content
+    display: flex;
+    flex-direction: column;
+
+    .airportInfo {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .fromAirport,
+      .toAirport {
+        font-size: 16px; // Smaller size for city name
+        display: block;
+      }
+
+      .iataCode {
+        font-size: 18px; // Larger size for IATA code
+        font-weight: bold;
+      }
+
+      .arrow {
+        font-size: 18px; // Arrow size
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+
+    .detailsRow {
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px; // Smaller size for details
+      margin-top: 10px;
+
+      span {
+        display: inline-block;
+      }
+    }
+  }
+}

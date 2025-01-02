@@ -4,12 +4,30 @@ import FlightFilter from "../../Components/FlightFilter/FlightFilter";
 import FlightListOneWay from "../../Components/FlightList/FlightListOneWay";
 import FlightListRoundTrip from "../../Components/FlightList/FlightListRoundTrip";
 import useFlightStore from "../../Stores/FlightStore";
+import Header from "../../Components/Header/Header"; // Import the Header component
+import { FaArrowRight } from "react-icons/fa"; // Import FaArrowRight
+import "./FlightListPage.scss"; // Import the SCSS file for styles
 
 const FlightListPage: React.FC = () => {
   const [filter, setFilter] = useState<"cheapest" | "fastest">("cheapest");
   const [selectedStops, setSelectedStops] = useState<number | null>(null);
   const { selectedTrip } = useFlightStore();
 
+  // Get data from Zustand store
+  const {
+    fromAirport,
+    toAirport,
+    departureDate,
+    infants,
+    children,
+    adults,
+    selectedClass,
+  } = useFlightStore();
+
+  // Calculate total travelers by summing adults, children, and infants
+  const totalTravelers = adults + children + infants;
+
+  // Flight counts for the filter component
   const flightCounts = {
     nonStops: flightData.filter((flight) => flight.stops === 0).length,
     oneStop: flightData.filter((flight) => flight.stops === 1).length,
@@ -27,10 +45,48 @@ const FlightListPage: React.FC = () => {
   });
 
   return (
-    <div>
-      <div style={styles.container}>
-        <div style={styles.filterContainer}>
-          <h1>Available Flights</h1>
+    <div className="container">
+      <Header /> {/* Render Header at the top */}
+      {/* Section Below the Header for Airport Info */}
+      <div className="infoContainer">
+        <div className="airportInfo">
+          <div className="fromAirport">
+            <span className="iataCode">
+              {fromAirport?.IATA}, {}
+            </span>
+            <span className="cityName">{fromAirport?.City}</span>
+          </div>
+          <div className="arrow">
+            <FaArrowRight /> {/* Using FaArrowRight icon */}
+          </div>
+          <div className="toAirport">
+            <span className="iataCode">
+              {toAirport?.IATA}, {}
+            </span>
+            <span className="cityName">{toAirport?.City}</span>
+          </div>
+        </div>
+
+        {/* Departure Date, Travelers, and Selected Class in a Single Row */}
+        <div className="detailsRow">
+          <span>
+            {departureDate
+              ? new Date(departureDate).toLocaleDateString("en-US", {
+                  weekday: "short",
+                  month: "short",
+                  day: "numeric",
+                })
+              : "N/A"}{" "}
+            .{/* Default text if departureDate is null */}
+          </span>
+          <span>{totalTravelers} Travelers .</span>
+          <span>{selectedClass}</span>
+        </div>
+      </div>
+      {/* Main Content Section */}
+      <div className="mainContent">
+        {/* Filter Component on the Left */}
+        <div className="filterContainer">
           <FlightFilter
             selectedFilter={filter}
             selectedStops={selectedStops}
@@ -39,7 +95,9 @@ const FlightListPage: React.FC = () => {
             onStopsChange={setSelectedStops}
           />
         </div>
-        <div style={styles.flightListContainer}>
+
+        {/* Flight List Component on the Right */}
+        <div className="flightListContainer">
           {selectedTrip === "one-way" ? (
             <FlightListOneWay
               flights={sortedFlights.filter((f) => f.type === "departure")}
@@ -51,32 +109,6 @@ const FlightListPage: React.FC = () => {
       </div>
     </div>
   );
-};
-
-const styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column" as const,
-    height: "100vh",
-    overflow: "hidden",
-  },
-  filterContainer: {
-    position: "fixed" as const,
-    top: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: "#fff",
-    zIndex: 10,
-    padding: "1rem",
-    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-  },
-  flightListContainer: {
-    marginTop: "160px",
-    height: "calc(100vh - 120px)",
-    overflowY: "auto" as const,
-    padding: "1rem",
-    backgroundColor: "#f9f9f9",
-  },
 };
 
 export default FlightListPage;
