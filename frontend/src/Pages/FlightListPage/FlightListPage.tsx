@@ -1,115 +1,28 @@
 import React, { useState } from "react";
+import { flightData } from "./flightdata"; // Import the data and interface
 import FlightFilter from "../../Components/FlightFilter/FlightFilter";
 import FlightListOneWay from "../../Components/FlightList/FlightListOneWay";
 import FlightListRoundTrip from "../../Components/FlightList/FlightListRoundTrip";
 import useFlightStore from "../../Stores/FlightStore";
-import AirIndia from "../../assets/images/AirIndia.png";
-
-const flightData = [
-  {
-    id: "1",
-    flightNumber: "AB123",
-    price: 30000,
-    duration: 1,
-    startTime: "2024-12-10T08:00:00",
-    endTime: "2024-12-10T10:00:00",
-    type: "departure",
-    stops: 0,
-    logo: AirIndia,
-  },
-  {
-    id: "2",
-    flightNumber: "AB456",
-    price: 15000,
-    duration: 2,
-    startTime: "2024-12-10T08:00:00",
-    endTime: "2024-12-10T10:00:00",
-    type: "departure",
-    stops: 2,
-    logo: AirIndia,
-  },
-  {
-    id: "3",
-    flightNumber: "AB123",
-    price: 25000,
-    duration: 1,
-    startTime: "2024-12-10T08:00:00",
-    endTime: "2024-12-10T10:00:00",
-    type: "return",
-    stops: 0,
-    logo: AirIndia,
-  },
-  {
-    id: "4",
-    flightNumber: "AB123",
-    price: 10000,
-    duration: 3,
-    startTime: "2024-12-10T08:00:00",
-    endTime: "2024-12-10T10:00:00",
-    type: "departure",
-    stops: 1,
-    logo: AirIndia,
-  },
-  {
-    id: "5",
-    flightNumber: "AB123",
-    price: 5000,
-    duration: 5,
-    startTime: "2024-12-10T08:00:00",
-    endTime: "2024-12-10T10:00:00",
-    type: "return",
-    stops: 2,
-    logo: AirIndia,
-  },
-  {
-    id: "6",
-    flightNumber: "AB123",
-    price: 12000,
-    duration: 3,
-    startTime: "2024-12-10T08:00:00",
-    endTime: "2024-12-10T10:00:00",
-    type: "return",
-    stops: 1,
-    logo: AirIndia,
-  },
-  {
-    id: "7",
-    flightNumber: "AB124",
-    price: 21000,
-    duration: 2.5,
-    startTime: "2024-12-15T18:00:00",
-    endTime: "2024-12-15T20:30:00",
-    type: "return",
-    stops: 0,
-    logo: AirIndia,
-  },
-] as const;
 
 const FlightListPage: React.FC = () => {
   const [filter, setFilter] = useState<"cheapest" | "fastest">("cheapest");
-  const [selectedStops, setSelectedStops] = useState<number | null>(null); // Null means no stop filter
+  const [selectedStops, setSelectedStops] = useState<number | null>(null);
   const { selectedTrip } = useFlightStore();
 
-  // Count flights for each stop type
   const flightCounts = {
     nonStops: flightData.filter((flight) => flight.stops === 0).length,
     oneStop: flightData.filter((flight) => flight.stops === 1).length,
     moreThanOneStop: flightData.filter((flight) => flight.stops > 1).length,
   };
 
-  // Sorting logic
   const sortedFlights = [...flightData].sort((a, b) => {
-    // Prioritize based on stops filter
     if (selectedStops !== null) {
       if (a.stops === selectedStops && b.stops !== selectedStops) return -1;
       if (b.stops === selectedStops && a.stops !== selectedStops) return 1;
     }
-
-    // Then sort by chosen filter (cheapest or fastest)
     if (filter === "cheapest") return a.price - b.price;
     if (filter === "fastest") return a.duration - b.duration;
-
-    // Finally, sort by stops in ascending order
     return a.stops - b.stops;
   });
 

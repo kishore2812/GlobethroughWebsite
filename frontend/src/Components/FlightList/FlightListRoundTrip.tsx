@@ -1,16 +1,5 @@
 import React from "react";
-
-interface Flight {
-  logo: string;
-  id: string;
-  flightNumber: string;
-  price: number;
-  duration: number;
-  startTime: string;
-  endTime: string;
-  type: "departure" | "return";
-  stops: number;
-}
+import { Flight } from "../../Pages/FlightListPage/flightdata";
 
 interface FlightListRoundTripProps {
   flights: Flight[];
