@@ -7,6 +7,7 @@ interface Flight {
   duration: number;
   startTime: string;
   endTime: string;
+  stops: number;
 }
 
 interface FlightListOneWayProps {
@@ -30,6 +31,7 @@ const FlightListOneWay: React.FC<FlightListOneWayProps> = ({ flights }) => {
           <p>Duration: {flight.duration} hrs</p>
           <p>Start Time: {new Date(flight.startTime).toLocaleTimeString()}</p>
           <p>End Time: {new Date(flight.endTime).toLocaleTimeString()}</p>
+          <p>Stops: {flight.stops}</p>
         </div>
       ))}
     </div>

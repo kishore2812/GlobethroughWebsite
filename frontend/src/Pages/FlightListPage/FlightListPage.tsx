@@ -4,7 +4,6 @@ import FlightListOneWay from "../../Components/FlightList/FlightListOneWay";
 import FlightListRoundTrip from "../../Components/FlightList/FlightListRoundTrip";
 import useFlightStore from "../../Stores/FlightStore";
 
-// Flight Data
 const flightData = [
   {
     id: "1",
@@ -14,6 +13,7 @@ const flightData = [
     startTime: "2024-12-10T08:00:00",
     endTime: "2024-12-10T10:00:00",
     type: "departure",
+    stops: 0,
   },
   {
     id: "2",
@@ -23,6 +23,7 @@ const flightData = [
     startTime: "2024-12-10T08:00:00",
     endTime: "2024-12-10T10:00:00",
     type: "departure",
+    stops: 2,
   },
   {
     id: "3",
@@ -32,6 +33,7 @@ const flightData = [
     startTime: "2024-12-10T08:00:00",
     endTime: "2024-12-10T10:00:00",
     type: "return",
+    stops: 0,
   },
   {
     id: "4",
@@ -41,6 +43,7 @@ const flightData = [
     startTime: "2024-12-10T08:00:00",
     endTime: "2024-12-10T10:00:00",
     type: "departure",
+    stops: 1,
   },
   {
     id: "5",
@@ -50,6 +53,7 @@ const flightData = [
     startTime: "2024-12-10T08:00:00",
     endTime: "2024-12-10T10:00:00",
     type: "return",
+    stops: 2,
   },
   {
     id: "6",
@@ -59,6 +63,7 @@ const flightData = [
     startTime: "2024-12-10T08:00:00",
     endTime: "2024-12-10T10:00:00",
     type: "return",
+    stops: 1,
   },
   {
     id: "7",
@@ -68,37 +73,60 @@ const flightData = [
     startTime: "2024-12-15T18:00:00",
     endTime: "2024-12-15T20:30:00",
     type: "return",
+    stops: 0,
   },
 ] as const;
 
 const FlightListPage: React.FC = () => {
   const [filter, setFilter] = useState<"cheapest" | "fastest">("cheapest");
+  const [selectedStops, setSelectedStops] = useState<number | null>(null); // Null means no stop filter
   const { selectedTrip } = useFlightStore();
 
-  // Filter flights based on the filter
-  const filteredFlights = [...flightData].sort((a, b) => {
+  // Count flights for each stop type
+  const flightCounts = {
+    nonStops: flightData.filter((flight) => flight.stops === 0).length,
+    oneStop: flightData.filter((flight) => flight.stops === 1).length,
+    moreThanOneStop: flightData.filter((flight) => flight.stops > 1).length,
+  };
+
+  // Sorting logic
+  const sortedFlights = [...flightData].sort((a, b) => {
+    // Prioritize based on stops filter
+    if (selectedStops !== null) {
+      if (a.stops === selectedStops && b.stops !== selectedStops) return -1;
+      if (b.stops === selectedStops && a.stops !== selectedStops) return 1;
+    }
+
+    // Then sort by chosen filter (cheapest or fastest)
     if (filter === "cheapest") return a.price - b.price;
     if (filter === "fastest") return a.duration - b.duration;
-    return 0;
+
+    // Finally, sort by stops in ascending order
+    return a.stops - b.stops;
   });
 
   return (
-    <div style={styles.container}>
-      {/* Fixed Filter */}
-      <div style={styles.filterContainer}>
-        <h1>Available Flights</h1>
-        <FlightFilter selectedFilter={filter} onFilterChange={setFilter} />
-      </div>
-
-      {/* Scrollable Flight List */}
-      <div style={styles.flightListContainer}>
-        {selectedTrip === "one-way" ? (
-          <FlightListOneWay
-            flights={filteredFlights.filter((f) => f.type === "departure")}
+    <div>
+      <div style={styles.container}>
+        <div style={styles.filterContainer}>
+          <h1>Available Flights</h1>
+          <FlightFilter
+            selectedFilter={filter}
+            selectedStops={selectedStops}
+            flightCounts={flightCounts}
+            onFilterChange={setFilter}
+            onStopsChange={setSelectedStops}
           />
-        ) : (
-          <FlightListRoundTrip flights={filteredFlights} />
-        )}
+        </div>
+        <div style={styles.flightListContainer}>
+          {selectedTrip === "one-way" ? (
+            <FlightListOneWay
+              flights={sortedFlights.filter((f) => f.type === "departure")}
+            />
+          ) : (
+            <FlightListRoundTrip flights={sortedFlights} />
+          )}
+        </div>
       </div>
     </div>
   );
@@ -108,8 +136,8 @@ const styles = {
   container: {
     display: "flex",
     flexDirection: "column" as const,
-    height: "100vh", // Full screen height
-    overflow: "hidden", // Prevent the entire page from scrolling
+    height: "100vh",
+    overflow: "hidden",
   },
   filterContainer: {
     position: "fixed" as const,
@@ -119,12 +147,12 @@ const styles = {
     backgroundColor: "#fff",
     zIndex: 10,
     padding: "1rem",
-    boxShadow: "0 2px 4px rgba(0,0,0,0.1)", // Subtle shadow for a fixed filter
+    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
   },
   flightListContainer: {
-    marginTop: "160px", // Push the list below the fixed filter
-    height: "calc(100vh - 120px)", // Calculate remaining height for the list
-    overflowY: "auto" as const, // Scrollable flight list
+    marginTop: "160px",
+    height: "calc(100vh - 120px)",
+    overflowY: "auto" as const,
     padding: "1rem",
     backgroundColor: "#f9f9f9",
   },

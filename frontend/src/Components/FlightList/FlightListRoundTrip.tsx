@@ -8,6 +8,7 @@ interface Flight {
   startTime: string;
   endTime: string;
   type: "departure" | "return";
+  stops: number;
 }
 
 interface FlightListRoundTripProps {
@@ -42,6 +43,7 @@ const FlightListRoundTrip: React.FC<FlightListRoundTripProps> = ({
             <p>Duration: {flight.duration} hrs</p>
             <p>Start Time: {new Date(flight.startTime).toLocaleTimeString()}</p>
             <p>End Time: {new Date(flight.endTime).toLocaleTimeString()}</p>
+            <p>Stops: {flight.stops}</p>
           </div>
         ))}
       </div>
@@ -64,6 +66,7 @@ const FlightListRoundTrip: React.FC<FlightListRoundTripProps> = ({
             <p>Duration: {flight.duration} hrs</p>
             <p>Start Time: {new Date(flight.startTime).toLocaleTimeString()}</p>
             <p>End Time: {new Date(flight.endTime).toLocaleTimeString()}</p>
+            <p>Stops: {flight.stops}</p>
           </div>
         ))}
       </div>
