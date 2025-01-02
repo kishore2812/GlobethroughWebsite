@@ -7,6 +7,7 @@ import useFlightStore from "../../Stores/FlightStore";
 import Header from "../../Components/Header/Header"; // Import the Header component
 import { FaArrowRight } from "react-icons/fa"; // Import FaArrowRight
 import "./FlightListPage.scss"; // Import the SCSS file for styles
+import { CiEdit } from "react-icons/ci";
 
 const FlightListPage: React.FC = () => {
   const [filter, setFilter] = useState<"cheapest" | "fastest">("cheapest");
@@ -81,6 +82,7 @@ const FlightListPage: React.FC = () => {
           </span>
           <span>{totalTravelers} Travelers .</span>
           <span>{selectedClass}</span>
+          <CiEdit size={18} />
         </div>
       </div>
       {/* Main Content Section */}
