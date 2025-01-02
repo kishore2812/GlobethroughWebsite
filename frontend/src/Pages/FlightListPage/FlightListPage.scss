@@ -1,6 +1,4 @@
-// FlightListPage.scss
-
-.container {
+.flightListPage-container {
   display: flex;
   flex-direction: column;
   height: 100vh; // Full screen height
@@ -11,54 +9,51 @@
     #f2f2f2 50%
   ); // 50% split color background
 
-  .mainContent {
+  .flightListPage-mainContent {
     padding: 0px 100px;
     display: flex;
     flex-direction: row; // Create a horizontal layout
     margin-top: 20px; // Adjust margin to prevent overlap with the header
     height: calc(100vh - 120px); // Ensure this takes full height minus header
 
-    .filterContainer {
-      width: 20%; // Set the filter width to 25% of the screen
-      padding: 1rem;
-      border-right: 1px solid #ddd;
+    .flightListPage-filterContainer {
+      width: 25%; // Set the filter width to 25% of the screen
       height: 100%;
       overflow-y: auto;
     }
 
-    .flightListContainer {
+    .flightListPage-flightListContainer {
       width: 75%; // Set the flight list width to 75% of the screen
-      padding: 1rem;
+      padding: 0px 2rem;
       height: 100%;
       overflow-y: auto;
     }
   }
 
-  .infoContainer {
+  .flightListPage-infoContainer {
     width: 20%; // Match the width of the filterContainer
     color: white;
     padding: 20px 100px;
-    margin-bottom: 20px; // Spacing between info and content
     display: flex;
     flex-direction: column;
 
-    .airportInfo {
+    .flightListPage-airportInfo {
       display: flex;
       justify-content: space-between;
       align-items: center;
 
-      .fromAirport,
-      .toAirport {
+      .flightListPage-fromAirport,
+      .flightListPage-toAirport {
         font-size: 16px; // Smaller size for city name
         display: block;
       }
 
-      .iataCode {
+      .flightListPage-iataCode {
         font-size: 18px; // Larger size for IATA code
         font-weight: bold;
       }
 
-      .arrow {
+      .flightListPage-arrow {
         font-size: 18px; // Arrow size
         display: flex;
         justify-content: center;
@@ -66,7 +61,7 @@
       }
     }
 
-    .detailsRow {
+    .flightListPage-detailsRow {
       color: white;
       display: flex;
       justify-content: space-between;

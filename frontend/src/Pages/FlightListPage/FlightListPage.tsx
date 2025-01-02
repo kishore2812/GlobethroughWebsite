@@ -28,13 +28,6 @@ const FlightListPage: React.FC = () => {
   // Calculate total travelers by summing adults, children, and infants
   const totalTravelers = adults + children + infants;
 
-  // Flight counts for the filter component
-  const flightCounts = {
-    nonStops: flightData.filter((flight) => flight.stops === 0).length,
-    oneStop: flightData.filter((flight) => flight.stops === 1).length,
-    moreThanOneStop: flightData.filter((flight) => flight.stops > 1).length,
-  };
-
   const sortedFlights = [...flightData].sort((a, b) => {
     if (selectedStops !== null) {
       if (a.stops === selectedStops && b.stops !== selectedStops) return -1;
@@ -45,31 +38,37 @@ const FlightListPage: React.FC = () => {
     return a.stops - b.stops;
   });
 
+  // Function to reset filters
+  const resetFilters = () => {
+    setFilter("cheapest"); // Reset to default filter (cheapest)
+    setSelectedStops(null); // Clear selected stops
+  };
+
   return (
-    <div className="container">
+    <div className="flightListPage-container">
       <Header /> {/* Render Header at the top */}
       {/* Section Below the Header for Airport Info */}
-      <div className="infoContainer">
-        <div className="airportInfo">
-          <div className="fromAirport">
-            <span className="iataCode">
+      <div className="flightListPage-infoContainer">
+        <div className="flightListPage-airportInfo">
+          <div className="flightListPage-fromAirport">
+            <span className="flightListPage-iataCode">
               {fromAirport?.IATA}, {}
             </span>
-            <span className="cityName">{fromAirport?.City}</span>
+            <span className="flightListPage-cityName">{fromAirport?.City}</span>
           </div>
-          <div className="arrow">
+          <div className="flightListPage-arrow">
             <FaArrowRight /> {/* Using FaArrowRight icon */}
           </div>
-          <div className="toAirport">
-            <span className="iataCode">
+          <div className="flightListPage-toAirport">
+            <span className="flightListPage-iataCode">
               {toAirport?.IATA}, {}
             </span>
-            <span className="cityName">{toAirport?.City}</span>
+            <span className="flightListPage-cityName">{toAirport?.City}</span>
           </div>
         </div>
 
         {/* Departure Date, Travelers, and Selected Class in a Single Row */}
-        <div className="detailsRow">
+        <div className="flightListPage-detailsRow">
           <span>
             {departureDate
               ? new Date(departureDate).toLocaleDateString("en-US", {
@@ -86,20 +85,21 @@ const FlightListPage: React.FC = () => {
         </div>
       </div>
       {/* Main Content Section */}
-      <div className="mainContent">
+      <div className="flightListPage-mainContent">
         {/* Filter Component on the Left */}
-        <div className="filterContainer">
+        <div className="flightListPage-filterContainer">
           <FlightFilter
             selectedFilter={filter}
             selectedStops={selectedStops}
-            flightCounts={flightCounts}
+            flightData={flightData}
             onFilterChange={setFilter}
             onStopsChange={setSelectedStops}
+            onResetFilters={resetFilters}
           />
         </div>
 
         {/* Flight List Component on the Right */}
-        <div className="flightListContainer">
+        <div className="flightListPage-flightListContainer">
           {selectedTrip === "one-way" ? (
             <FlightListOneWay
               flights={sortedFlights.filter((f) => f.type === "departure")}

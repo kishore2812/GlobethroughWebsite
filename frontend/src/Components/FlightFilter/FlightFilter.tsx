@@ -1,45 +1,82 @@
+// FlightFilter.tsx
+
 import React from "react";
+import useFlightStore from "../../Stores/FlightStore"; // Import Zustand store
+import "./FlightFilter.scss"; // Import styles
 
 interface FlightFilterProps {
   selectedFilter: "cheapest" | "fastest";
   selectedStops: number | null;
-  flightCounts: { nonStops: number; oneStop: number; moreThanOneStop: number };
+  flightData: {
+    type: "departure" | "return";
+    price: number;
+    duration: number;
+  }[]; // Assuming flightData has type "departure" or "return"
   onFilterChange: (filter: "cheapest" | "fastest") => void;
   onStopsChange: (stops: number | null) => void;
+  onResetFilters: () => void; // Add reset filters function
 }
 
 const FlightFilter: React.FC<FlightFilterProps> = ({
   selectedFilter,
   selectedStops,
-
+  flightData,
   onFilterChange,
   onStopsChange,
+  onResetFilters,
 }) => {
+  // Access selectedTrip from Zustand store
+  const selectedTrip = useFlightStore((state) => state.selectedTrip);
+
+  // Calculate total flight count based on trip type and flight data
+  const calculateFlightCount = () => {
+    let totalFlights = 0;
+
+    if (selectedTrip === "one-way") {
+      // For one-way trips, count only departure flights
+      totalFlights = flightData.filter(
+        (flight) => flight.type === "departure"
+      ).length;
+    } else if (selectedTrip === "round-trip") {
+      // For round-trip, count both departure and return flights
+      totalFlights =
+        flightData.filter((flight) => flight.type === "departure").length +
+        flightData.filter((flight) => flight.type === "return").length;
+    }
+
+    return totalFlights;
+  };
+
+  const totalFlights = calculateFlightCount();
+
   return (
-    <div>
-      <h2>Filter Options</h2>
+    <div className="flightListFilter-filterCard">
+      <h2 className="flightListFilter-filterHeading">Filters</h2>
 
-      {/* Cheapest and Fastest */}
-      <button
-        style={{
-          backgroundColor: selectedFilter === "cheapest" ? "blue" : "white",
-        }}
-        onClick={() => onFilterChange("cheapest")}
-      >
-        Cheapest
-      </button>
-      <button
-        style={{
-          backgroundColor: selectedFilter === "fastest" ? "blue" : "white",
-        }}
-        onClick={() => onFilterChange("fastest")}
-      >
-        Fastest
-      </button>
+      {/* Flight Count Section */}
+      <div className="flightListFilter-flightCount">
+        <p>Showing {totalFlights} flights</p>
+      </div>
 
-      {/* Stops Filter */}
-      <h3>Stops</h3>
-      <div>
+      {/* Cheapest and Fastest Buttons */}
+      <div className="flightListFilter-filterButtons">
+        <button
+          className={selectedFilter === "cheapest" ? "selected" : ""}
+          onClick={() => onFilterChange("cheapest")}
+        >
+          Cheapest
+        </button>
+        <button
+          className={selectedFilter === "fastest" ? "selected" : ""}
+          onClick={() => onFilterChange("fastest")}
+        >
+          Fastest
+        </button>
+      </div>
+
+      {/* Stops Filter Section */}
+      <div className="flightListFilter-stopsFilter">
+        <h3>Stops</h3>
         <label>
           <input
             type="checkbox"
@@ -62,8 +99,18 @@ const FlightFilter: React.FC<FlightFilterProps> = ({
             checked={selectedStops === 2}
             onChange={() => onStopsChange(selectedStops === 2 ? null : 2)}
           />
-          More than 1 Stop
+          More than 1
         </label>
+      </div>
+
+      {/* Reset Filters Button */}
+      <div className="flightListFilter-resetfilterbutton">
+        <button
+          className="flightListFilter-resetFilters"
+          onClick={onResetFilters}
+        >
+          Reset Filters
+        </button>
       </div>
     </div>
   );
