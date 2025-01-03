@@ -41,16 +41,6 @@ const AddSubUsersPage: React.FC = () => {
       return "Please enter a valid phone number.";
     }
 
-    // Check if email is already in use (example logic)
-    if (formData.email === "already@taken.com") {
-      return "This email is already taken. Please use a different one.";
-    }
-
-    // Check if phone is already in use (example logic)
-    if (formData.phone === "1234567890") {
-      return "This phone number is already taken. Please use a different one.";
-    }
-
     return null; // Return null if everything is valid
   };
 

@@ -2,6 +2,7 @@
 const SubUser = require("../models/subUser");
 const nodemailer = require("nodemailer");
 require("dotenv").config();
+const User = require("../models/User");
 
 const transporter = nodemailer.createTransport({
   service: process.env.EMAIL_SERVICE, // e.g., "gmail"
@@ -36,6 +37,16 @@ async function createSubUser(
   phone
 ) {
   try {
+    // Check if the email is the same as the parent user's email
+    const parentUser = await User.findById(parentUserId); // Ensure User is imported
+    if (!parentUser) {
+      throw new Error("Parent user not found.");
+    }
+
+    if (parentUser.email === email) {
+      throw new Error("You cannot use your own email to create a subuser.");
+    }
+
     const subUser = new SubUser({
       firstName,
       lastName,
