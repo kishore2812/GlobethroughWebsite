@@ -19,12 +19,11 @@
       align-items: left;
       flex-direction: column;
       justify-content: center;
-
       gap: 5px;
 
       .flightListOneWay__logo {
-        width: 70px;
-        height: 20px;
+        width: 120px;
+        height: 30px;
         object-fit: contain;
       }
       .flightListOneWay__flightNumberContainer {
@@ -32,7 +31,7 @@
         align-items: center;
         text-align: center;
         justify-content: center;
-        width: 70px;
+        width: 120px;
 
         .flightListOneWay__flightNumber {
           font-size: 1rem;
@@ -40,15 +39,19 @@
         }
       }
       .flightListOneWay__tag {
+        border-top-left-radius: 2px;
+        border-top-right-radius: 7px;
+        border-bottom-right-radius: 2px;
+        border-bottom-left-radius: 7px;
         position: absolute;
-        top: 10px;
-        right: 10px;
-        background-color: #ff9800;
+        top: 2px;
+        right: 2px;
+        background-color: #0b3e36;
         color: white;
-        padding: 0.2rem 0.6rem;
-        font-size: 0.8rem;
-        border-radius: 5px;
-        font-weight: bold;
+        padding: 0.5rem 2rem;
+        font-size: 14px;
+
+        font-weight: 500;
       }
     }
     .flightListOneWay__row {
@@ -68,17 +71,34 @@
         font-size: 1rem;
         font-weight: bold;
         margin-bottom: 0.5rem;
+        display: flex;
+        gap: 0.3rem; // Add space between the two formats
+
+        .time24Hour {
+          color: black; // Style for 24-hour format
+          font-weight: 700;
+          font-size: 18px;
+        }
+
+        .time12Hour {
+          color: black; // Style for 12-hour format (you can adjust this color)
+          font-size: 14px;
+          opacity: 0.7;
+          font-weight: 700;
+          line-height: 20px;
+        }
       }
 
       .flightListOneWay__location {
-        font-size: 0.9rem;
-        color: #666;
+        font-size: 14px;
+        color: black;
+        font-weight: 500;
       }
 
       .flightListOneWay__duration,
       .flightListOneWay__stops {
-        font-size: 0.9rem;
-        color: #333;
+        font-size: 14px;
+        color: black;
       }
 
       .flightListOneWay__duration {
@@ -93,36 +113,37 @@
         align-items: center;
         justify-content: center;
         width: 60%;
-        margin: 0.1rem 0;
+        margin: 0.2rem 0;
       }
       .flightListOneWay__line {
         flex-grow: 1;
         height: 1px;
-        background-color: #333;
+        background-color: #c8c8c8;
       }
 
       .flightListOneWay__airplaneIcon {
         font-size: 0.8rem;
-        color: #333;
+        color: #c8c8c8;
         margin: 0 0.3rem; /* Adjust spacing around the icon */
       }
 
       .flightListOneWay__price {
         font-size: 1.2rem;
-        font-weight: bold;
-        color: #4caf50;
+        font-weight: 700;
+        color: black;
         margin-bottom: 0.5rem;
       }
     }
 
     .flightListOneWay__bookNow {
-      background-color: #4caf50;
+      background-color: #0b3e36;
       color: #fff;
       border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 5px;
+      padding: 0.5rem 1.5rem;
+      border-radius: 3px;
       cursor: pointer;
-      font-size: 0.9rem;
+      font-size: 14px;
+      font-weight: 500;
     }
   }
 

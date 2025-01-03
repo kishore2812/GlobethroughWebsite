@@ -28,7 +28,7 @@ const FlightListOneWay: React.FC<FlightListOneWayProps> = ({ flights }) => {
 
   const formatTime = (time: string | number) => {
     const date = new Date(time);
-    const options: Intl.DateTimeFormatOptions = {
+    const options24Hour: Intl.DateTimeFormatOptions = {
       hour: "2-digit",
       minute: "2-digit",
       hour12: false,
@@ -38,10 +38,14 @@ const FlightListOneWay: React.FC<FlightListOneWayProps> = ({ flights }) => {
       minute: "2-digit",
       hour12: true,
     };
-    return `${date.toLocaleTimeString([], options)} (${date.toLocaleTimeString(
-      [],
-      options12Hour
-    )})`;
+
+    const formattedTime24 = date.toLocaleTimeString([], options24Hour);
+    const formattedTime12 = date.toLocaleTimeString([], options12Hour);
+
+    return {
+      time24: formattedTime24,
+      time12: formattedTime12,
+    };
   };
 
   return (
@@ -80,8 +84,14 @@ const FlightListOneWay: React.FC<FlightListOneWayProps> = ({ flights }) => {
           <div className="flightListOneWay__row">
             <div className="flightListOneWay__column">
               <div className="flightListOneWay__time">
-                {formatTime(flight.startTime)}
+                <span className="time24Hour">
+                  {formatTime(flight.startTime).time24}
+                </span>
+                <span className="time12Hour">
+                  ({formatTime(flight.startTime).time12})
+                </span>
               </div>
+
               <div className="flightListOneWay__location">
                 {fromAirport?.City}, {fromAirport?.IATA}
               </div>
@@ -101,8 +111,14 @@ const FlightListOneWay: React.FC<FlightListOneWayProps> = ({ flights }) => {
             </div>
             <div className="flightListOneWay__column">
               <div className="flightListOneWay__time">
-                {formatTime(flight.endTime)}
+                <span className="time24Hour">
+                  {formatTime(flight.endTime).time24}
+                </span>
+                <span className="time12Hour">
+                  ({formatTime(flight.endTime).time12})
+                </span>
               </div>
+
               <div className="flightListOneWay__location">
                 {toAirport?.City}, {toAirport?.IATA}
               </div>
