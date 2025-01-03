@@ -8,6 +8,7 @@ import Header from "../../Components/Header/Header"; // Import the Header compon
 import { FaArrowRight } from "react-icons/fa"; // Import FaArrowRight
 import "./FlightListPage.scss"; // Import the SCSS file for styles
 import { CiEdit } from "react-icons/ci";
+import { useNavigate } from "react-router-dom";
 
 const FlightListPage: React.FC = () => {
   const [filter, setFilter] = useState<"cheapest" | "fastest">("cheapest");
@@ -24,6 +25,8 @@ const FlightListPage: React.FC = () => {
     adults,
     selectedClass,
   } = useFlightStore();
+
+  const navigate = useNavigate();
 
   // Calculate total travelers by summing adults, children, and infants
   const totalTravelers = adults + children + infants;
@@ -42,6 +45,9 @@ const FlightListPage: React.FC = () => {
   const resetFilters = () => {
     setFilter("cheapest"); // Reset to default filter (cheapest)
     setSelectedStops(null); // Clear selected stops
+  };
+  const handleClick = () => {
+    navigate("/homepage");
   };
 
   return (
@@ -81,7 +87,9 @@ const FlightListPage: React.FC = () => {
           </span>
           <span>{totalTravelers} Travelers .</span>
           <span>{selectedClass}</span>
-          <CiEdit size={18} />
+          <div onClick={handleClick} style={{ cursor: "pointer" }}>
+            <CiEdit size={18} />
+          </div>
         </div>
       </div>
       {/* Main Content Section */}

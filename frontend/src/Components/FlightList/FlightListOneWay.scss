@@ -22,8 +22,9 @@
       gap: 5px;
 
       .flightListOneWay__logo {
-        width: 120px;
-        height: 30px;
+        width: 100px;
+        height: 25px;
+        margin-bottom: 2px;
         object-fit: contain;
       }
       .flightListOneWay__flightNumberContainer {
@@ -31,11 +32,11 @@
         align-items: center;
         text-align: center;
         justify-content: center;
-        width: 120px;
+        width: 100px;
 
         .flightListOneWay__flightNumber {
-          font-size: 1rem;
-          font-weight: bold;
+          font-size: 14px;
+          font-weight: 500;
         }
       }
       .flightListOneWay__tag {
@@ -50,7 +51,6 @@
         color: white;
         padding: 0.5rem 2rem;
         font-size: 14px;
-
         font-weight: 500;
       }
     }
