@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { Flight } from "../Pages/FlightListPage/flightdata";
 
 type TripType = "one-way" | "round-trip";
 
@@ -29,6 +30,12 @@ interface FlightStore {
   selectedClass: string;
   fromAirport: Airport | null;
   toAirport: Airport | null;
+  selectedFlight: Flight | null;
+  selectedDeparture: Flight | null;
+  selectedReturn: Flight | null;
+  setSelectedDeparture: (flight: Flight | null) => void;
+  setSelectedReturn: (flight: Flight | null) => void;
+  setSelectedFlight: (flight: Flight | null) => void;
   setSelectedTrip: (tripType: TripType) => void;
   setDepartureDate: (date: string | null) => void;
   setReturnDate: (date: string | null) => void;
@@ -52,6 +59,13 @@ const useFlightStore = create<FlightStore>((set) => ({
   selectedClass: "",
   fromAirport: null,
   toAirport: null,
+  selectedFlight: null,
+  selectedDeparture: null,
+  selectedReturn: null,
+  setSelectedDeparture: (flight: Flight | null) =>
+    set({ selectedDeparture: flight }),
+  setSelectedReturn: (flight: Flight | null) => set({ selectedReturn: flight }),
+  setSelectedFlight: (flight: Flight | null) => set({ selectedFlight: flight }),
   setSelectedTrip: (tripType) => set({ selectedTrip: tripType }),
   setDepartureDate: (date) => set({ departureDate: date }),
   setReturnDate: (date) => set({ returnDate: date }),

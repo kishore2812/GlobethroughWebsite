@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Flight } from "../../Pages/FlightListPage/flightdata";
 import useFlightStore from "../../Stores/FlightStore";
@@ -13,11 +13,9 @@ const FlightListRoundTrip: React.FC<FlightListRoundTripProps> = ({
   flights,
 }) => {
   const navigate = useNavigate();
-  const { fromAirport, toAirport } = useFlightStore();
-  const [selectedDeparture, setSelectedDeparture] = useState<Flight | null>(
-    null
-  );
-  const [selectedReturn, setSelectedReturn] = useState<Flight | null>(null);
+  const { fromAirport, toAirport, setSelectedDeparture, setSelectedReturn } =
+    useFlightStore();
+  const { selectedDeparture, selectedReturn } = useFlightStore();
 
   // Filter flights by type
   const departureFlights = flights.filter(
@@ -65,11 +63,13 @@ const FlightListRoundTrip: React.FC<FlightListRoundTripProps> = ({
       className={`Flight_list_round_trip__flight-card ${
         isSelected ? "selected" : ""
       }`}
-      onClick={() =>
-        type === "departure"
-          ? setSelectedDeparture(flight)
-          : setSelectedReturn(flight)
-      }
+      onClick={() => {
+        if (type === "departure") {
+          setSelectedDeparture(flight); // Store in Zustand
+        } else {
+          setSelectedReturn(flight); // Store in Zustand
+        }
+      }}
     >
       {/* Labels */}
       {type === "departure" && flight.id === fastestDepartureFlightId && (

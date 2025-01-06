@@ -1,90 +1,91 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
-import { Flight } from "../../Pages/FlightListPage/flightdata";
 import useFlightStore from "../../Stores/FlightStore"; // Import Zustand store
 
-interface TicketDetailState {
-  flight?: Flight; // For one-way
-  departureFlight?: Flight; // For roundtrip
-  returnFlight?: Flight; // For roundtrip
-}
-
 const TicketDetailPage: React.FC = () => {
-  const location = useLocation();
-  const state = location.state as TicketDetailState;
+  // Retrieve flight details directly from Zustand store
+  const selectedFlight = useFlightStore((state) => state.selectedFlight); // For one-way
+  const selectedDeparture = useFlightStore((state) => state.selectedDeparture); // For round-trip
+  const selectedReturn = useFlightStore((state) => state.selectedReturn); // For round-trip
+  const selectedTrip =
+    selectedDeparture && selectedReturn ? "round-trip" : "one-way"; // Determine trip type
 
-  const tripType = useFlightStore((state) => state.selectedTrip);
-
+  // If no flight data is available, show a message
   if (
-    !state ||
-    (!state.flight && (!state.departureFlight || !state.returnFlight))
+    (selectedTrip === "one-way" && !selectedFlight) ||
+    (selectedTrip === "round-trip" && (!selectedDeparture || !selectedReturn))
   ) {
     return <p>No flight details available!</p>;
   }
 
-  const { flight, departureFlight, returnFlight } = state;
-
   return (
     <div style={{ padding: "2rem" }}>
       <h1>Ticket Details</h1>
-      <h2>Trip Type: {tripType === "one-way" ? "One Way" : "Round Trip"}</h2>
+      <h2>
+        Trip Type: {selectedTrip === "one-way" ? "One Way" : "Round Trip"}
+      </h2>
 
-      {tripType === "one-way" && flight && (
+      {selectedTrip === "one-way" && selectedFlight && (
         <div>
           <h2>Flight Details</h2>
           <img
-            src={flight.logo}
-            alt={flight.flightNumber}
+            src={selectedFlight.logo}
+            alt={selectedFlight.flightNumber}
             style={{ width: "100px" }}
           />
-          <p>Flight: {flight.flightNumber}</p>
-          <p>Price: ₹{flight.price}</p>
-          <p>Duration: {flight.duration} hrs</p>
-          <p>Start Time: {new Date(flight.startTime).toLocaleTimeString()}</p>
-          <p>End Time: {new Date(flight.endTime).toLocaleTimeString()}</p>
-          <p>Stops: {flight.stops}</p>
+          <p>Flight: {selectedFlight.flightNumber}</p>
+          <p>Price: ₹{selectedFlight.price}</p>
+          <p>Duration: {selectedFlight.duration} hrs</p>
+          <p>
+            Start Time:{" "}
+            {new Date(selectedFlight.startTime).toLocaleTimeString()}
+          </p>
+          <p>
+            End Time: {new Date(selectedFlight.endTime).toLocaleTimeString()}
+          </p>
+          <p>Stops: {selectedFlight.stops}</p>
         </div>
       )}
 
-      {tripType === "round-trip" && departureFlight && returnFlight && (
+      {selectedTrip === "round-trip" && selectedDeparture && selectedReturn && (
         <>
           <div>
             <h2>Departure Flight Details</h2>
             <img
-              src={departureFlight.logo}
-              alt={departureFlight.flightNumber}
+              src={selectedDeparture.logo}
+              alt={selectedDeparture.flightNumber}
               style={{ width: "100px" }}
             />
-            <p>Flight: {departureFlight.flightNumber}</p>
-            <p>Price: ₹{departureFlight.price}</p>
-            <p>Duration: {departureFlight.duration} hrs</p>
+            <p>Flight: {selectedDeparture.flightNumber}</p>
+            <p>Price: ₹{selectedDeparture.price}</p>
+            <p>Duration: {selectedDeparture.duration} hrs</p>
             <p>
               Start Time:{" "}
-              {new Date(departureFlight.startTime).toLocaleTimeString()}
+              {new Date(selectedDeparture.startTime).toLocaleTimeString()}
             </p>
             <p>
-              End Time: {new Date(departureFlight.endTime).toLocaleTimeString()}
+              End Time:{" "}
+              {new Date(selectedDeparture.endTime).toLocaleTimeString()}
             </p>
-            <p>Stops: {departureFlight.stops}</p>
+            <p>Stops: {selectedDeparture.stops}</p>
           </div>
           <div>
             <h2>Return Flight Details</h2>
             <img
-              src={returnFlight.logo}
-              alt={returnFlight.flightNumber}
+              src={selectedReturn.logo}
+              alt={selectedReturn.flightNumber}
               style={{ width: "100px" }}
             />
-            <p>Flight: {returnFlight.flightNumber}</p>
-            <p>Price: ₹{returnFlight.price}</p>
-            <p>Duration: {returnFlight.duration} hrs</p>
+            <p>Flight: {selectedReturn.flightNumber}</p>
+            <p>Price: ₹{selectedReturn.price}</p>
+            <p>Duration: {selectedReturn.duration} hrs</p>
             <p>
               Start Time:{" "}
-              {new Date(returnFlight.startTime).toLocaleTimeString()}
+              {new Date(selectedReturn.startTime).toLocaleTimeString()}
             </p>
             <p>
-              End Time: {new Date(returnFlight.endTime).toLocaleTimeString()}
+              End Time: {new Date(selectedReturn.endTime).toLocaleTimeString()}
             </p>
-            <p>Stops: {returnFlight.stops}</p>
+            <p>Stops: {selectedReturn.stops}</p>
           </div>
         </>
       )}

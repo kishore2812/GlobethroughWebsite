@@ -1,8 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Flight } from "../../Pages/FlightListPage/flightdata";
-import useFlightStore from "../../Stores/FlightStore";
-import { IoAirplaneSharp } from "react-icons/io5"; // Import the airplane icon
+import useFlightStore from "../../Stores/FlightStore"; // Import your Zustand store
+import { IoAirplaneSharp } from "react-icons/io5";
 import "./FlightListOneWay.scss";
 
 interface FlightListOneWayProps {
@@ -12,6 +12,9 @@ interface FlightListOneWayProps {
 const FlightListOneWay: React.FC<FlightListOneWayProps> = ({ flights }) => {
   const navigate = useNavigate();
   const { fromAirport, toAirport } = useFlightStore();
+
+  // Select flight from Zustand store
+  const { setSelectedFlight } = useFlightStore();
 
   // Find the cheapest and fastest flight
   const cheapestFlight = flights.reduce((prev, curr) =>
@@ -23,6 +26,8 @@ const FlightListOneWay: React.FC<FlightListOneWayProps> = ({ flights }) => {
   );
 
   const handleBookNow = (flight: Flight) => {
+    // Save the selected flight to Zustand
+    setSelectedFlight(flight);
     navigate("/ticket-detail", { state: { flight } });
   };
 
