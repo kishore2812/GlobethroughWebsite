@@ -149,7 +149,12 @@
       }
     }
   }
+}
+.flightListOneWay__Extra {
+  padding-bottom: 200px;
+}
 
+.Flight_list_round_trip__flight-bottom-modal-container {
   .Flight_list_round_trip__flight-bottom-modal {
     display: flex;
     justify-content: space-between;
@@ -188,7 +193,4 @@
       }
     }
   }
-}
-.flightListOneWay__Extra {
-  padding-bottom: 200px;
 }

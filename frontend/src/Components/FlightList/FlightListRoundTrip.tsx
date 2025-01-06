@@ -184,8 +184,10 @@ const FlightListRoundTrip: React.FC<FlightListRoundTripProps> = ({
             renderFlightCard(flight, selectedReturn?.id === flight.id, "return")
           )}
         </div>
+      </div>
 
-        {/* Bottom Modal */}
+      {/* Bottom Modal */}
+      <div className="Flight_list_round_trip__flight-bottom-modal-container">
         <div className="Flight_list_round_trip__flight-bottom-modal">
           <div>
             <span>
@@ -199,8 +201,8 @@ const FlightListRoundTrip: React.FC<FlightListRoundTripProps> = ({
           </div>
           <button onClick={handleBookNow}>Book Now</button>
         </div>
+        <div className="flightListOneWay__Extra"></div>
       </div>
-      <div className="flightListOneWay__Extra"></div>
     </div>
   );
 };
