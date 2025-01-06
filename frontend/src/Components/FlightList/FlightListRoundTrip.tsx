@@ -117,7 +117,9 @@ const FlightListRoundTrip: React.FC<FlightListRoundTripProps> = ({
           </p>
 
           <p>
-            {fromAirport?.City} ({fromAirport?.IATA})
+            <span className="Flight_list_round_trip__Airportdetails">
+              {fromAirport?.City}, {fromAirport?.IATA}
+            </span>
           </p>
         </div>
         <div className="Flight_list_round_trip__duration-stops">
@@ -149,7 +151,9 @@ const FlightListRoundTrip: React.FC<FlightListRoundTripProps> = ({
             </span>
           </p>
           <p>
-            {toAirport?.City} ({toAirport?.IATA})
+            <span className="Flight_list_round_trip__Airportdetails">
+              {toAirport?.City}, {toAirport?.IATA}
+            </span>
           </p>
         </div>
       </div>
@@ -157,37 +161,39 @@ const FlightListRoundTrip: React.FC<FlightListRoundTripProps> = ({
   );
 
   return (
-    <div className="Flight_list_round_trip">
-      <div className="Flight_list_round_trip__flight-section">
-        {departureFlights.map((flight) =>
-          renderFlightCard(
-            flight,
-            selectedDeparture?.id === flight.id,
-            "departure"
-          )
-        )}
-      </div>
-      <div className="Flight_list_round_trip__flight-section">
-        {returnFlights.map((flight) =>
-          renderFlightCard(flight, selectedReturn?.id === flight.id, "return")
-        )}
-      </div>
-
-      {/* Bottom Modal */}
-
-      <div className="Flight_list_round_trip__flight-bottom-modal">
-        <div>
-          <span>
-            Selected Departure:{" "}
-            {selectedDeparture ? selectedDeparture.flightNumber : "None"}
-          </span>
-          <span>
-            Selected Return:{" "}
-            {selectedReturn ? selectedReturn.flightNumber : "None"}
-          </span>
+    <div>
+      <div className="Flight_list_round_trip">
+        <div className="Flight_list_round_trip__flight-section">
+          {departureFlights.map((flight) =>
+            renderFlightCard(
+              flight,
+              selectedDeparture?.id === flight.id,
+              "departure"
+            )
+          )}
         </div>
-        <button onClick={handleBookNow}>Book Now</button>
+        <div className="Flight_list_round_trip__flight-section">
+          {returnFlights.map((flight) =>
+            renderFlightCard(flight, selectedReturn?.id === flight.id, "return")
+          )}
+        </div>
+
+        {/* Bottom Modal */}
+        <div className="Flight_list_round_trip__flight-bottom-modal">
+          <div>
+            <span>
+              Selected Departure:{" "}
+              {selectedDeparture ? selectedDeparture.flightNumber : "None"}
+            </span>
+            <span>
+              Selected Return:{" "}
+              {selectedReturn ? selectedReturn.flightNumber : "None"}
+            </span>
+          </div>
+          <button onClick={handleBookNow}>Book Now</button>
+        </div>
       </div>
+      <div className="flightListOneWay__Extra"></div>
     </div>
   );
 };
