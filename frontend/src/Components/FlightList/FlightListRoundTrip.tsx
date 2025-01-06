@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Flight } from "../../Pages/FlightListPage/flightdata";
 import useFlightStore from "../../Stores/FlightStore";
 import "./FlightListRoundTrip.scss";
+import { IoAirplaneSharp } from "react-icons/io5";
 
 interface FlightListRoundTripProps {
   flights: Flight[];
@@ -115,6 +116,11 @@ const FlightListRoundTrip: React.FC<FlightListRoundTripProps> = ({
         </div>
         <div className="Flight_list_round_trip__duration-stops">
           <p>{flight.duration} hrs</p>
+          <div className="Flight_list_round_trip__lineWithIcon">
+            <div className="Flight_list_round_trip__line"></div>
+            <IoAirplaneSharp className="Flight_list_round_trip__airplaneIcon" />
+            <div className="Flight_list_round_trip__line"></div>
+          </div>
           <p>
             {flight.stops} {flight.stops === 1 ? "Stop" : "Stops"}
           </p>
@@ -142,7 +148,6 @@ const FlightListRoundTrip: React.FC<FlightListRoundTripProps> = ({
   return (
     <div className="Flight_list_round_trip">
       <div className="Flight_list_round_trip__flight-section">
-        <h2>Departure Flights</h2>
         {departureFlights.map((flight) =>
           renderFlightCard(
             flight,
@@ -152,23 +157,23 @@ const FlightListRoundTrip: React.FC<FlightListRoundTripProps> = ({
         )}
       </div>
       <div className="Flight_list_round_trip__flight-section">
-        <h2>Return Flights</h2>
         {returnFlights.map((flight) =>
           renderFlightCard(flight, selectedReturn?.id === flight.id, "return")
         )}
       </div>
 
       {/* Bottom Modal */}
+
       <div className="Flight_list_round_trip__flight-bottom-modal">
         <div>
-          <p>
+          <span>
             Selected Departure:{" "}
             {selectedDeparture ? selectedDeparture.flightNumber : "None"}
-          </p>
-          <p>
+          </span>
+          <span>
             Selected Return:{" "}
             {selectedReturn ? selectedReturn.flightNumber : "None"}
-          </p>
+          </span>
         </div>
         <button onClick={handleBookNow}>Book Now</button>
       </div>
