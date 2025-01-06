@@ -89,7 +89,9 @@ const FlightListRoundTrip: React.FC<FlightListRoundTripProps> = ({
       <div className="Flight_list_round_trip__flight-row">
         <div className="Flight_list_round_trip__flight-logo">
           <img src={flight.logo} alt={flight.flightNumber} />
-          <p>{flight.flightNumber}</p>
+          <span className="Flight_list_round_trip__flightNumber">
+            <p>{flight.flightNumber}</p>
+          </span>
         </div>
         <div className="Flight_list_round_trip__flight-price">
           ₹{flight.price}

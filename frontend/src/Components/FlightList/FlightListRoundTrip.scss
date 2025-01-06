@@ -123,6 +123,9 @@
           flex-direction: column;
           align-items: center;
 
+          .Flight_list_round_trip__flightNumber {
+            font-weight: 400;
+          }
           img {
             width: 70px;
             height: 20px;
