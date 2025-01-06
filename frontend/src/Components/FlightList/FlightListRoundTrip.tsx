@@ -109,16 +109,17 @@ const FlightListRoundTrip: React.FC<FlightListRoundTripProps> = ({
       <div
         style={{
           position: "fixed",
-          bottom: "0",
-          left: "0",
-          right: "0",
+          bottom: "0px",
+          left: "100px",
+          right: "100px",
           backgroundColor: "#fff",
-          padding: "1rem",
+          padding: "0px 20px",
           borderTop: "1px solid #ccc",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
           boxShadow: "0 -2px 5px rgba(0,0,0,0.1)",
+          borderRadius: "10px",
         }}
       >
         <div>
