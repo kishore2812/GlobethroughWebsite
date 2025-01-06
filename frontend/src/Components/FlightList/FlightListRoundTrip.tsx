@@ -123,14 +123,19 @@ const FlightListRoundTrip: React.FC<FlightListRoundTripProps> = ({
           </p>
         </div>
         <div className="Flight_list_round_trip__duration-stops">
-          <p>{flight.duration} hrs</p>
+          <span className="Flight_list_round_trip__duration">
+            <p>{flight.duration} hrs</p>
+          </span>
+
           <div className="Flight_list_round_trip__lineWithIcon">
             <div className="Flight_list_round_trip__line"></div>
             <IoAirplaneSharp className="Flight_list_round_trip__airplaneIcon" />
             <div className="Flight_list_round_trip__line"></div>
           </div>
           <p>
-            {flight.stops} {flight.stops === 1 ? "Stop" : "Stops"}
+            <span className="Flight_list_round_trip__duration">
+              {flight.stops} {flight.stops === 1 ? "Stop" : "Stops"}
+            </span>
           </p>
         </div>
         <div className="Flight_list_round_trip__time-location">

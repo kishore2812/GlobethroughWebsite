@@ -87,16 +87,14 @@
               color: black;
               font-size: 14px;
             }
-
+            .Flight_list_round_trip__duration {
+              color: black;
+              font-size: 2px;
+              font-size: 0.9rem;
+              font-weight: 500;
+            }
             p {
               margin: 0.3rem 0;
-              font-size: 0.9rem;
-              color: #555;
-
-              &:first-child {
-                font-weight: bold;
-                color: #333;
-              }
             }
             .Flight_list_round_trip__lineWithIcon {
               display: flex;
