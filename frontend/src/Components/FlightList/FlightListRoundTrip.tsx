@@ -100,16 +100,22 @@ const FlightListRoundTrip: React.FC<FlightListRoundTripProps> = ({
       <div className="Flight_list_round_trip__flight-row details">
         <div className="Flight_list_round_trip__time-location">
           <p>
-            {new Date(flight.startTime).toLocaleTimeString("en-GB", {
-              hour: "2-digit",
-              minute: "2-digit",
-            })}{" "}
-            |{" "}
-            {new Date(flight.startTime).toLocaleTimeString("en-US", {
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
+            <span className="Flight_list_round_trip__time-uk">
+              {new Date(flight.startTime).toLocaleTimeString("en-GB", {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </span>{" "}
+            <span className="Flight_list_round_trip__time-us">
+              (
+              {new Date(flight.startTime).toLocaleTimeString("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+              )
+            </span>
           </p>
+
           <p>
             {fromAirport?.City} ({fromAirport?.IATA})
           </p>
@@ -127,15 +133,20 @@ const FlightListRoundTrip: React.FC<FlightListRoundTripProps> = ({
         </div>
         <div className="Flight_list_round_trip__time-location">
           <p>
-            {new Date(flight.endTime).toLocaleTimeString("en-GB", {
-              hour: "2-digit",
-              minute: "2-digit",
-            })}{" "}
-            |{" "}
-            {new Date(flight.endTime).toLocaleTimeString("en-US", {
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
+            <span className="Flight_list_round_trip__time-uk">
+              {new Date(flight.endTime).toLocaleTimeString("en-GB", {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </span>{" "}
+            <span className="Flight_list_round_trip__time-us">
+              (
+              {new Date(flight.endTime).toLocaleTimeString("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+              )
+            </span>
           </p>
           <p>
             {toAirport?.City} ({toAirport?.IATA})
