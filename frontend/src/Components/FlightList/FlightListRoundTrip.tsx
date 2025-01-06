@@ -171,18 +171,26 @@ const FlightListRoundTrip: React.FC<FlightListRoundTripProps> = ({
     <div>
       <div className="Flight_list_round_trip">
         <div className="Flight_list_round_trip__flight-section">
-          {departureFlights.map((flight) =>
-            renderFlightCard(
-              flight,
-              selectedDeparture?.id === flight.id,
-              "departure"
-            )
-          )}
+          {departureFlights.map((flight) => (
+            <React.Fragment key={flight.id}>
+              {renderFlightCard(
+                flight,
+                selectedDeparture?.id === flight.id,
+                "departure"
+              )}
+            </React.Fragment>
+          ))}
         </div>
         <div className="Flight_list_round_trip__flight-section">
-          {returnFlights.map((flight) =>
-            renderFlightCard(flight, selectedReturn?.id === flight.id, "return")
-          )}
+          {returnFlights.map((flight) => (
+            <React.Fragment key={flight.id}>
+              {renderFlightCard(
+                flight,
+                selectedReturn?.id === flight.id,
+                "return"
+              )}
+            </React.Fragment>
+          ))}
         </div>
       </div>
 
