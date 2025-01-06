@@ -133,8 +133,9 @@ const AccountHeader: React.FC = () => {
 
   // Handle sign out
   const handleSignOut = (): void => {
-    localStorage.removeItem("token"); // Clear the authentication token
+    localStorage.clear();
     navigate("/signin/:role"); // Redirect to sign-in page
+    window.location.reload();
   };
 
   return (

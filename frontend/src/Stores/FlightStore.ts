@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import { Flight } from "../Pages/FlightListPage/flightdata";
 
 type TripType = "one-way" | "round-trip";
@@ -49,32 +50,53 @@ interface FlightStore {
 
 const today = new Date().toISOString().split("T")[0]; // Format as "YYYY-MM-DD"
 
-const useFlightStore = create<FlightStore>((set) => ({
-  selectedTrip: "one-way",
-  departureDate: today,
-  returnDate: null,
-  adults: 1,
-  children: 0,
-  infants: 0,
-  selectedClass: "",
-  fromAirport: null,
-  toAirport: null,
-  selectedFlight: null,
-  selectedDeparture: null,
-  selectedReturn: null,
-  setSelectedDeparture: (flight: Flight | null) =>
-    set({ selectedDeparture: flight }),
-  setSelectedReturn: (flight: Flight | null) => set({ selectedReturn: flight }),
-  setSelectedFlight: (flight: Flight | null) => set({ selectedFlight: flight }),
-  setSelectedTrip: (tripType) => set({ selectedTrip: tripType }),
-  setDepartureDate: (date) => set({ departureDate: date }),
-  setReturnDate: (date) => set({ returnDate: date }),
-  setAdults: (count) => set({ adults: count }),
-  setChildren: (count) => set({ children: count }),
-  setInfants: (count) => set({ infants: count }),
-  setSelectedClass: (selectedClass) => set({ selectedClass }),
-  setFromAirport: (airport) => set({ fromAirport: airport }),
-  setToAirport: (airport) => set({ toAirport: airport }),
-}));
+const useFlightStore = create(
+  persist<FlightStore>(
+    (set) => ({
+      selectedTrip: "one-way",
+      departureDate: today,
+      returnDate: null,
+      adults: 1,
+      children: 0,
+      infants: 0,
+      selectedClass: "",
+      fromAirport: null,
+      toAirport: null,
+      selectedFlight: null,
+      selectedDeparture: null,
+      selectedReturn: null,
+      setSelectedDeparture: (flight) => set({ selectedDeparture: flight }),
+      setSelectedReturn: (flight) => set({ selectedReturn: flight }),
+      setSelectedFlight: (flight) => set({ selectedFlight: flight }),
+      setSelectedTrip: (tripType) => set({ selectedTrip: tripType }),
+      setDepartureDate: (date) => set({ departureDate: date }),
+      setReturnDate: (date) => set({ returnDate: date }),
+      setAdults: (count) => set({ adults: count }),
+      setChildren: (count) => set({ children: count }),
+      setInfants: (count) => set({ infants: count }),
+      setSelectedClass: (selectedClass) => set({ selectedClass }),
+      setFromAirport: (airport) => set({ fromAirport: airport }),
+      setToAirport: (airport) => set({ toAirport: airport }),
+      resetStore: () =>
+        set({
+          selectedTrip: "one-way",
+          departureDate: null,
+          returnDate: null,
+          adults: 1,
+          children: 0,
+          infants: 0,
+          selectedClass: "",
+          fromAirport: null,
+          toAirport: null,
+          selectedFlight: null,
+          selectedDeparture: null,
+          selectedReturn: null,
+        }), // Reset state to initial values
+    }),
+    {
+      name: "flight-store", // Unique storage key
+    }
+  )
+);
 
 export default useFlightStore;
