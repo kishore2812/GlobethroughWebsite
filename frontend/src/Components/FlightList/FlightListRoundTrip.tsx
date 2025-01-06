@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Flight } from "../../Pages/FlightListPage/flightdata";
+import useFlightStore from "../../Stores/FlightStore";
+import "./FlightListRoundTrip.scss";
 
 interface FlightListRoundTripProps {
   flights: Flight[];
@@ -10,15 +12,35 @@ const FlightListRoundTrip: React.FC<FlightListRoundTripProps> = ({
   flights,
 }) => {
   const navigate = useNavigate();
+  const { fromAirport, toAirport } = useFlightStore();
   const [selectedDeparture, setSelectedDeparture] = useState<Flight | null>(
     null
   );
   const [selectedReturn, setSelectedReturn] = useState<Flight | null>(null);
 
+  // Filter flights by type
   const departureFlights = flights.filter(
     (flight) => flight.type === "departure"
   );
   const returnFlights = flights.filter((flight) => flight.type === "return");
+
+  // Find the cheapest and fastest flight IDs for departure
+  const cheapestDepartureFlightId = departureFlights.reduce((prev, curr) =>
+    curr.price < prev.price ? curr : prev
+  ).id;
+
+  const fastestDepartureFlightId = departureFlights.reduce((prev, curr) =>
+    curr.duration < prev.duration ? curr : prev
+  ).id;
+
+  // Find the cheapest and fastest flight IDs for return
+  const cheapestReturnFlightId = returnFlights.reduce((prev, curr) =>
+    curr.price < prev.price ? curr : prev
+  ).id;
+
+  const fastestReturnFlightId = returnFlights.reduce((prev, curr) =>
+    curr.duration < prev.duration ? curr : prev
+  ).id;
 
   const handleBookNow = () => {
     if (selectedDeparture && selectedReturn) {
@@ -33,95 +55,111 @@ const FlightListRoundTrip: React.FC<FlightListRoundTripProps> = ({
     }
   };
 
-  return (
-    <div style={{ position: "relative", paddingBottom: "5rem" }}>
-      <div style={{ display: "flex", gap: "2rem" }}>
-        {/* Departure Flights */}
-        <div style={{ flex: 1 }}>
-          <h2>Departure Flights</h2>
-          {departureFlights.map((flight) => (
-            <div
-              key={flight.id}
-              onClick={() => setSelectedDeparture(flight)}
-              style={{
-                border: `1px solid ${
-                  selectedDeparture?.id === flight.id ? "#4CAF50" : "#ccc"
-                }`,
-                padding: "1rem",
-                borderRadius: "8px",
-                marginBottom: "1rem",
-                cursor: "pointer",
-              }}
-            >
-              <img
-                src={flight.logo}
-                alt={flight.flightNumber}
-                style={{ width: "50px", marginRight: "1rem" }}
-              />
-              <h3>Flight: {flight.flightNumber}</h3>
-              <p>Price: ₹{flight.price}</p>
-              <p>Duration: {flight.duration} hrs</p>
-              <p>
-                Start Time: {new Date(flight.startTime).toLocaleTimeString()}
-              </p>
-              <p>End Time: {new Date(flight.endTime).toLocaleTimeString()}</p>
-              <p>Stops: {flight.stops}</p>
-            </div>
-          ))}
-        </div>
+  const renderFlightCard = (
+    flight: Flight,
+    isSelected: boolean,
+    type: string
+  ) => (
+    <div
+      className={`Flight_list_round_trip__flight-card ${
+        isSelected ? "selected" : ""
+      }`}
+      onClick={() =>
+        type === "departure"
+          ? setSelectedDeparture(flight)
+          : setSelectedReturn(flight)
+      }
+    >
+      {/* Labels */}
+      {type === "departure" && flight.id === fastestDepartureFlightId && (
+        <span className="Flight_list_round_trip__label fastest">Fastest</span>
+      )}
+      {type === "departure" && flight.id === cheapestDepartureFlightId && (
+        <span className="Flight_list_round_trip__label cheapest">Cheapest</span>
+      )}
+      {type === "return" && flight.id === fastestReturnFlightId && (
+        <span className="Flight_list_round_trip__label fastest">Fastest</span>
+      )}
+      {type === "return" && flight.id === cheapestReturnFlightId && (
+        <span className="Flight_list_round_trip__label cheapest">Cheapest</span>
+      )}
 
-        {/* Return Flights */}
-        <div style={{ flex: 1 }}>
-          <h2>Return Flights</h2>
-          {returnFlights.map((flight) => (
-            <div
-              key={flight.id}
-              onClick={() => setSelectedReturn(flight)}
-              style={{
-                border: `1px solid ${
-                  selectedReturn?.id === flight.id ? "#4CAF50" : "#ccc"
-                }`,
-                padding: "1rem",
-                borderRadius: "8px",
-                marginBottom: "1rem",
-                cursor: "pointer",
-              }}
-            >
-              <img
-                src={flight.logo}
-                alt={flight.flightNumber}
-                style={{ width: "50px", marginRight: "1rem" }}
-              />
-              <h3>Flight: {flight.flightNumber}</h3>
-              <p>Price: ₹{flight.price}</p>
-              <p>Duration: {flight.duration} hrs</p>
-              <p>
-                Start Time: {new Date(flight.startTime).toLocaleTimeString()}
-              </p>
-              <p>End Time: {new Date(flight.endTime).toLocaleTimeString()}</p>
-              <p>Stops: {flight.stops}</p>
-            </div>
-          ))}
+      {/* Row 1 */}
+      <div className="Flight_list_round_trip__flight-row">
+        <div className="Flight_list_round_trip__flight-logo">
+          <img src={flight.logo} alt={flight.flightNumber} />
+          <p>{flight.flightNumber}</p>
+        </div>
+        <div className="Flight_list_round_trip__flight-price">
+          ₹{flight.price}
         </div>
       </div>
 
-      {/* Modal */}
-      <div
-        style={{
-          position: "fixed",
-          bottom: "0px",
-          left: "100px",
-          right: "100px",
-          backgroundColor: "#fff",
-          padding: "0px 20px",
-          borderTop: "1px solid #ccc",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          boxShadow: "0 -2px 5px rgba(0,0,0,0.1)",
-          borderRadius: "10px",
-        }}
-      >
+      {/* Row 2 */}
+      <div className="Flight_list_round_trip__flight-row details">
+        <div className="Flight_list_round_trip__time-location">
+          <p>
+            {new Date(flight.startTime).toLocaleTimeString("en-GB", {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}{" "}
+            |{" "}
+            {new Date(flight.startTime).toLocaleTimeString("en-US", {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </p>
+          <p>
+            {fromAirport?.City} ({fromAirport?.IATA})
+          </p>
+        </div>
+        <div className="Flight_list_round_trip__duration-stops">
+          <p>{flight.duration} hrs</p>
+          <p>
+            {flight.stops} {flight.stops === 1 ? "Stop" : "Stops"}
+          </p>
+        </div>
+        <div className="Flight_list_round_trip__time-location">
+          <p>
+            {new Date(flight.endTime).toLocaleTimeString("en-GB", {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}{" "}
+            |{" "}
+            {new Date(flight.endTime).toLocaleTimeString("en-US", {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </p>
+          <p>
+            {toAirport?.City} ({toAirport?.IATA})
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="Flight_list_round_trip">
+      <div className="Flight_list_round_trip__flight-section">
+        <h2>Departure Flights</h2>
+        {departureFlights.map((flight) =>
+          renderFlightCard(
+            flight,
+            selectedDeparture?.id === flight.id,
+            "departure"
+          )
+        )}
+      </div>
+      <div className="Flight_list_round_trip__flight-section">
+        <h2>Return Flights</h2>
+        {returnFlights.map((flight) =>
+          renderFlightCard(flight, selectedReturn?.id === flight.id, "return")
+        )}
+      </div>
+
+      {/* Bottom Modal */}
+      <div className="Flight_list_round_trip__flight-bottom-modal">
         <div>
           <p>
             Selected Departure:{" "}
@@ -132,19 +170,7 @@ const FlightListRoundTrip: React.FC<FlightListRoundTripProps> = ({
             {selectedReturn ? selectedReturn.flightNumber : "None"}
           </p>
         </div>
-        <button
-          onClick={handleBookNow}
-          style={{
-            backgroundColor: "#4CAF50",
-            color: "white",
-            border: "none",
-            padding: "0.5rem 1rem",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
-          Book Now
-        </button>
+        <button onClick={handleBookNow}>Book Now</button>
       </div>
     </div>
   );

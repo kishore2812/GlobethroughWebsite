@@ -1,0 +1,150 @@
+.Flight_list_round_trip {
+  display: flex;
+  justify-content: space-between; /* This ensures the left and right sections */
+  gap: 2rem;
+  padding: 1rem;
+  position: relative; /* To position the modal correctly */
+
+  .Flight_list_round_trip__flight-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    flex: 1; /* Ensures both sections take equal space */
+
+    h2 {
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+      color: #333;
+    }
+
+    .Flight_list_round_trip__flight-card {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+
+      &:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      &.selected {
+        border-color: #4caf50;
+        box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+      }
+
+      .Flight_list_round_trip__label {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: #f1c40f;
+        color: #fff;
+        font-size: 0.8rem;
+        padding: 0.3rem 0.6rem;
+        border-radius: 4px;
+
+        &.fastest {
+          background-color: #2196f3;
+        }
+
+        &.cheapest {
+          background-color: #4caf50;
+        }
+      }
+
+      .Flight_list_round_trip__flight-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+
+        &.details {
+          margin-top: 1rem;
+
+          .Flight_list_round_trip__time-location,
+          .Flight_list_round_trip__duration-stops {
+            flex: 1;
+            text-align: center;
+
+            p {
+              margin: 0.3rem 0;
+              font-size: 0.9rem;
+              color: #555;
+
+              &:first-child {
+                font-weight: bold;
+                color: #333;
+              }
+            }
+          }
+        }
+
+        .Flight_list_round_trip__flight-logo {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+
+          img {
+            width: 50px;
+            height: 50px;
+            border-radius: 4px;
+          }
+
+          p {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #333;
+          }
+        }
+
+        .Flight_list_round_trip__flight-price {
+          font-size: 1.2rem;
+          font-weight: bold;
+          color: #4caf50;
+        }
+      }
+    }
+  }
+
+  .Flight_list_round_trip__flight-bottom-modal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f9f9f9;
+    border-top: 1px solid #ddd;
+    padding: 1rem;
+    position: fixed; /* Fix the modal to the bottom */
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+
+    p {
+      font-size: 1rem;
+      margin: 0.5rem 0;
+      color: #555;
+
+      &:first-child {
+        font-weight: bold;
+      }
+    }
+
+    button {
+      background-color: #4caf50;
+      color: #fff;
+      border: none;
+      padding: 0.7rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: #45a049;
+      }
+    }
+  }
+}
