@@ -4,6 +4,7 @@ import TicketDetailsOneWay from "../../Components/TicketDetails/OneWayTicketDeta
 import TicketDetailsRoundTrip from "../../Components/TicketDetails/RoundTripTicketDetails";
 import PriceDetails from "../../Components/TicketDetails/TicketPriceDetails";
 import "./TicketDetailPage.scss"; // SCSS for styling
+import Header from "../../Components/Header/Header";
 
 const TicketDetailPage: React.FC = () => {
   // Fetch flight details from Zustand store
@@ -26,9 +27,7 @@ const TicketDetailPage: React.FC = () => {
       <div className="ticket-detail-page__background"></div>
 
       {/* Header */}
-      <header className="ticket-detail-page__header">
-        <h1>Ticket Details</h1>
-      </header>
+      <Header />
 
       {/* Content */}
       <div className="ticket-detail-page__content">
