@@ -25,7 +25,6 @@ const TicketDetailPage: React.FC = () => {
     <div className="ticket-detail-page">
       {/* Background */}
       <div className="ticket-detail-page__background"></div>
-
       {/* Header */}
       <Header />
 

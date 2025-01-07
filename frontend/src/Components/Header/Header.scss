@@ -7,9 +7,28 @@
   background-color: #01493e;
   color: white;
   padding: 20px 80px;
-  .logo img {
-    width: 160px; // Adjust as needed
-    height: auto;
+  .logo-back {
+    display: flex;
+    align-items: center;
+
+    img {
+      width: 160px;
+    }
+
+    .back-btn {
+      display: flex;
+      align-items: right;
+      background: none;
+      border: none;
+
+      font-size: 1.5rem;
+      cursor: pointer;
+
+      span {
+        margin-left: 0.5rem;
+        font-weight: bold;
+      }
+    }
   }
 }
 

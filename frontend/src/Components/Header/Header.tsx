@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // For navigation
+import { useLocation, useNavigate } from "react-router-dom"; // For navigation and route detection
 import { jwtDecode } from "jwt-decode"; // To decode JWT token
-import { FaRegUserCircle, FaChevronRight } from "react-icons/fa"; // For icons
+import { FaRegUserCircle, FaChevronRight, FaArrowLeft } from "react-icons/fa"; // For icons
 import axios from "axios"; // To make API requests
 import "./Header.scss";
 
@@ -18,24 +18,23 @@ const Header = () => {
     undefined
   );
   const [error, setError] = useState<string | undefined>(undefined);
+
   const navigate = useNavigate();
+  const location = useLocation(); // Get the current location
 
   useEffect(() => {
     const token = localStorage.getItem("token");
 
     if (token) {
       try {
-        // Decode the token to extract userType
         const decodedToken: DecodedToken = jwtDecode(token);
         setUserType(decodedToken.userType);
         setRole(decodedToken.role);
 
-        // Fetch user info based on userType
         const fetchUserData = async () => {
           try {
             let response;
             if (decodedToken.userType === "user") {
-              // Fetch data for user type
               response = await axios.get(
                 "http://localhost:5000/api/user/info",
                 {
@@ -46,7 +45,6 @@ const Header = () => {
               );
               setFirstName(response.data.firstName);
             } else if (decodedToken.userType === "subuser") {
-              // Fetch data for subuser type
               response = await axios.get(
                 "http://localhost:5000/subuser/subuserinfo",
                 {
@@ -56,7 +54,7 @@ const Header = () => {
                 }
               );
               setFirstName(response.data.firstName);
-              setParentFirstName(response.data.parentFirstName); // Assuming the parent's first name is returned
+              setParentFirstName(response.data.parentFirstName);
             }
           } catch (error) {
             setError("Error fetching user data");
@@ -71,11 +69,21 @@ const Header = () => {
     }
   }, []);
 
+  const handleBack = () => {
+    navigate(-1); // Navigate to the previous page
+  };
+
   return (
     <header className="header">
-      {/* Logo Section */}
-      <div className="logo">
-        <img src="src/assets/images/logo.png" alt="Logo" />
+      {/* Logo or Back Button */}
+      <div className="logo-back">
+        {location.pathname === "/homepage" ? (
+          <img src="src/assets/images/logo.png" alt="Logo" />
+        ) : (
+          <span className="back-btn" onClick={handleBack}>
+            <FaArrowLeft />
+          </span>
+        )}
       </div>
 
       {/* Navigation Links */}
@@ -99,14 +107,12 @@ const Header = () => {
         <button className="account-btn" onClick={() => navigate("/account")}>
           <FaRegUserCircle className="icon" />
           <span className="text">
-            {/* Conditionally render the message based on userType */}
             {userType === "subuser" && firstName && parentFirstName && role
               ? `Hello, ${firstName} (${role}) & Parent: ${parentFirstName}`
               : userType === "user" && firstName
               ? `Hello, ${firstName}`
               : error || "Loading..."}
           </span>
-
           <FaChevronRight className="chevron-icon" />
         </button>
       </nav>
