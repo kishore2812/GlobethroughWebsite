@@ -3,7 +3,7 @@
   min-height: 100vh;
 
   // Background with two solid colors
-  &__background {
+  .ticket-detail-page__background {
     position: fixed;
     top: 0;
     left: 0;
@@ -35,7 +35,7 @@
   }
 
   // Main Content Section
-  &__content {
+  .ticket-detail-page__content {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;

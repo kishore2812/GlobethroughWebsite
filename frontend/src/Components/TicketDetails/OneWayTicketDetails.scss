@@ -1,8 +1,9 @@
 .OneWayTicketDetails__flight-ticket-card {
-  width: 900px;
+  width: 800px;
   display: grid;
   gap: 16px;
-  padding: 16px;
+  padding: 16px 48px;
+
   border: 1px solid #ddd;
   border-radius: 8px;
   margin: 0 auto;
@@ -14,11 +15,11 @@
     justify-content: space-between;
     align-items: center;
 
-    &.OneWayTicketDetails__row-1 {
+    &-1 {
       justify-content: space-between;
 
       .OneWayTicketDetails__flight-logo {
-        text-align: left;
+        text-align: center;
 
         img {
           display: block;
@@ -27,9 +28,10 @@
         }
 
         p {
-          margin: 4px 0 0;
+          margin: 8px 0 0;
           font-size: 0.9rem;
-          font-weight: bold;
+          font-weight: 700;
+          opacity: 0.7;
         }
       }
 
@@ -38,51 +40,126 @@
 
         p {
           font-size: 1rem;
-          font-weight: bold;
+          font-weight: 700;
+          opacity: 0.7;
         }
       }
     }
 
-    &.OneWayTicketDetails__row-2 {
+    &-2 {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
-      gap: 16px;
 
       .OneWayTicketDetails__column {
-        text-align: center;
-
         p {
-          margin: 4px 0;
-          font-size: 0.9rem;
+          margin: 0;
+        }
+        .OneWayTicketDetails__time {
+          margin-bottom: 2px;
+        }
+        .OneWayTicketDetails__airportDetails {
+          margin-bottom: 8px;
+        }
 
-          &:first-child {
-            font-weight: bold;
+        .OneWayTicketDetails__start-time-24hr {
+          font-size: 16px;
+          font-weight: 700;
+          color: black;
+        }
+
+        .OneWayTicketDetails__start-time-12hr {
+          color: black;
+          font-size: 14px;
+          font-weight: 700;
+          opacity: 0.7;
+        }
+
+        .OneWayTicketDetails__iata {
+          font-weight: 700;
+          font-size: 20px;
+          color: black;
+        }
+
+        .OneWayTicketDetails__city,
+        .OneWayTicketDetails__airport-name {
+          font-size: 14px;
+          color: black;
+          font-weight: 700;
+          opacity: 0.7;
+        }
+        .OneWayTicketDetails__arrow {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          .OneWayTicketDetails__long-arrow {
+            position: relative;
+            width: 70px;
+            height: 2px;
+            background-color: black;
+            opacity: 0.7;
+            margin-right: -10px;
+          }
+
+          .OneWayTicketDetails__chevron-right {
+            margin: 0;
+            font-size: 1rem; // Chevron size
+            color: black;
+            font-weight: 700;
+            opacity: 0.7;
           }
         }
 
+        /* Column 1 - Left alignment */
+        &.OneWayTicketDetails__column-left {
+          text-align: left;
+        }
+
+        /* Column 2 - Center alignment */
+        &.OneWayTicketDetails__column-center {
+          text-align: center;
+        }
+
+        /* Column 3 - Right alignment */
+        &.OneWayTicketDetails__column-right {
+          text-align: right;
+        }
+
         &.OneWayTicketDetails__duration-info {
+          .OneWayTicketDetails__info-item {
+            margin: 0;
+            padding: 0;
+            opacity: 0.7;
+            font-size: 1rem; // Same size for both duration and stops
+            font-weight: 500; // Bold text for both
+            color: black; // Dark color for both
+          }
+
           .OneWayTicketDetails__arrow {
+            margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 20px;
 
             hr {
               border: none;
               border-top: 2px solid #000;
-              width: 80%;
+              width: 50%;
             }
           }
         }
       }
     }
 
-    &.OneWayTicketDetails__row-3 {
+    &-3 {
       text-align: center;
 
       p {
         font-size: 1rem;
-        font-weight: bold;
+        font-weight: 700;
+        color: black;
+        opacity: 0.7;
       }
     }
   }
