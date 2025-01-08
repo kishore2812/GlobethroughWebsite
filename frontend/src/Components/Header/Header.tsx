@@ -69,10 +69,6 @@ const Header = () => {
     }
   }, []);
 
-  useEffect(() => {
-    console.log(location.pathname); // Check what the current pathname is
-  }, [location]);
-
   const handleBack = () => {
     navigate(-1); // Navigate to the previous page
   };
