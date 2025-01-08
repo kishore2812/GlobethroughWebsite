@@ -69,6 +69,10 @@ const Header = () => {
     }
   }, []);
 
+  useEffect(() => {
+    console.log(location.pathname); // Check what the current pathname is
+  }, [location]);
+
   const handleBack = () => {
     navigate(-1); // Navigate to the previous page
   };
@@ -77,7 +81,8 @@ const Header = () => {
     <header className="header">
       {/* Logo or Back Button */}
       <div className="logo-back">
-        {location.pathname === "/homepage" ? (
+        {location.pathname === "/HomePage" ||
+        location.pathname === "/homepage/" ? ( // Ensure we check both with and without trailing slash
           <img src="src/assets/images/logo.png" alt="Logo" />
         ) : (
           <span className="back-btn" onClick={handleBack}>
