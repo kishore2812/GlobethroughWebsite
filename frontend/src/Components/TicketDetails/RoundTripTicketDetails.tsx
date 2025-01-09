@@ -42,6 +42,18 @@ const TicketDetailsRoundTrip: React.FC = () => {
     return { hours24, hours12 };
   };
 
+  const formatDate = (date: string | number | Date | null | undefined) => {
+    if (!date) return "N/A";
+
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: "short", // Mon, Tue
+      day: "2-digit", // 24, 05
+      month: "short", // Jan, Feb
+    };
+
+    return new Date(date).toLocaleDateString("en-GB", options);
+  };
+
   // Render Departure Flight Card
   const renderDepartureFlight = () => {
     const startTime = formatTime(selectedDeparture.startTime);
@@ -57,11 +69,11 @@ const TicketDetailsRoundTrip: React.FC = () => {
               className="RoundTripTicketDetails__flight-logo"
             />
             <p className="RoundTripTicketDetails__flight-number">
-              Flight: {selectedDeparture.flightNumber}
+              {selectedDeparture.flightNumber}
             </p>
           </div>
           <div className="RoundTripTicketDetails__selected-class">
-            <p>Class: {selectedClass}</p>
+            <p>{selectedClass}</p>
           </div>
         </div>
 
@@ -72,9 +84,12 @@ const TicketDetailsRoundTrip: React.FC = () => {
                 {startTime.hours24}
               </p>
               <p className="RoundTripTicketDetails__time-12hr">
-                {startTime.hours12}
+                ({startTime.hours12})
               </p>
             </div>
+            <p className="RoundTripTicketDetails__airport">
+              {fromAirport?.City},{fromAirport?.IATA}
+            </p>
             <p className="RoundTripTicketDetails__airport">
               {fromAirport?.Name}
             </p>
@@ -97,14 +112,20 @@ const TicketDetailsRoundTrip: React.FC = () => {
           </div>
 
           <div className="RoundTripTicketDetails__column-right">
-            <div className="RoundTripTicketDetails__time">
+            <div className="RoundTripTicketDetails__end-time">
               <p className="RoundTripTicketDetails__time-24hr">
                 {endTime.hours24}
               </p>
               <p className="RoundTripTicketDetails__time-12hr">
-                {endTime.hours12}
+                ({endTime.hours12})
               </p>
             </div>
+            <p
+              className="RoundTripTicketDetails__airport"
+              style={{ textAlign: "right" }}
+            >
+              {toAirport?.City},{toAirport?.IATA}
+            </p>
             <p
               className="RoundTripTicketDetails__airport"
               style={{ textAlign: "right" }}
@@ -115,7 +136,7 @@ const TicketDetailsRoundTrip: React.FC = () => {
         </div>
 
         <p className="RoundTripTicketDetails__date">
-          Departure Date: {departureDate}
+          Departure Date: {formatDate(departureDate)}
         </p>
       </div>
     );
@@ -136,11 +157,11 @@ const TicketDetailsRoundTrip: React.FC = () => {
               className="RoundTripTicketDetails__flight-logo"
             />
             <p className="RoundTripTicketDetails__flight-number">
-              Flight: {selectedReturn.flightNumber}
+              {selectedReturn.flightNumber}
             </p>
           </div>
           <div className="RoundTripTicketDetails__selected-class">
-            <p>Class: {selectedClass}</p>
+            <p> {selectedClass}</p>
           </div>
         </div>
 
@@ -151,9 +172,12 @@ const TicketDetailsRoundTrip: React.FC = () => {
                 {startTime.hours24}
               </p>
               <p className="RoundTripTicketDetails__time-12hr">
-                {startTime.hours12}
+                ({startTime.hours12})
               </p>
             </div>
+            <p className="RoundTripTicketDetails__airport">
+              {fromAirport?.City},{fromAirport?.IATA}
+            </p>
             <p className="RoundTripTicketDetails__airport">
               {fromAirport?.Name}
             </p>
@@ -167,7 +191,7 @@ const TicketDetailsRoundTrip: React.FC = () => {
             {/* Arrow with line */}
             <div className="RoundTripTicketDetails__arrow">
               <FaChevronLeft className="RoundTripTicketDetails__chevron-left" />
-              <span className="RoundTripTicketDetails__long-arrow"></span>
+              <span className="RoundTripTicketDetails__long-arrow-left"></span>
             </div>
 
             <p className="RoundTripTicketDetails__stops">
@@ -176,14 +200,20 @@ const TicketDetailsRoundTrip: React.FC = () => {
           </div>
 
           <div className="RoundTripTicketDetails__column-right">
-            <div className="RoundTripTicketDetails__time">
+            <div className="RoundTripTicketDetails__end-time">
               <p className="RoundTripTicketDetails__time-24hr">
                 {endTime.hours24}
               </p>
               <p className="RoundTripTicketDetails__time-12hr">
-                {endTime.hours12}
+                ({endTime.hours12})
               </p>
             </div>
+            <p
+              className="RoundTripTicketDetails__airport"
+              style={{ textAlign: "right" }}
+            >
+              {toAirport?.City},{toAirport?.IATA}
+            </p>
             <p
               className="RoundTripTicketDetails__airport"
               style={{ textAlign: "right" }}
@@ -194,7 +224,7 @@ const TicketDetailsRoundTrip: React.FC = () => {
         </div>
 
         <p className="RoundTripTicketDetails__date">
-          Return Date: {returnDate}
+          Return Date: {formatDate(returnDate)}
         </p>
       </div>
     );
