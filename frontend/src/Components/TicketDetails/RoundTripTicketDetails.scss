@@ -1,23 +1,22 @@
 .RoundTripTicketDetails__container {
   display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 16px;
+  justify-content: space-around;
+  gap: 40px;
+  padding-left: 40px;
   flex-wrap: wrap; /* To make sure cards wrap on smaller screens */
 }
 
 .RoundTripTicketDetails__flight-ticket-card {
-  width: 380px;
-  border: 1px solid #ddd;
+  width: 350px;
   border-radius: 8px;
   padding: 16px;
   font-family: Arial, sans-serif;
-  background-color: #f9f9f9;
+  background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  min-width: 350px; /* To ensure responsive layout */
+  min-width: 300px; /* To ensure responsive layout */
 
   .RoundTripTicketDetails__row {
     display: flex;

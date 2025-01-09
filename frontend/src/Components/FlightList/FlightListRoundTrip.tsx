@@ -278,11 +278,10 @@ const FlightListRoundTrip: React.FC<FlightListRoundTripProps> = ({
               <button onClick={handleBookNow}>Book Now</button>
             </div>
           </div>
-          <div className="flightListOneWay__Extra"></div>
         </div>
       )}
+      <div className="flightListOneWay__Extra"></div>
     </div>
   );
 };
-
 export default FlightListRoundTrip;
