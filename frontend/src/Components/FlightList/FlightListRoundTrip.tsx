@@ -4,6 +4,7 @@ import { Flight } from "../../Pages/FlightListPage/flightdata";
 import useFlightStore from "../../Stores/FlightStore";
 import "./FlightListRoundTrip.scss";
 import { IoAirplaneSharp } from "react-icons/io5";
+import { FaArrowRight } from "react-icons/fa";
 
 interface FlightListRoundTripProps {
   flights: Flight[];
@@ -53,6 +54,17 @@ const FlightListRoundTrip: React.FC<FlightListRoundTripProps> = ({
       alert("Please select both departure and return flights.");
     }
   };
+
+  function formatTime(time: string | undefined): string {
+    if (!time) {
+      return "N/A"; // Fallback for undefined time
+    }
+    const date = new Date(time);
+    return date.toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  }
 
   const renderFlightCard = (
     flight: Flight,
@@ -197,17 +209,72 @@ const FlightListRoundTrip: React.FC<FlightListRoundTripProps> = ({
       {/* Bottom Modal */}
       <div className="Flight_list_round_trip__flight-bottom-modal-container">
         <div className="Flight_list_round_trip__flight-bottom-modal">
-          <div>
-            <span>
-              Selected Departure:{" "}
-              {selectedDeparture ? selectedDeparture.flightNumber : "None"}
-            </span>
-            <span>
-              Selected Return:{" "}
-              {selectedReturn ? selectedReturn.flightNumber : "None"}
-            </span>
+          <div className="Flight_list_round_trip__column">
+            {/* Departure Flight */}
+            <div className="Flight_list_round_trip__flight-logo">
+              <img
+                src={selectedDeparture?.logo}
+                alt={selectedDeparture?.flightNumber}
+              />
+              <span>{selectedDeparture?.flightNumber}</span>
+            </div>
+            <div className="Flight_list_round_trip__start-time">
+              <span className="Flight_list_round_trip__time">
+                {formatTime(selectedDeparture?.startTime)}
+              </span>
+              <span className="Flight_list_round_trip__location">
+                {fromAirport?.City}, {fromAirport?.IATA}
+              </span>
+            </div>
+            <FaArrowRight />
+            <div className="Flight_list_round_trip__end-time">
+              <span className="Flight_list_round_trip__time">
+                {formatTime(selectedDeparture?.endTime)}
+              </span>
+              <span className="Flight_list_round_trip__location">
+                {toAirport?.City}, {toAirport?.IATA}
+              </span>
+            </div>
           </div>
-          <button onClick={handleBookNow}>Book Now</button>
+
+          <div className="Flight_list_round_trip__column">
+            {/* Return Flight */}
+            <div className="Flight_list_round_trip__flight-logo">
+              <img
+                src={selectedReturn?.logo}
+                alt={selectedReturn?.flightNumber}
+              />
+              <span>{selectedReturn?.flightNumber}</span>
+            </div>
+            <div className="Flight_list_round_trip__start-time">
+              <span className="Flight_list_round_trip__time">
+                {formatTime(selectedReturn?.startTime)}
+              </span>
+              <span className="Flight_list_round_trip__location">
+                {toAirport?.City}, {toAirport?.IATA}
+              </span>
+            </div>
+            <FaArrowRight />
+            <div className="Flight_list_round_trip__end-time">
+              <span className="Flight_list_round_trip__time">
+                {formatTime(selectedReturn?.endTime)}
+              </span>
+              <span className="Flight_list_round_trip__location">
+                {fromAirport?.City}, {fromAirport?.IATA}
+              </span>
+            </div>
+          </div>
+
+          <div className="Flight_list_round_trip__column">
+            {/* Price and Book Now */}
+            <div className="Flight_list_round_trip__total-price">
+              <span>
+                ₹{" "}
+                {(selectedDeparture?.price || 0) + (selectedReturn?.price || 0)}
+              </span>
+            </div>
+            <button onClick={handleBookNow}>Book Now</button>
+          </div>
         </div>
         <div className="flightListOneWay__Extra"></div>
       </div>
