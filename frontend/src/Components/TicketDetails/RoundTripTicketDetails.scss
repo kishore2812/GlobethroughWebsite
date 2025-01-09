@@ -1,0 +1,135 @@
+.RoundTripTicketDetails__container {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+  flex-wrap: wrap; /* To make sure cards wrap on smaller screens */
+}
+
+.RoundTripTicketDetails__flight-ticket-card {
+  width: 380px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 350px; /* To ensure responsive layout */
+
+  .RoundTripTicketDetails__row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 8px;
+
+    .RoundTripTicketDetails__flight-info {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .RoundTripTicketDetails__flight-logo {
+        width: 60px;
+        height: auto;
+        margin-bottom: 4px;
+      }
+
+      .RoundTripTicketDetails__flight-number {
+        font-size: 0.9rem;
+        margin: 0;
+      }
+    }
+
+    .RoundTripTicketDetails__selected-class {
+      align-self: center;
+      text-align: right;
+
+      p {
+        font-size: 0.9rem;
+        margin: 0;
+      }
+    }
+  }
+
+  .RoundTripTicketDetails__column-left,
+  .RoundTripTicketDetails__column-center,
+  .RoundTripTicketDetails__column-right {
+    flex: 1;
+    p {
+      margin: 4px 0;
+    }
+
+    .RoundTripTicketDetails__time {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+
+      .RoundTripTicketDetails__time-24hr,
+      .RoundTripTicketDetails__time-12hr {
+        font-size: 1rem;
+        font-weight: bold;
+      }
+
+      .RoundTripTicketDetails__time-12hr {
+        color: gray;
+      }
+    }
+
+    .RoundTripTicketDetails__airport {
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+
+    .RoundTripTicketDetails__duration {
+      text-align: center;
+      font-size: 1rem;
+      font-weight: bold;
+    }
+
+    .RoundTripTicketDetails__stops {
+      text-align: center;
+      font-size: 0.9rem;
+      color: gray;
+    }
+  }
+
+  .RoundTripTicketDetails__date {
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin-top: 12px;
+  }
+}
+
+.RoundTripTicketDetails__arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 8px 0;
+
+  .RoundTripTicketDetails__long-arrow {
+    position: relative;
+    width: 70px;
+    height: 2px;
+    background-color: black;
+    opacity: 0.7;
+    margin-right: -10px;
+  }
+
+  .RoundTripTicketDetails__chevron-right {
+    font-size: 1rem; /* Chevron size */
+    color: black;
+    font-weight: 700;
+    opacity: 0.7;
+  }
+  /* Styling for the left arrow and long arrow line */
+  .RoundTripTicketDetails__chevron-left {
+    font-size: 1rem;
+    color: black;
+    font-weight: 700;
+    opacity: 0.7;
+    margin-right: -10px;
+  }
+}
