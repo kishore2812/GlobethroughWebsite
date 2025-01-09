@@ -207,77 +207,80 @@ const FlightListRoundTrip: React.FC<FlightListRoundTripProps> = ({
       </div>
 
       {/* Bottom Modal */}
-      <div className="Flight_list_round_trip__flight-bottom-modal-container">
-        <div className="Flight_list_round_trip__flight-bottom-modal">
-          <div className="Flight_list_round_trip__column">
-            {/* Departure Flight */}
-            <div className="Flight_list_round_trip__flight-logo">
-              <img
-                src={selectedDeparture?.logo}
-                alt={selectedDeparture?.flightNumber}
-              />
-              <span>{selectedDeparture?.flightNumber}</span>
+      {selectedDeparture && selectedReturn && (
+        <div className="Flight_list_round_trip__flight-bottom-modal-container">
+          <div className="Flight_list_round_trip__flight-bottom-modal">
+            <div className="Flight_list_round_trip__column">
+              {/* Departure Flight */}
+              <div className="Flight_list_round_trip__flight-logo">
+                <img
+                  src={selectedDeparture?.logo}
+                  alt={selectedDeparture?.flightNumber}
+                />
+                <span>{selectedDeparture?.flightNumber}</span>
+              </div>
+              <div className="Flight_list_round_trip__start-time">
+                <span className="Flight_list_round_trip__time">
+                  {formatTime(selectedDeparture?.startTime)}
+                </span>
+                <span className="Flight_list_round_trip__location">
+                  {fromAirport?.City}, {fromAirport?.IATA}
+                </span>
+              </div>
+              <FaArrowRight />
+              <div className="Flight_list_round_trip__end-time">
+                <span className="Flight_list_round_trip__time">
+                  {formatTime(selectedDeparture?.endTime)}
+                </span>
+                <span className="Flight_list_round_trip__location">
+                  {toAirport?.City}, {toAirport?.IATA}
+                </span>
+              </div>
             </div>
-            <div className="Flight_list_round_trip__start-time">
-              <span className="Flight_list_round_trip__time">
-                {formatTime(selectedDeparture?.startTime)}
-              </span>
-              <span className="Flight_list_round_trip__location">
-                {fromAirport?.City}, {fromAirport?.IATA}
-              </span>
-            </div>
-            <FaArrowRight />
-            <div className="Flight_list_round_trip__end-time">
-              <span className="Flight_list_round_trip__time">
-                {formatTime(selectedDeparture?.endTime)}
-              </span>
-              <span className="Flight_list_round_trip__location">
-                {toAirport?.City}, {toAirport?.IATA}
-              </span>
-            </div>
-          </div>
 
-          <div className="Flight_list_round_trip__column">
-            {/* Return Flight */}
-            <div className="Flight_list_round_trip__flight-logo">
-              <img
-                src={selectedReturn?.logo}
-                alt={selectedReturn?.flightNumber}
-              />
-              <span>{selectedReturn?.flightNumber}</span>
+            <div className="Flight_list_round_trip__column">
+              {/* Return Flight */}
+              <div className="Flight_list_round_trip__flight-logo">
+                <img
+                  src={selectedReturn?.logo}
+                  alt={selectedReturn?.flightNumber}
+                />
+                <span>{selectedReturn?.flightNumber}</span>
+              </div>
+              <div className="Flight_list_round_trip__start-time">
+                <span className="Flight_list_round_trip__time">
+                  {formatTime(selectedReturn?.startTime)}
+                </span>
+                <span className="Flight_list_round_trip__location">
+                  {toAirport?.City}, {toAirport?.IATA}
+                </span>
+              </div>
+              <FaArrowRight />
+              <div className="Flight_list_round_trip__end-time">
+                <span className="Flight_list_round_trip__time">
+                  {formatTime(selectedReturn?.endTime)}
+                </span>
+                <span className="Flight_list_round_trip__location">
+                  {fromAirport?.City}, {fromAirport?.IATA}
+                </span>
+              </div>
             </div>
-            <div className="Flight_list_round_trip__start-time">
-              <span className="Flight_list_round_trip__time">
-                {formatTime(selectedReturn?.startTime)}
-              </span>
-              <span className="Flight_list_round_trip__location">
-                {toAirport?.City}, {toAirport?.IATA}
-              </span>
-            </div>
-            <FaArrowRight />
-            <div className="Flight_list_round_trip__end-time">
-              <span className="Flight_list_round_trip__time">
-                {formatTime(selectedReturn?.endTime)}
-              </span>
-              <span className="Flight_list_round_trip__location">
-                {fromAirport?.City}, {fromAirport?.IATA}
-              </span>
-            </div>
-          </div>
 
-          <div className="Flight_list_round_trip__column">
-            {/* Price and Book Now */}
-            <div className="Flight_list_round_trip__total-price">
-              <span>
-                ₹{" "}
-                {(selectedDeparture?.price || 0) + (selectedReturn?.price || 0)}
-              </span>
+            <div className="Flight_list_round_trip__column">
+              {/* Price and Book Now */}
+              <div className="Flight_list_round_trip__total-price">
+                <span>
+                  ₹{" "}
+                  {(selectedDeparture?.price || 0) +
+                    (selectedReturn?.price || 0)}
+                </span>
+              </div>
+              <button onClick={handleBookNow}>Book Now</button>
             </div>
-            <button onClick={handleBookNow}>Book Now</button>
           </div>
+          <div className="flightListOneWay__Extra"></div>
         </div>
-        <div className="flightListOneWay__Extra"></div>
-      </div>
+      )}
     </div>
   );
 };
