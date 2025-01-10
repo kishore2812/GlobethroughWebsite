@@ -45,10 +45,10 @@
     max-width: 1200px;
   }
   .ticket-detail-page__left-section {
-    width: 75%; /* Take up 60% of the screen */
+    width: 80%; /* Take up 60% of the screen */
     display: flex;
     flex-direction: column;
-    gap: 2rem; /* Space between ticket details and passenger details */
+    gap: 1rem;
   }
 
   .ticket-detail-page__price-details {

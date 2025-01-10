@@ -1,8 +1,7 @@
 .RoundTripTicketDetails__container {
   display: flex;
   justify-content: space-around;
-  gap: 40px;
-  padding-left: 40px;
+
   flex-wrap: wrap; /* To make sure cards wrap on smaller screens */
 }
 
