@@ -3,7 +3,11 @@ import useFlightStore from "../../Stores/FlightStore";
 import { useNavigate } from "react-router-dom";
 import "./TicketPrice.scss";
 
-const PriceDetails: React.FC = () => {
+interface PriceDetailsProps {
+  passengerDetailsRef: React.RefObject<HTMLDivElement>;
+}
+
+const PriceDetails: React.FC<PriceDetailsProps> = ({ passengerDetailsRef }) => {
   const selectedTrip = useFlightStore((state) => state.selectedTrip);
   const selectedFlight = useFlightStore((state) => state.selectedFlight);
   const selectedDeparture = useFlightStore((state) => state.selectedDeparture);
@@ -43,10 +47,21 @@ const PriceDetails: React.FC = () => {
     if (arePassengerDetailsFilled()) {
       navigate("/seats-meals-luggage");
     } else {
-      navigate("/passenger-details", { state: { highlightFields: true } });
+      // Scroll to the PassengerDetails section and position it around 50% of the viewport height
+      if (passengerDetailsRef.current) {
+        const element = passengerDetailsRef.current;
+        const elementRect = element.getBoundingClientRect();
+        const elementTop = elementRect.top + window.pageYOffset;
+        const offset = window.innerHeight / 1 - elementRect.height / 1;
+
+        // Scroll the page to the desired position
+        window.scrollTo({
+          top: elementTop - offset,
+          behavior: "smooth",
+        });
+      }
     }
   };
-
   return (
     <div>
       <div className="price-details">

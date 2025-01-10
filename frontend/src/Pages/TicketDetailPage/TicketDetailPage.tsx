@@ -1,14 +1,17 @@
-import React from "react";
+import React, { useRef } from "react";
 import useFlightStore from "../../Stores/FlightStore";
 import TicketDetailsOneWay from "../../Components/TicketDetails/OneWayTicketDetails";
 import TicketDetailsRoundTrip from "../../Components/TicketDetails/RoundTripTicketDetails";
 import PriceDetails from "../../Components/TicketDetails/TicketPriceDetails";
-import "./TicketDetailPage.scss"; // SCSS for styling
+import "./TicketDetailPage.scss";
 import Header from "../../Components/Header/Header";
 import PassengerDetails from "../../Components/PassengerDetails/PassengerDetails";
 import CancellationDateChangePolicy from "../../Components/CancellationAndDateChange.tsx/CancellationAndDateChange";
 
 const TicketDetailPage: React.FC = () => {
+  // Create a ref for PassengerDetails
+  const passengerDetailsRef = useRef<HTMLDivElement | null>(null);
+
   // Fetch flight details from Zustand store
   const selectedTrip = useFlightStore((state) => state.selectedTrip);
   const selectedFlight = useFlightStore((state) => state.selectedFlight); // One-way flight
@@ -44,7 +47,10 @@ const TicketDetailPage: React.FC = () => {
           </div>
 
           {/* Passenger Details */}
-          <div className="ticket-detail-page__passenger-details">
+          <div
+            ref={passengerDetailsRef}
+            className="ticket-detail-page__passenger-details"
+          >
             <CancellationDateChangePolicy />
             <PassengerDetails />
           </div>
@@ -52,7 +58,8 @@ const TicketDetailPage: React.FC = () => {
 
         {/* Right Section: Price Details */}
         <div className="ticket-detail-page__price-details">
-          <PriceDetails />
+          {/* Pass the ref to PriceDetails */}
+          <PriceDetails passengerDetailsRef={passengerDetailsRef} />
         </div>
       </div>
     </div>
