@@ -1,0 +1,50 @@
+.cancellation__date-change__container {
+  display: flex;
+  flex-direction: column;
+  padding: 25px;
+  background-color: #fff;
+  gap: 20px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+
+  h2 {
+    color: black;
+    font-size: 1.5rem;
+    margin: 5px;
+  }
+
+  .cancellation__date-change__card {
+    background-color: #f0f0f0;
+    padding: 10px 20px;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border: 1px solid #c2c2c2;
+
+    .cancellation__date-change__heading {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin: 0 10px;
+      margin-top: 10px;
+      margin-bottom: 5px;
+      padding: 0;
+    }
+
+    .cancellation__date-change__content {
+      display: flex;
+      justify-content: space-between;
+
+      .cancellation__date-change__column {
+        flex: 1;
+        padding: 0 10px;
+
+        &--left {
+          text-align: left;
+        }
+
+        &--center {
+          text-align: center;
+        }
+      }
+    }
+  }
+}
