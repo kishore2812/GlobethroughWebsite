@@ -107,7 +107,6 @@
   }
 }
 
-//modal styles
 .passenger-details__modal {
   position: fixed;
   top: 0;
@@ -156,6 +155,26 @@
           border-radius: 5px;
           font-size: 1rem;
         }
+
+        // Error styles for input and select
+        &.error {
+          input,
+          select {
+            border-color: red;
+            background-color: #f8d7da;
+          }
+
+          label {
+            color: red;
+          }
+        }
+
+        // Error message styles
+        .error {
+          color: red;
+          font-size: 0.875rem;
+          margin-top: 0.25rem;
+        }
       }
     }
 
@@ -177,15 +196,6 @@
 
           &:hover {
             background-color: #01493e;
-          }
-        }
-
-        &.passenger-details__cancel-button {
-          background-color: #f44336;
-          color: white;
-
-          &:hover {
-            background-color: #d32f2f;
           }
         }
       }

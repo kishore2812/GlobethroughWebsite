@@ -400,9 +400,11 @@ const PassengerDetails: React.FC = () => {
               </div>
 
               <div className="passenger-details__form-actions">
-                <button type="submit">Save Changes</button>
-                <button type="button" onClick={() => setIsModalOpen(false)}>
-                  Cancel
+                <button
+                  className="passenger-details__save-button"
+                  type="submit"
+                >
+                  Save Changes
                 </button>
               </div>
             </form>
