@@ -187,6 +187,9 @@ const PassengerDetails: React.FC = () => {
 
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
+      setTimeout(() => {
+        setFormErrors({}); // Clear errors after 3 seconds
+      }, 3000);
       return;
     }
 
