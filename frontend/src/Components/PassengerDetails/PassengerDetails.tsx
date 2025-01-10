@@ -2,6 +2,13 @@ import React, { useState, useEffect } from "react";
 import useFlightStore from "../../Stores/FlightStore";
 import { FaEdit } from "react-icons/fa"; // Edit icon
 import "./PassengerDetails.scss";
+import Select from "react-select";
+import { countries } from "countries-list"; // Import countries data
+
+const countryOptions = Object.keys(countries).map((countryCode) => ({
+  label: `${countries[countryCode].name} (+${countryCode})`, // Format as "Country (+CountryCode)"
+  value: `+${countryCode}`, // Use country code with "+" prefix
+}));
 
 interface Passenger {
   type: string;
@@ -42,7 +49,6 @@ const PassengerDetails: React.FC = () => {
         for (let i = 0; i < totalPassengers; i++) {
           // Check existing passengers and update if necessary
           if (i < adults) {
-            // Ensure the passenger is of type "Adult" and fill the data if exists
             if (passengers[i]?.type === "Adult") {
               newPassengers.push(passengers[i]);
             } else {
@@ -260,16 +266,23 @@ const PassengerDetails: React.FC = () => {
               <div className="passenger-details__form-row">
                 <div className="passenger-details__form-group">
                   <label htmlFor="countryCode">Country Code</label>
-                  <select
+                  <Select
                     name="countryCode"
-                    defaultValue={
-                      passengers[selectedPassengerIndex].countryCode
+                    options={countryOptions}
+                    value={countryOptions.find(
+                      (option) =>
+                        option.value ===
+                        passengers[selectedPassengerIndex]?.countryCode
+                    )}
+                    onChange={(option) =>
+                      saveChanges({
+                        ...passengers[selectedPassengerIndex],
+                        countryCode: option?.value || "",
+                      })
                     }
-                  >
-                    <option value="+1">+1</option>
-                    <option value="+44">+44</option>
-                    <option value="+91">+91</option>
-                  </select>
+                    isSearchable={true} // Enable search
+                    placeholder="Select Country"
+                  />
                 </div>
                 <div className="passenger-details__form-group">
                   <label htmlFor="gender">Gender</label>
