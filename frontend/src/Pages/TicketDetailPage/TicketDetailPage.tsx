@@ -5,6 +5,7 @@ import TicketDetailsRoundTrip from "../../Components/TicketDetails/RoundTripTick
 import PriceDetails from "../../Components/TicketDetails/TicketPriceDetails";
 import "./TicketDetailPage.scss"; // SCSS for styling
 import Header from "../../Components/Header/Header";
+import PassengerDetails from "../../Components/PassengerDetails/PassengerDetails";
 
 const TicketDetailPage: React.FC = () => {
   // Fetch flight details from Zustand store
@@ -45,6 +46,7 @@ const TicketDetailPage: React.FC = () => {
           <PriceDetails />
         </div>
       </div>
+      <PassengerDetails />
     </div>
   );
 };
