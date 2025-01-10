@@ -32,10 +32,9 @@ const PassengerDetails: React.FC = () => {
     field: keyof PassengerData,
     value: string
   ) => {
-    // Ensure the field is a valid key of PassengerData and passengerData is properly typed
     const newPassengerData = [...passengerData];
-    newPassengerData[index][field] = value; // TypeScript will now infer the correct type for field
-    setPassengerData(newPassengerData);
+    newPassengerData[index][field] = value; // Assign the corrected value
+    setPassengerData(newPassengerData); // Update the state
   };
 
   const toggleEdit = (index: number) => {
