@@ -277,7 +277,7 @@ const PassengerDetails: React.FC = () => {
         </div>
         <div className="passenger-details__item-actions">
           <button onClick={() => toggleEdit(i)}>
-            <FaEdit />
+            <FaEdit /> Edit
           </button>
           <button onClick={() => deletePassenger(i)}>Delete</button>
         </div>
@@ -295,7 +295,7 @@ const PassengerDetails: React.FC = () => {
       {isModalOpen && selectedPassengerIndex !== null && (
         <div className="passenger-details__modal">
           <div className="passenger-details__modal-content">
-            <h2>Edit Passenger Details</h2>
+            <h2>Passenger Details</h2>
             <form onSubmit={handleFormSubmit}>
               <div className="passenger-details__form-row">
                 <div className="passenger-details__form-group">

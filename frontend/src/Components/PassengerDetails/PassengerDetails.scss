@@ -119,9 +119,9 @@
   align-items: center;
   z-index: 1000;
 
-  &-content {
+  .passenger-details__modal-content {
     background: white;
-    padding: 2rem;
+    padding: 1rem 2rem;
     border-radius: 8px;
     width: 50%;
     max-width: 600px;
@@ -131,7 +131,8 @@
     gap: 1rem;
 
     h2 {
-      margin-bottom: 1rem;
+      color: black;
+      font-weight: 700;
     }
 
     .passenger-details__form-row {
@@ -144,8 +145,8 @@
         flex-direction: column;
 
         label {
-          margin-bottom: 0.5rem;
-          font-weight: bold;
+          margin-bottom: 0.2rem;
+          font-weight: 600;
         }
 
         input,
@@ -154,6 +155,7 @@
           border: 1px solid #ccc;
           border-radius: 5px;
           font-size: 1rem;
+          margin-bottom: 1.5rem;
         }
 
         // Error styles for input and select
@@ -161,7 +163,6 @@
           input,
           select {
             border-color: red;
-            background-color: #f8d7da;
           }
 
           label {
@@ -171,9 +172,9 @@
 
         // Error message styles
         .error {
+          margin-top: -1rem;
           color: red;
           font-size: 0.875rem;
-          margin-top: 0.25rem;
         }
       }
     }
