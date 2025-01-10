@@ -23,7 +23,9 @@ interface Passenger {
   dob: string;
   email: string;
 }
-
+interface FormErrors {
+  [key: string]: string; // Key is the field name, value is the error message
+}
 const PassengerDetails: React.FC = () => {
   const {
     adults,
@@ -40,6 +42,7 @@ const PassengerDetails: React.FC = () => {
   const [selectedPassengerIndex, setSelectedPassengerIndex] = useState<
     number | null
   >(null);
+  const [formErrors, setFormErrors] = useState<FormErrors>({});
 
   useEffect(() => {
     const totalPassengers = adults + children + infants;
@@ -143,19 +146,62 @@ const PassengerDetails: React.FC = () => {
     }
   }, [adults, children, infants, passengers, setPassengers]);
 
-  // Open the modal and select the passenger to edit
-  const toggleEdit = (index: number) => {
-    setSelectedPassengerIndex(index);
-    setIsModalOpen(true);
+  // Phone number validation (basic international format)
+  const validatePhoneNumber = (phoneNumber: string) => {
+    const phoneRegex = /^\+?[1-9]\d{9,14}$/;
+    return phoneRegex.test(phoneNumber);
   };
 
-  const updateChanges = (data: Passenger) => {
-    if (selectedPassengerIndex !== null) {
-      const updatedPassengers = [...passengers];
-      updatedPassengers[selectedPassengerIndex] = data;
-      setPassengers(updatedPassengers);
-    }
+  // Email validation
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zAZ0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
   };
+
+  // Handle form submission and validation
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target as HTMLFormElement);
+    const firstName = formData.get("firstName") as string;
+    const lastName = formData.get("lastName") as string;
+    const countryCode = formData.get("countryCode") as string;
+    const gender = formData.get("gender") as string;
+    const phoneNumber = formData.get("phoneNumber") as string;
+    const dob = formData.get("dob") as string;
+    const email = formData.get("email") as string;
+
+    const errors: FormErrors = {};
+
+    if (!firstName) errors.firstName = "First Name is required.";
+    if (!lastName) errors.lastName = "Last Name is required.";
+    if (!countryCode) errors.countryCode = "Country Code is required.";
+    if (!gender) errors.gender = "Gender is required.";
+    if (!phoneNumber || !validatePhoneNumber(phoneNumber)) {
+      errors.phoneNumber = "Please enter a valid phone number.";
+    }
+    if (!dob) errors.dob = "Date of Birth is required.";
+    if (!email || !validateEmail(email)) {
+      errors.email = "Please enter a valid email address.";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
+
+    saveChanges({
+      type: passengers[selectedPassengerIndex!].type,
+      firstName,
+      lastName,
+      countryCode,
+      gender,
+      phoneNumber,
+      dob,
+      email,
+    });
+  };
+
   const saveChanges = (data: Passenger) => {
     if (selectedPassengerIndex !== null) {
       const updatedPassengers = [...passengers];
@@ -163,6 +209,19 @@ const PassengerDetails: React.FC = () => {
       setPassengers(updatedPassengers);
       setIsModalOpen(false);
     }
+  };
+  const updateChanges = (data: Passenger) => {
+    if (selectedPassengerIndex !== null) {
+      const updatedPassengers = [...passengers];
+      updatedPassengers[selectedPassengerIndex] = data;
+      setPassengers(updatedPassengers);
+    }
+  };
+
+  // Open the modal and select the passenger to edit
+  const toggleEdit = (index: number) => {
+    setSelectedPassengerIndex(index);
+    setIsModalOpen(true);
   };
 
   // Delete a passenger
@@ -237,22 +296,7 @@ const PassengerDetails: React.FC = () => {
         <div className="passenger-details__modal">
           <div className="passenger-details__modal-content">
             <h2>Edit Passenger Details</h2>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                const formData = new FormData(e.target as HTMLFormElement);
-                saveChanges({
-                  type: passengers[selectedPassengerIndex].type,
-                  firstName: formData.get("firstName") as string,
-                  lastName: formData.get("lastName") as string,
-                  countryCode: formData.get("countryCode") as string,
-                  gender: formData.get("gender") as string,
-                  phoneNumber: formData.get("phoneNumber") as string,
-                  dob: formData.get("dob") as string,
-                  email: formData.get("email") as string,
-                });
-              }}
-            >
+            <form onSubmit={handleFormSubmit}>
               <div className="passenger-details__form-row">
                 <div className="passenger-details__form-group">
                   <label htmlFor="firstName">First Name</label>
@@ -261,6 +305,9 @@ const PassengerDetails: React.FC = () => {
                     name="firstName"
                     defaultValue={passengers[selectedPassengerIndex].firstName}
                   />
+                  {formErrors.firstName && (
+                    <p className="error">{formErrors.firstName}</p>
+                  )}
                 </div>
                 <div className="passenger-details__form-group">
                   <label htmlFor="lastName">Last Name</label>
@@ -269,6 +316,9 @@ const PassengerDetails: React.FC = () => {
                     name="lastName"
                     defaultValue={passengers[selectedPassengerIndex].lastName}
                   />
+                  {formErrors.lastName && (
+                    <p className="error">{formErrors.lastName}</p>
+                  )}
                 </div>
               </div>
 
@@ -284,16 +334,18 @@ const PassengerDetails: React.FC = () => {
                         passengers[selectedPassengerIndex]?.countryCode
                     )}
                     onChange={(option) => {
-                      // Save the country code but do not close the modal
                       const updatedPassenger = {
                         ...passengers[selectedPassengerIndex],
                         countryCode: option?.value || "",
                       };
-                      updateChanges(updatedPassenger); // Update without closing the modal
+                      updateChanges(updatedPassenger);
                     }}
                     isSearchable={true}
                     placeholder="Select Country"
                   />
+                  {formErrors.countryCode && (
+                    <p className="error">{formErrors.countryCode}</p>
+                  )}
                 </div>
                 <div className="passenger-details__form-group">
                   <label htmlFor="gender">Gender</label>
@@ -312,12 +364,15 @@ const PassengerDetails: React.FC = () => {
                 <div className="passenger-details__form-group">
                   <label htmlFor="phoneNumber">Phone Number</label>
                   <input
-                    type="tel"
+                    type="text"
                     name="phoneNumber"
                     defaultValue={
                       passengers[selectedPassengerIndex].phoneNumber
                     }
                   />
+                  {formErrors.phoneNumber && (
+                    <p className="error">{formErrors.phoneNumber}</p>
+                  )}
                 </div>
                 <div className="passenger-details__form-group">
                   <label htmlFor="dob">Date of Birth</label>
@@ -326,31 +381,28 @@ const PassengerDetails: React.FC = () => {
                     name="dob"
                     defaultValue={passengers[selectedPassengerIndex].dob}
                   />
+                  {formErrors.dob && <p className="error">{formErrors.dob}</p>}
                 </div>
               </div>
 
-              <div className="passenger-details__form-group">
-                <label htmlFor="email">Email Address</label>
-                <input
-                  type="email"
-                  name="email"
-                  defaultValue={passengers[selectedPassengerIndex].email}
-                />
+              <div className="passenger-details__form-row">
+                <div className="passenger-details__form-group">
+                  <label htmlFor="email">Email</label>
+                  <input
+                    type="email"
+                    name="email"
+                    defaultValue={passengers[selectedPassengerIndex].email}
+                  />
+                  {formErrors.email && (
+                    <p className="error">{formErrors.email}</p>
+                  )}
+                </div>
               </div>
 
               <div className="passenger-details__form-actions">
-                <button
-                  type="button"
-                  className="passenger-details__cancel-button"
-                  onClick={() => setIsModalOpen(false)}
-                >
+                <button type="submit">Save Changes</button>
+                <button type="button" onClick={() => setIsModalOpen(false)}>
                   Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="passenger-details__save-button"
-                >
-                  Save
                 </button>
               </div>
             </form>
