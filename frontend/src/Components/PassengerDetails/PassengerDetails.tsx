@@ -290,6 +290,7 @@ const PassengerDetails: React.FC = () => {
 
   return (
     <div className="passenger-details">
+      <h2>Passenger Details</h2>
       {renderPassengerCards()}
       <button className="passenger-details__add-button" onClick={addPassenger}>
         Add Passenger

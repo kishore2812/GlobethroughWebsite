@@ -1,105 +1,99 @@
 .passenger-details {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  padding: 1.5rem;
-  background-color: #f7f7f7;
+  background-color: white;
+  padding: 1rem;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+  h2 {
+    color: black;
+    font-weight: 700;
+    font-size: 20px;
+    margin-bottom: 1.5rem;
+  }
 
   .passenger-details__item {
-    background-color: white;
-    padding: 1rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     display: flex;
     justify-content: space-between;
-    gap: 1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-
-    &.editing {
-      border: 2px solid #01493e;
-    }
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    background-color: #f0f0f0;
+    margin-bottom: 1rem;
 
     .passenger-details__item-info {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
+      flex: 1;
 
       h3 {
         margin: 0;
+        font-size: 1rem;
+        font-weight: 500;
+        color: black;
+        opacity: 0.7;
+      }
+
+      p {
+        margin: 0.2rem 0;
+        padding: 0;
         font-size: 1.2rem;
-        font-weight: bold;
+        color: black;
+        font-weight: 700;
       }
 
-      .passenger-details__name {
-        font-size: 1rem;
-        color: #333;
-      }
-
-      .passenger-details__message {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-size: 1rem;
+      span {
         color: #f44336;
-
-        .passenger-details__edit-icon {
-          cursor: pointer;
-          color: #01493e;
-          font-size: 1.2rem;
-        }
-      }
-
-      input {
-        padding: 0.5rem;
-        margin: 0.5rem 0;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        width: 100%;
-        font-size: 1rem;
+        font-size: 1.2rem;
       }
     }
 
     .passenger-details__item-actions {
       display: flex;
-      align-items: center;
       gap: 1rem;
 
       button {
         padding: 0.5rem 1rem;
-        background-color: #f44336;
-        color: white;
         border: none;
         border-radius: 5px;
         cursor: pointer;
+        font-size: 1rem;
         transition: background-color 0.3s ease;
 
-        &:hover {
-          background-color: #d32f2f;
-        }
-      }
-
-      .edit-button {
-        background-color: #01493e;
-        &:hover {
+        &:first-child {
           background-color: #027f6d;
+          color: white;
+
+          &:hover {
+            background-color: #01493e;
+          }
+
+          svg {
+            margin-right: 0.5rem;
+          }
+        }
+
+        &:last-child {
+          background-color: #f44336;
+          color: white;
+
+          &:hover {
+            background-color: #d32f2f;
+          }
         }
       }
     }
   }
 
   .passenger-details__add-button {
-    align-self: flex-start;
-    margin-top: 2rem;
+    padding: 1rem 2rem;
     background-color: #027f6d;
-    padding: 0.8rem 2rem;
-    font-size: 1rem;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
 
     &:hover {
       background-color: #01493e;
@@ -107,6 +101,7 @@
   }
 }
 
+//modal
 .passenger-details__modal {
   position: fixed;
   top: 0;
