@@ -282,7 +282,7 @@ const PassengerDetails: React.FC = () => {
           <button onClick={() => toggleEdit(i)}>
             <FaEdit /> Edit
           </button>
-          <button onClick={() => deletePassenger(i)}>Delete</button>
+          <button onClick={() => deletePassenger(i)}>Remove</button>
         </div>
       </div>
     ));

@@ -6,6 +6,7 @@ import PriceDetails from "../../Components/TicketDetails/TicketPriceDetails";
 import "./TicketDetailPage.scss"; // SCSS for styling
 import Header from "../../Components/Header/Header";
 import PassengerDetails from "../../Components/PassengerDetails/PassengerDetails";
+import CancellationDateChangePolicy from "../../Components/CancellationAndDateChange.tsx/CancellationAndDateChange";
 
 const TicketDetailPage: React.FC = () => {
   // Fetch flight details from Zustand store
@@ -44,6 +45,7 @@ const TicketDetailPage: React.FC = () => {
 
           {/* Passenger Details */}
           <div className="ticket-detail-page__passenger-details">
+            <CancellationDateChangePolicy />
             <PassengerDetails />
           </div>
         </div>
