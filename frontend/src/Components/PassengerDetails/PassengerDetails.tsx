@@ -189,7 +189,7 @@ const PassengerDetails: React.FC = () => {
       setFormErrors(errors);
       setTimeout(() => {
         setFormErrors({}); // Clear errors after 3 seconds
-      }, 3000);
+      }, 2000);
       return;
     }
 
