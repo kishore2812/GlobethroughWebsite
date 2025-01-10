@@ -33,8 +33,11 @@ const PassengerDetails: React.FC = () => {
     value: string
   ) => {
     const newPassengerData = [...passengerData];
-    newPassengerData[index][field] = value; // Assign the corrected value
-    setPassengerData(newPassengerData); // Update the state
+    newPassengerData[index] = {
+      ...newPassengerData[index],
+      [field]: value,
+    };
+    setPassengerData(newPassengerData);
   };
 
   const toggleEdit = (index: number) => {
