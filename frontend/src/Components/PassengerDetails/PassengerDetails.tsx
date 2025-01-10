@@ -1,138 +1,212 @@
 import React, { useState, useEffect } from "react";
 import useFlightStore from "../../Stores/FlightStore";
+import { FaEdit } from "react-icons/fa"; // Edit icon
+import "./PassengerDetails.scss";
 
-interface PassengerData {
+interface Passenger {
   type: string;
   firstName: string;
   lastName: string;
-  editing: boolean;
+  countryCode: string;
+  gender: string;
+  phoneNumber: string;
+  dob: string;
+  email: string;
 }
 
 const PassengerDetails: React.FC = () => {
-  const { adults, children, infants, setAdults, setChildren, setInfants } =
-    useFlightStore();
+  const {
+    adults,
+    children,
+    infants,
+    passengers, // This comes directly from the Zustand store, so it persists
+    setAdults,
+    setChildren,
+    setInfants,
+    setPassengers,
+  } = useFlightStore();
 
-  // Explicitly typing passengerData as an array of PassengerData
-  const [passengerData, setPassengerData] = useState<PassengerData[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPassengerIndex, setSelectedPassengerIndex] = useState<
+    number | null
+  >(null);
 
   useEffect(() => {
-    // Initialize the passenger data based on the counts from the store
     const totalPassengers = adults + children + infants;
-    const initialData = Array.from({ length: totalPassengers }, (_, i) => ({
-      type: i < adults ? "Adult" : i < adults + children ? "Child" : "Infant",
-      firstName: "",
-      lastName: "",
-      editing: false,
-    }));
-    setPassengerData(initialData);
-  }, [adults, children, infants]);
 
-  const handleInputChange = (
-    index: number,
-    field: keyof PassengerData,
-    value: string
-  ) => {
-    const newPassengerData = [...passengerData];
-    newPassengerData[index] = {
-      ...newPassengerData[index],
-      [field]: value,
-    };
-    setPassengerData(newPassengerData);
-  };
+    // If there are already passengers, don't reinitialize
+    if (passengers.length > 0) {
+      // Only update the passengers if the total number of passengers has changed
+      if (passengers.length !== totalPassengers) {
+        const newPassengers: Passenger[] = [];
+        for (let i = 0; i < totalPassengers; i++) {
+          // Check existing passengers and update if necessary
+          if (i < adults) {
+            // Ensure the passenger is of type "Adult" and fill the data if exists
+            if (passengers[i]?.type === "Adult") {
+              newPassengers.push(passengers[i]);
+            } else {
+              newPassengers.push({
+                type: "Adult",
+                firstName: "",
+                lastName: "",
+                countryCode: "",
+                gender: "",
+                phoneNumber: "",
+                dob: "",
+                email: "",
+              });
+            }
+          } else if (i < adults + children) {
+            if (passengers[i]?.type === "Child") {
+              newPassengers.push(passengers[i]);
+            } else {
+              newPassengers.push({
+                type: "Child",
+                firstName: "",
+                lastName: "",
+                countryCode: "",
+                gender: "",
+                phoneNumber: "",
+                dob: "",
+                email: "",
+              });
+            }
+          } else {
+            if (passengers[i]?.type === "Infant") {
+              newPassengers.push(passengers[i]);
+            } else {
+              newPassengers.push({
+                type: "Infant",
+                firstName: "",
+                lastName: "",
+                countryCode: "",
+                gender: "",
+                phoneNumber: "",
+                dob: "",
+                email: "",
+              });
+            }
+          }
+        }
+        setPassengers(newPassengers);
+      }
+    } else {
+      // If there are no passengers yet (e.g., on first load or after reset), initialize the passengers
+      const newPassengers: Passenger[] = [];
+      for (let i = 0; i < totalPassengers; i++) {
+        if (i < adults) {
+          newPassengers.push({
+            type: "Adult",
+            firstName: "",
+            lastName: "",
+            countryCode: "",
+            gender: "",
+            phoneNumber: "",
+            dob: "",
+            email: "",
+          });
+        } else if (i < adults + children) {
+          newPassengers.push({
+            type: "Child",
+            firstName: "",
+            lastName: "",
+            countryCode: "",
+            gender: "",
+            phoneNumber: "",
+            dob: "",
+            email: "",
+          });
+        } else {
+          newPassengers.push({
+            type: "Infant",
+            firstName: "",
+            lastName: "",
+            countryCode: "",
+            gender: "",
+            phoneNumber: "",
+            dob: "",
+            email: "",
+          });
+        }
+      }
+      setPassengers(newPassengers);
+    }
+  }, [adults, children, infants, passengers, setPassengers]);
 
+  // Open the modal and select the passenger to edit
   const toggleEdit = (index: number) => {
-    const newPassengerData = [...passengerData];
-    newPassengerData[index].editing = !newPassengerData[index].editing;
-    setPassengerData(newPassengerData);
+    setSelectedPassengerIndex(index);
+    setIsModalOpen(true);
   };
 
-  const saveChanges = (index: number) => {
-    const newPassengerData = [...passengerData];
-    newPassengerData[index].editing = false; // Close the form view
-    setPassengerData(newPassengerData); // Save the changes and reflect them in the card
+  // Save changes made to a passenger
+  const saveChanges = (data: Passenger) => {
+    if (selectedPassengerIndex !== null) {
+      const updatedPassengers = [...passengers];
+      updatedPassengers[selectedPassengerIndex] = data;
+      setPassengers(updatedPassengers);
+      setIsModalOpen(false);
+    }
   };
 
+  // Delete a passenger
   const deletePassenger = (index: number) => {
-    const passengerToDelete = passengerData[index];
-
-    // Prevent deletion if it's the only adult
-    if (passengerToDelete.type === "Adult" && adults === 1) {
+    if (passengers[index].type === "Adult" && adults === 1) {
       alert("You cannot delete the last adult.");
-      return; // Do not delete if only one adult remains
+      return;
     }
 
-    // Proceed with deletion
-    const newPassengerData = passengerData.filter((_, i) => i !== index);
-    setPassengerData(newPassengerData);
+    const newPassengerData = passengers.filter((_, i) => i !== index);
+    setPassengers(newPassengerData);
 
-    // Update the counts in the Zustand store
-    if (passengerToDelete.type === "Adult") {
+    if (passengers[index].type === "Adult") {
       setAdults(adults - 1);
-    } else if (passengerToDelete.type === "Child") {
+    } else if (passengers[index].type === "Child") {
       setChildren(children - 1);
-    } else if (passengerToDelete.type === "Infant") {
+    } else if (passengers[index].type === "Infant") {
       setInfants(infants - 1);
     }
   };
 
+  // Add a new passenger (assuming it's an Adult by default)
   const addPassenger = () => {
-    const newPassenger = {
-      type: "Adult", // Default new passenger as Adult
+    const newPassenger: Passenger = {
+      type: "Adult",
       firstName: "",
       lastName: "",
-      editing: true, // Open form to enter data immediately
+      countryCode: "",
+      gender: "",
+      phoneNumber: "",
+      dob: "",
+      email: "",
     };
-    const newPassengerData = [...passengerData, newPassenger];
-    setPassengerData(newPassengerData);
-
-    // Update the adults count in the Zustand store
+    setPassengers([...passengers, newPassenger]);
     setAdults(adults + 1);
   };
 
+  // Render the list of passengers
   const renderPassengerCards = () => {
-    return passengerData.map((passenger, i) => (
-      <div
-        key={i}
-        className="passenger-item"
-        onClick={() => !passenger.editing && toggleEdit(i)}
-      >
-        <h3>
-          Passenger {i + 1} ({passenger.type})
-        </h3>
-        {!passenger.editing ? (
-          <>
-            <p>First Name: {passenger.firstName || "N/A"}</p>
-            <p>Last Name: {passenger.lastName || "N/A"}</p>
-            <button onClick={() => deletePassenger(i)}>Delete</button>
-          </>
-        ) : (
-          <>
-            <input
-              type="text"
-              placeholder="First Name"
-              value={passenger.firstName}
-              onChange={(e) =>
-                handleInputChange(i, "firstName", e.target.value)
-              }
-              onClick={(e) => e.stopPropagation()} // Prevent toggle on input click
-            />
-            <input
-              type="text"
-              placeholder="Last Name"
-              value={passenger.lastName}
-              onChange={(e) => handleInputChange(i, "lastName", e.target.value)}
-              onClick={(e) => e.stopPropagation()} // Prevent toggle on input click
-            />
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                saveChanges(i);
-              }}
-            >
-              Save
-            </button>
-          </>
-        )}
+    return passengers.map((passenger, i) => (
+      <div key={i} className="passenger-details__item">
+        <div className="passenger-details__item-info">
+          <h3>
+            Passenger {i + 1} ({passenger.type})
+          </h3>
+          {passenger.firstName && passenger.lastName ? (
+            <p>
+              {passenger.firstName} {passenger.lastName}
+            </p>
+          ) : (
+            <span>Please fill the details</span>
+          )}
+        </div>
+        <div className="passenger-details__item-actions">
+          <button onClick={() => toggleEdit(i)}>
+            <FaEdit />
+          </button>
+          <button onClick={() => deletePassenger(i)}>Delete</button>
+        </div>
       </div>
     ));
   };
@@ -140,7 +214,125 @@ const PassengerDetails: React.FC = () => {
   return (
     <div className="passenger-details">
       {renderPassengerCards()}
-      <button onClick={addPassenger}>Add Passenger</button>
+      <button className="passenger-details__add-button" onClick={addPassenger}>
+        Add Passenger
+      </button>
+
+      {isModalOpen && selectedPassengerIndex !== null && (
+        <div className="passenger-details__modal">
+          <div className="passenger-details__modal-content">
+            <h2>Edit Passenger Details</h2>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target as HTMLFormElement);
+                saveChanges({
+                  type: passengers[selectedPassengerIndex].type,
+                  firstName: formData.get("firstName") as string,
+                  lastName: formData.get("lastName") as string,
+                  countryCode: formData.get("countryCode") as string,
+                  gender: formData.get("gender") as string,
+                  phoneNumber: formData.get("phoneNumber") as string,
+                  dob: formData.get("dob") as string,
+                  email: formData.get("email") as string,
+                });
+              }}
+            >
+              <div className="passenger-details__form-row">
+                <div className="passenger-details__form-group">
+                  <label htmlFor="firstName">First Name</label>
+                  <input
+                    type="text"
+                    name="firstName"
+                    defaultValue={passengers[selectedPassengerIndex].firstName}
+                  />
+                </div>
+                <div className="passenger-details__form-group">
+                  <label htmlFor="lastName">Last Name</label>
+                  <input
+                    type="text"
+                    name="lastName"
+                    defaultValue={passengers[selectedPassengerIndex].lastName}
+                  />
+                </div>
+              </div>
+
+              <div className="passenger-details__form-row">
+                <div className="passenger-details__form-group">
+                  <label htmlFor="countryCode">Country Code</label>
+                  <select
+                    name="countryCode"
+                    defaultValue={
+                      passengers[selectedPassengerIndex].countryCode
+                    }
+                  >
+                    <option value="+1">+1</option>
+                    <option value="+44">+44</option>
+                    <option value="+91">+91</option>
+                  </select>
+                </div>
+                <div className="passenger-details__form-group">
+                  <label htmlFor="gender">Gender</label>
+                  <select
+                    name="gender"
+                    defaultValue={passengers[selectedPassengerIndex].gender}
+                  >
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="passenger-details__form-row">
+                <div className="passenger-details__form-group">
+                  <label htmlFor="phoneNumber">Phone Number</label>
+                  <input
+                    type="tel"
+                    name="phoneNumber"
+                    defaultValue={
+                      passengers[selectedPassengerIndex].phoneNumber
+                    }
+                  />
+                </div>
+                <div className="passenger-details__form-group">
+                  <label htmlFor="dob">Date of Birth</label>
+                  <input
+                    type="date"
+                    name="dob"
+                    defaultValue={passengers[selectedPassengerIndex].dob}
+                  />
+                </div>
+              </div>
+
+              <div className="passenger-details__form-group">
+                <label htmlFor="email">Email Address</label>
+                <input
+                  type="email"
+                  name="email"
+                  defaultValue={passengers[selectedPassengerIndex].email}
+                />
+              </div>
+
+              <div className="passenger-details__form-actions">
+                <button
+                  type="button"
+                  className="passenger-details__cancel-button"
+                  onClick={() => setIsModalOpen(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="passenger-details__save-button"
+                >
+                  Save
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

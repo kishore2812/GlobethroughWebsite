@@ -16,9 +16,20 @@ interface Airport {
   Altitude: number;
   Timezone: number;
   Category: string;
-  "Timezone Name": string;
+  TimezoneName: string;
   Type: string;
   Source: string;
+}
+
+interface Passenger {
+  type: string;
+  firstName: string;
+  lastName: string;
+  countryCode: string;
+  gender: string;
+  phoneNumber: string;
+  dob: string;
+  email: string;
 }
 
 interface FlightStore {
@@ -34,6 +45,7 @@ interface FlightStore {
   selectedFlight: Flight | null;
   selectedDeparture: Flight | null;
   selectedReturn: Flight | null;
+  passengers: Passenger[];
   setSelectedDeparture: (flight: Flight | null) => void;
   setSelectedReturn: (flight: Flight | null) => void;
   setSelectedFlight: (flight: Flight | null) => void;
@@ -46,6 +58,7 @@ interface FlightStore {
   setSelectedClass: (selectedClass: string) => void;
   setFromAirport: (airport: Airport | null) => void;
   setToAirport: (airport: Airport | null) => void;
+  setPassengers: (passengers: Passenger[]) => void;
 }
 
 const today = new Date().toISOString().split("T")[0]; // Format as "YYYY-MM-DD"
@@ -65,6 +78,8 @@ const useFlightStore = create(
       selectedFlight: null,
       selectedDeparture: null,
       selectedReturn: null,
+      passengers: [], // Initialize with an empty array
+
       setSelectedDeparture: (flight) => set({ selectedDeparture: flight }),
       setSelectedReturn: (flight) => set({ selectedReturn: flight }),
       setSelectedFlight: (flight) => set({ selectedFlight: flight }),
@@ -77,24 +92,10 @@ const useFlightStore = create(
       setSelectedClass: (selectedClass) => set({ selectedClass }),
       setFromAirport: (airport) => set({ fromAirport: airport }),
       setToAirport: (airport) => set({ toAirport: airport }),
-      resetStore: () =>
-        set({
-          selectedTrip: "one-way",
-          departureDate: null,
-          returnDate: null,
-          adults: 1,
-          children: 0,
-          infants: 0,
-          selectedClass: "",
-          fromAirport: null,
-          toAirport: null,
-          selectedFlight: null,
-          selectedDeparture: null,
-          selectedReturn: null,
-        }), // Reset state to initial values
+      setPassengers: (passengers) => set({ passengers }),
     }),
     {
-      name: "flight-store", // Unique storage key
+      name: "flight-store", // Unique storage key for persistence
     }
   )
 );

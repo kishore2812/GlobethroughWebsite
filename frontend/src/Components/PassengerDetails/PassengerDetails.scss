@@ -1,0 +1,194 @@
+.passenger-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background-color: #f7f7f7;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+  .passenger-details__item {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &.editing {
+      border: 2px solid #01493e;
+    }
+
+    .passenger-details__item-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      h3 {
+        margin: 0;
+        font-size: 1.2rem;
+        font-weight: bold;
+      }
+
+      .passenger-details__name {
+        font-size: 1rem;
+        color: #333;
+      }
+
+      .passenger-details__message {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1rem;
+        color: #f44336;
+
+        .passenger-details__edit-icon {
+          cursor: pointer;
+          color: #01493e;
+          font-size: 1.2rem;
+        }
+      }
+
+      input {
+        padding: 0.5rem;
+        margin: 0.5rem 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        width: 100%;
+        font-size: 1rem;
+      }
+    }
+
+    .passenger-details__item-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      button {
+        padding: 0.5rem 1rem;
+        background-color: #f44336;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          background-color: #d32f2f;
+        }
+      }
+
+      .edit-button {
+        background-color: #01493e;
+        &:hover {
+          background-color: #027f6d;
+        }
+      }
+    }
+  }
+
+  .passenger-details__add-button {
+    align-self: flex-start;
+    margin-top: 2rem;
+    background-color: #027f6d;
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #01493e;
+    }
+  }
+}
+
+//modal styles
+.passenger-details__modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+
+  &-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    width: 50%;
+    max-width: 600px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    h2 {
+      margin-bottom: 1rem;
+    }
+
+    .passenger-details__form-row {
+      display: flex;
+      gap: 1rem;
+
+      .passenger-details__form-group {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+
+        label {
+          margin-bottom: 0.5rem;
+          font-weight: bold;
+        }
+
+        input,
+        select {
+          padding: 0.5rem;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          font-size: 1rem;
+        }
+      }
+    }
+
+    .passenger-details__form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+
+      button {
+        padding: 0.8rem 1.5rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &.passenger-details__save-button {
+          background-color: #027f6d;
+          color: white;
+
+          &:hover {
+            background-color: #01493e;
+          }
+        }
+
+        &.passenger-details__cancel-button {
+          background-color: #f44336;
+          color: white;
+
+          &:hover {
+            background-color: #d32f2f;
+          }
+        }
+      }
+    }
+  }
+}
