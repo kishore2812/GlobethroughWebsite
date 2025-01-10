@@ -13,6 +13,7 @@ import AddSubUsersPage from "./Pages/AccountPage/addSubUsers";
 import SetPasswordPage from "./Pages/SetPasswordPage/SetPasswordPage";
 import SubuserLoginPage from "./Pages/Signin_Page/subuserLogin";
 import TicketDetailPage from "./Pages/TicketDetailPage/TicketDetailPage";
+import SeatsMealsLuggage from "./Pages/SeatMealsLuggage/SeatsMealsLuggage";
 
 const App: React.FC = () => {
   return (
@@ -30,6 +31,7 @@ const App: React.FC = () => {
         <Route path="/add-sub-user" element={<AddSubUsersPage />} />
         <Route path="/set-password/:id" element={<SetPasswordPage />} />
         <Route path="/ticket-detail" element={<TicketDetailPage />} />
+        <Route path="/seats-meals-luggage" element={<SeatsMealsLuggage />} />
       </Routes>
     </Router>
   );
