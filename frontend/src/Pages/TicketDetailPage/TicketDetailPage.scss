@@ -44,4 +44,17 @@
     margin: 0 auto;
     max-width: 1200px;
   }
+  .ticket-detail-page__left-section {
+    width: 75%; /* Take up 60% of the screen */
+    display: flex;
+    flex-direction: column;
+    gap: 2rem; /* Space between ticket details and passenger details */
+  }
+
+  .ticket-detail-page__price-details {
+    position: sticky;
+    top: 50px;
+    width: 20%; /* Right side price details */
+    height: 100%;
+  }
 }

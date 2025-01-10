@@ -31,22 +31,28 @@ const TicketDetailPage: React.FC = () => {
 
       {/* Content */}
       <div className="ticket-detail-page__content">
-        {/* Ticket Details */}
-        <div className="ticket-detail-page__ticket-details">
-          {selectedTrip === "one-way" && selectedFlight && (
-            <TicketDetailsOneWay />
-          )}
-          {selectedTrip === "round-trip" &&
-            selectedDeparture &&
-            selectedReturn && <TicketDetailsRoundTrip />}
+        {/* Left Section: Ticket Details & Passenger Details */}
+        <div className="ticket-detail-page__left-section">
+          <div className="ticket-detail-page__ticket-details">
+            {selectedTrip === "one-way" && selectedFlight && (
+              <TicketDetailsOneWay />
+            )}
+            {selectedTrip === "round-trip" &&
+              selectedDeparture &&
+              selectedReturn && <TicketDetailsRoundTrip />}
+          </div>
+
+          {/* Passenger Details */}
+          <div className="ticket-detail-page__passenger-details">
+            <PassengerDetails />
+          </div>
         </div>
 
-        {/* Price Details */}
+        {/* Right Section: Price Details */}
         <div className="ticket-detail-page__price-details">
           <PriceDetails />
         </div>
       </div>
-      <PassengerDetails />
     </div>
   );
 };
