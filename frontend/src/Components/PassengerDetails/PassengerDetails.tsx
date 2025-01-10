@@ -3,11 +3,14 @@ import useFlightStore from "../../Stores/FlightStore";
 import { FaEdit } from "react-icons/fa"; // Edit icon
 import "./PassengerDetails.scss";
 import Select from "react-select";
-import { countries } from "countries-list"; // Import countries data
+import { countries } from "countries-list"; // Import countries-list package
 
+// Get the list of countries and their country codes
 const countryOptions = Object.keys(countries).map((countryCode) => ({
-  label: `${countries[countryCode].name} (+${countryCode})`, // Format as "Country (+CountryCode)"
-  value: `+${countryCode}`, // Use country code with "+" prefix
+  label: `${
+    countries[countryCode as keyof typeof countries].name
+  } (+${countryCode})`,
+  value: `+${countryCode}`, // Use + followed by the country code
 }));
 
 interface Passenger {
@@ -146,7 +149,13 @@ const PassengerDetails: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  // Save changes made to a passenger
+  const updateChanges = (data: Passenger) => {
+    if (selectedPassengerIndex !== null) {
+      const updatedPassengers = [...passengers];
+      updatedPassengers[selectedPassengerIndex] = data;
+      setPassengers(updatedPassengers);
+    }
+  };
   const saveChanges = (data: Passenger) => {
     if (selectedPassengerIndex !== null) {
       const updatedPassengers = [...passengers];
@@ -274,13 +283,15 @@ const PassengerDetails: React.FC = () => {
                         option.value ===
                         passengers[selectedPassengerIndex]?.countryCode
                     )}
-                    onChange={(option) =>
-                      saveChanges({
+                    onChange={(option) => {
+                      // Save the country code but do not close the modal
+                      const updatedPassenger = {
                         ...passengers[selectedPassengerIndex],
                         countryCode: option?.value || "",
-                      })
-                    }
-                    isSearchable={true} // Enable search
+                      };
+                      updateChanges(updatedPassenger); // Update without closing the modal
+                    }}
+                    isSearchable={true}
                     placeholder="Select Country"
                   />
                 </div>
