@@ -62,7 +62,7 @@
     align-items: center;
     gap: 30px; // Space between icons
     padding-bottom: 20px;
-    border-bottom: 2px solid #e6ebf0;
+    border-bottom: 2px solid #ccc;
 
     .seats-meals-luggage-page__iconsContainer {
       p {
@@ -124,7 +124,7 @@
       background-color: transparent;
       border: 1px solid #000;
       cursor: pointer;
-      border-radius: 8px;
+      border-radius: 4px;
       transition: background-color 0.3s ease;
     }
   }
