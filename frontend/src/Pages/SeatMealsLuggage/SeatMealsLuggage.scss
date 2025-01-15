@@ -10,7 +10,6 @@
     height: 100%;
     z-index: -1; // Behind content
 
-    // Top section (40% height)
     &::before {
       content: "";
       position: absolute;
@@ -21,7 +20,6 @@
       background-color: #01493e; // Top color
     }
 
-    // Bottom section (remaining height)
     &::after {
       content: "";
       position: absolute;
@@ -59,21 +57,21 @@
 
   .seats-meals-luggage-page__icons {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    gap: 10px;
+    gap: 30px; // Space between icons
 
     .icon-container {
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center; // Ensure content is centered vertically
       padding: 10px;
       border: 2px solid #ccc;
       border-radius: 8px;
       background-color: transparent;
       cursor: pointer;
       transition: all 0.3s ease;
-      text-align: center;
 
       svg {
         font-size: 24px;
@@ -84,6 +82,7 @@
         margin-top: 8px;
         font-size: 14px;
         color: #333;
+        text-align: center;
       }
 
       &.active {

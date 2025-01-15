@@ -44,33 +44,38 @@ const SeatsMealsLuggage: React.FC = () => {
         <div className="seats-meals-luggage-page__left-section">
           <div className="seats-meals-luggage-page__card">
             <div className="seats-meals-luggage-page__icons">
-              <div
-                className={`icon-container ${
-                  currentSection === "seats" ? "active" : ""
-                }`}
-                onClick={() => setCurrentSection("seats")}
-              >
-                <MdOutlineAirlineSeatReclineNormal size={20} />
+              <div>
+                <div
+                  className={`icon-container ${
+                    currentSection === "seats" ? "active" : ""
+                  }`}
+                  onClick={() => setCurrentSection("seats")}
+                >
+                  <MdOutlineAirlineSeatReclineNormal size={20} />
+                </div>
               </div>
               <div className="icon-divider"></div>
-              <div
-                className={`icon-container ${
-                  currentSection === "meals" ? "active" : ""
-                }`}
-                onClick={() => setCurrentSection("meals")}
-              >
-                <GiKnifeFork size={20} />
+              <div>
+                <div
+                  className={`icon-container ${
+                    currentSection === "meals" ? "active" : ""
+                  }`}
+                  onClick={() => setCurrentSection("meals")}
+                >
+                  <GiKnifeFork size={20} />
+                </div>
               </div>
               <div className="icon-divider"></div>
-              <div
-                className={`icon-container ${
-                  currentSection === "luggage" ? "active" : ""
-                }`}
-                onClick={() => setCurrentSection("luggage")}
-              >
-                <MdLuggage size={20} />
+              <div>
+                <div
+                  className={`icon-container ${
+                    currentSection === "luggage" ? "active" : ""
+                  }`}
+                  onClick={() => setCurrentSection("luggage")}
+                >
+                  <MdLuggage size={20} />
+                </div>
               </div>
-
               <button className="skip-button" onClick={handleSkip}>
                 Skip
               </button>
