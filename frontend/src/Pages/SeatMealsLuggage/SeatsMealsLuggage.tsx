@@ -1,32 +1,95 @@
-import React from "react";
+import React, { useState } from "react";
+import Header from "../../Components/Header/Header";
+import PriceDetails from "../../Components/TicketDetails/TicketPriceDetails";
+import Seats from "../../Components/SeatsMealsLuggages/SeatsComponent";
+import Meals from "../../Components/SeatsMealsLuggages/MealsComponent";
+import Luggage from "../../Components/SeatsMealsLuggages/LuggageComponent";
+import "./SeatMealsLuggage.scss";
 
 const SeatsMealsLuggage: React.FC = () => {
+  const [currentSection, setCurrentSection] = useState<
+    "seats" | "meals" | "luggage"
+  >("seats");
+
+  const handleSkip = () => {
+    if (currentSection === "seats") {
+      setCurrentSection("meals");
+    } else if (currentSection === "meals") {
+      setCurrentSection("luggage");
+    }
+  };
+
+  const renderCurrentSection = () => {
+    switch (currentSection) {
+      case "seats":
+        return <Seats />;
+      case "meals":
+        return <Meals />;
+      case "luggage":
+        return <Luggage />;
+      default:
+        return null;
+    }
+  };
+
   return (
-    <div className="seats-meals-luggage">
-      <h2>Select Seats, Meals, and Luggage</h2>
+    <div className="seats-meals-luggage-page">
+      <div className="seats-meals-luggage-page__background"></div>
+      <Header />
 
-      <div className="seats-meals-luggage__section">
-        <h3>Seats Selection</h3>
-        <p>Here you can choose your preferred seats.</p>
-        <button>Select Seats</button>
-      </div>
+      <div className="seats-meals-luggage-page__content">
+        {/* Left Section */}
+        <div className="seats-meals-luggage-page__left-section">
+          <div className="seats-meals-luggage-page__card">
+            <div className="seats-meals-luggage-page__icons">
+              <button
+                className={`icon-button ${
+                  currentSection === "seats" ? "active" : ""
+                }`}
+                onClick={() => setCurrentSection("seats")}
+              >
+                <span role="img" aria-label="Seat">
+                  💺
+                </span>{" "}
+                Seats
+              </button>
+              <button
+                className={`icon-button ${
+                  currentSection === "meals" ? "active" : ""
+                }`}
+                onClick={() => setCurrentSection("meals")}
+              >
+                <span role="img" aria-label="Meal">
+                  🍽️
+                </span>{" "}
+                Meals
+              </button>
+              <button
+                className={`icon-button ${
+                  currentSection === "luggage" ? "active" : ""
+                }`}
+                onClick={() => setCurrentSection("luggage")}
+              >
+                <span role="img" aria-label="Luggage">
+                  🧳
+                </span>{" "}
+                Luggage
+              </button>
 
-      <div className="seats-meals-luggage__section">
-        <h3>Meals Selection</h3>
-        <p>Here you can choose your preferred meals.</p>
-        <button>Select Meals</button>
-      </div>
+              <button className="skip-button" onClick={handleSkip}>
+                Skip
+              </button>
+            </div>
 
-      <div className="seats-meals-luggage__section">
-        <h3>Luggage Options</h3>
-        <p>Here you can choose your luggage options.</p>
-        <button>Select Luggage</button>
-      </div>
+            {/* Render the current section's content */}
+            {renderCurrentSection()}
+          </div>
+        </div>
 
-      <div className="seats-meals-luggage__actions">
-        <button className="seats-meals-luggage__proceed-button">
-          Proceed to Payment
-        </button>
+        {/* Right Section */}
+        <div className="seats-meals-luggage-page__right-section">
+          <PriceDetails />
+        </div>
       </div>
     </div>
   );

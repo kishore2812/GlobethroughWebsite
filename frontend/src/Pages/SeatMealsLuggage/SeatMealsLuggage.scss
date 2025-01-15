@@ -1,0 +1,86 @@
+.seats-meals-luggage-page {
+  display: flex;
+  flex-direction: column;
+
+  // Background with two solid colors
+  .seats-meals-luggage-page__background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; // Behind content
+
+    // Top section (40% height)
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 40%;
+      background-color: #01493e; // Top color
+    }
+
+    // Bottom section (remaining height)
+    &::after {
+      content: "";
+      position: absolute;
+      top: 40%;
+      left: 0;
+      width: 100%;
+      height: 60%;
+      background-color: #e6ebf0; // Bottom color
+    }
+  }
+
+  .seats-meals-luggage-page__content {
+    display: flex;
+    padding-left: 100px;
+    padding-top: 40px;
+    gap: 40px;
+  }
+
+  .seats-meals-luggage-page__left-section {
+    flex: 7;
+    padding-right: 20px;
+
+    .seats-meals-luggage-page__card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+    }
+
+    .seats-meals-luggage-page__icons {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+
+      .icon-button {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+
+        &.active {
+          color: #007bff;
+        }
+      }
+    }
+  }
+
+  .seats-meals-luggage-page__right-section {
+    flex: 3;
+  }
+
+  .skip-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+}
