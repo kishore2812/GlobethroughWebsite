@@ -7,18 +7,50 @@ import "./TicketDetailPage.scss";
 import Header from "../../Components/Header/Header";
 import PassengerDetails from "../../Components/PassengerDetails/PassengerDetails";
 import CancellationDateChangePolicy from "../../Components/CancellationAndDateChange.tsx/CancellationAndDateChange";
+import { useNavigate } from "react-router-dom";
 
 const TicketDetailPage: React.FC = () => {
-  // Create a ref for PassengerDetails
   const passengerDetailsRef = useRef<HTMLDivElement | null>(null);
+  const navigate = useNavigate();
+  const passengerDetails = useFlightStore((state) => state.passengers);
 
-  // Fetch flight details from Zustand store
+  const arePassengerDetailsFilled = () => {
+    return passengerDetails.every(
+      (passenger) =>
+        passenger.type.trim() !== "" &&
+        passenger.firstName.trim() !== "" &&
+        passenger.lastName.trim() !== "" &&
+        passenger.countryCode.trim() !== "" &&
+        passenger.gender.trim() !== "" &&
+        passenger.phoneNumber.trim() !== "" &&
+        passenger.dob.trim() !== "" &&
+        passenger.email.trim() !== ""
+    );
+  };
+
+  const handleProceed = () => {
+    if (arePassengerDetailsFilled()) {
+      navigate("/seats-meals-luggage");
+    } else {
+      if (passengerDetailsRef.current) {
+        const element = passengerDetailsRef.current;
+        const elementRect = element.getBoundingClientRect();
+        const elementTop = elementRect.top + window.pageYOffset;
+        const offset = window.innerHeight / 1 - elementRect.height / 1;
+
+        window.scrollTo({
+          top: elementTop - offset,
+          behavior: "smooth",
+        });
+      }
+    }
+  };
+
   const selectedTrip = useFlightStore((state) => state.selectedTrip);
-  const selectedFlight = useFlightStore((state) => state.selectedFlight); // One-way flight
-  const selectedDeparture = useFlightStore((state) => state.selectedDeparture); // Departure for round-trip
-  const selectedReturn = useFlightStore((state) => state.selectedReturn); // Return for round-trip
+  const selectedFlight = useFlightStore((state) => state.selectedFlight);
+  const selectedDeparture = useFlightStore((state) => state.selectedDeparture);
+  const selectedReturn = useFlightStore((state) => state.selectedReturn);
 
-  // Validate data availability
   if (
     (selectedTrip === "one-way" && !selectedFlight) ||
     (selectedTrip === "round-trip" && (!selectedDeparture || !selectedReturn))
@@ -28,14 +60,9 @@ const TicketDetailPage: React.FC = () => {
 
   return (
     <div className="ticket-detail-page">
-      {/* Background */}
       <div className="ticket-detail-page__background"></div>
-      {/* Header */}
       <Header />
-
-      {/* Content */}
       <div className="ticket-detail-page__content">
-        {/* Left Section: Ticket Details & Passenger Details */}
         <div className="ticket-detail-page__left-section">
           <div className="ticket-detail-page__ticket-details">
             {selectedTrip === "one-way" && selectedFlight && (
@@ -45,8 +72,6 @@ const TicketDetailPage: React.FC = () => {
               selectedDeparture &&
               selectedReturn && <TicketDetailsRoundTrip />}
           </div>
-
-          {/* Passenger Details */}
           <div
             ref={passengerDetailsRef}
             className="ticket-detail-page__passenger-details"
@@ -55,11 +80,14 @@ const TicketDetailPage: React.FC = () => {
             <PassengerDetails />
           </div>
         </div>
-
-        {/* Right Section: Price Details */}
         <div className="ticket-detail-page__price-details">
-          {/* Pass the ref to PriceDetails */}
-          <PriceDetails passengerDetailsRef={passengerDetailsRef} />
+          <PriceDetails />
+          <button
+            className="price-details__proceed-button"
+            onClick={handleProceed}
+          >
+            Proceed
+          </button>
         </div>
       </div>
     </div>
