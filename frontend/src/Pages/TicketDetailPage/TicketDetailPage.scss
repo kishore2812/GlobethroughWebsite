@@ -58,4 +58,15 @@
     width: 20%; /* Right side price details */
     height: 100%;
   }
+
+  .price-details__proceed-button {
+    margin-top: 20px;
+    width: 100%;
+    padding: 15px;
+    background-color: #027f6d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
 }

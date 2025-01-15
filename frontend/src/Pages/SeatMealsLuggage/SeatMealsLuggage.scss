@@ -44,8 +44,21 @@
   }
 
   .seats-meals-luggage-page__right-section {
-    flex: 0 0 30%;
     padding: 20px;
+    position: sticky;
+    width: 20%; /* Right side price details */
+    height: 100%;
+
+    .seats-meals-luggage-page__proceed-button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 15px;
+      background-color: #027f6d;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
   }
 
   .seats-meals-luggage-page__card {

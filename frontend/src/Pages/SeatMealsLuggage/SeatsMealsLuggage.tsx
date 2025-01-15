@@ -92,6 +92,9 @@ const SeatsMealsLuggage: React.FC = () => {
         {/* Right Section */}
         <div className="seats-meals-luggage-page__right-section">
           <PriceDetails />
+          <button className="seats-meals-luggage-page__proceed-button">
+            Proceed
+          </button>
         </div>
       </div>
     </div>
