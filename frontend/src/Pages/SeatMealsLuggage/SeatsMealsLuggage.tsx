@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { MdOutlineAirlineSeatReclineNormal, MdLuggage } from "react-icons/md";
+import { GiKnifeFork } from "react-icons/gi";
 import Header from "../../Components/Header/Header";
 import PriceDetails from "../../Components/TicketDetails/TicketPriceDetails";
 import Seats from "../../Components/SeatsMealsLuggages/SeatsComponent";
@@ -42,39 +44,32 @@ const SeatsMealsLuggage: React.FC = () => {
         <div className="seats-meals-luggage-page__left-section">
           <div className="seats-meals-luggage-page__card">
             <div className="seats-meals-luggage-page__icons">
-              <button
-                className={`icon-button ${
+              <div
+                className={`icon-container ${
                   currentSection === "seats" ? "active" : ""
                 }`}
                 onClick={() => setCurrentSection("seats")}
               >
-                <span role="img" aria-label="Seat">
-                  💺
-                </span>{" "}
-                Seats
-              </button>
-              <button
-                className={`icon-button ${
+                <MdOutlineAirlineSeatReclineNormal size={20} />
+              </div>
+              <div className="icon-divider"></div>
+              <div
+                className={`icon-container ${
                   currentSection === "meals" ? "active" : ""
                 }`}
                 onClick={() => setCurrentSection("meals")}
               >
-                <span role="img" aria-label="Meal">
-                  🍽️
-                </span>{" "}
-                Meals
-              </button>
-              <button
-                className={`icon-button ${
+                <GiKnifeFork size={20} />
+              </div>
+              <div className="icon-divider"></div>
+              <div
+                className={`icon-container ${
                   currentSection === "luggage" ? "active" : ""
                 }`}
                 onClick={() => setCurrentSection("luggage")}
               >
-                <span role="img" aria-label="Luggage">
-                  🧳
-                </span>{" "}
-                Luggage
-              </button>
+                <MdLuggage size={20} />
+              </div>
 
               <button className="skip-button" onClick={handleSkip}>
                 Skip

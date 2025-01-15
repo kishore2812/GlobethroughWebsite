@@ -2,7 +2,6 @@
   display: flex;
   flex-direction: column;
 
-  // Background with two solid colors
   .seats-meals-luggage-page__background {
     position: fixed;
     top: 0;
@@ -36,51 +35,87 @@
 
   .seats-meals-luggage-page__content {
     display: flex;
-    padding-left: 100px;
-    padding-top: 40px;
-    gap: 40px;
+    width: 100%;
+    height: 100%;
+    padding-left: 50px;
   }
 
   .seats-meals-luggage-page__left-section {
-    flex: 7;
-    padding-right: 20px;
-
-    .seats-meals-luggage-page__card {
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      padding: 20px;
-    }
-
-    .seats-meals-luggage-page__icons {
-      display: flex;
-      justify-content: space-around;
-      margin-bottom: 20px;
-
-      .icon-button {
-        background: none;
-        border: none;
-        font-size: 24px;
-        cursor: pointer;
-
-        &.active {
-          color: #007bff;
-        }
-      }
-    }
+    flex: 0 0 70%;
+    padding: 20px;
   }
 
   .seats-meals-luggage-page__right-section {
-    flex: 3;
+    flex: 0 0 30%;
+    padding: 20px;
   }
 
-  .skip-button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+  .seats-meals-luggage-page__card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+  }
+
+  .seats-meals-luggage-page__icons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+
+    .icon-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      background-color: transparent;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+
+      svg {
+        font-size: 24px;
+        color: #333;
+      }
+
+      p {
+        margin-top: 8px;
+        font-size: 14px;
+        color: #333;
+      }
+
+      &.active {
+        background-color: #007bff;
+        border-color: #007bff;
+        color: white;
+
+        svg {
+          color: white;
+        }
+
+        p {
+          color: white;
+        }
+      }
+    }
+
+    .icon-divider {
+      height: 2px;
+      background-color: #ccc;
+      width: 200px;
+      margin: 0 10px;
+    }
+
+    .skip-button {
+      margin-left: auto; // To align the skip button to the right
+      padding: 10px 40px;
+      background-color: transparent;
+      border: 1px solid #000;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+    }
   }
 }
