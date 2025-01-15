@@ -44,7 +44,7 @@ const SeatsMealsLuggage: React.FC = () => {
         <div className="seats-meals-luggage-page__left-section">
           <div className="seats-meals-luggage-page__card">
             <div className="seats-meals-luggage-page__icons">
-              <div>
+              <div className="seats-meals-luggage-page__iconsContainer">
                 <div
                   className={`icon-container ${
                     currentSection === "seats" ? "active" : ""
@@ -53,9 +53,10 @@ const SeatsMealsLuggage: React.FC = () => {
                 >
                   <MdOutlineAirlineSeatReclineNormal size={20} />
                 </div>
+                <p>Seats</p>
               </div>
               <div className="icon-divider"></div>
-              <div>
+              <div className="seats-meals-luggage-page__iconsContainer">
                 <div
                   className={`icon-container ${
                     currentSection === "meals" ? "active" : ""
@@ -64,9 +65,10 @@ const SeatsMealsLuggage: React.FC = () => {
                 >
                   <GiKnifeFork size={20} />
                 </div>
+                <p>Meals</p>
               </div>
               <div className="icon-divider"></div>
-              <div>
+              <div className="seats-meals-luggage-page__iconsContainer">
                 <div
                   className={`icon-container ${
                     currentSection === "luggage" ? "active" : ""
@@ -75,6 +77,7 @@ const SeatsMealsLuggage: React.FC = () => {
                 >
                   <MdLuggage size={20} />
                 </div>
+                <p>Baggage</p>
               </div>
               <button className="skip-button" onClick={handleSkip}>
                 Skip

@@ -56,16 +56,27 @@
   }
 
   .seats-meals-luggage-page__icons {
+    padding-left: 15px;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 30px; // Space between icons
+    padding-bottom: 20px;
+    border-bottom: 2px solid #e6ebf0;
+
+    .seats-meals-luggage-page__iconsContainer {
+      p {
+        text-align: center;
+        margin: 0;
+        margin-top: 5px;
+      }
+    }
 
     .icon-container {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center; // Ensure content is centered vertically
+      align-items: center; // Ensures the content is centered vertically
+      justify-content: center; // Centers icon and text vertically
       padding: 10px;
       border: 2px solid #ccc;
       border-radius: 8px;
@@ -79,15 +90,15 @@
       }
 
       p {
-        margin-top: 8px;
         font-size: 14px;
         color: #333;
         text-align: center;
+        margin: 0; // Ensures no extra space between icon and text
       }
 
       &.active {
-        background-color: #007bff;
-        border-color: #007bff;
+        background-color: #01493e;
+        border-color: #01493e;
         color: white;
 
         svg {
@@ -103,8 +114,8 @@
     .icon-divider {
       height: 2px;
       background-color: #ccc;
-      width: 200px;
-      margin: 0 10px;
+      width: 180px;
+      margin-top: -10px;
     }
 
     .skip-button {
