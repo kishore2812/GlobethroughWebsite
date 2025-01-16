@@ -24,7 +24,9 @@ const SeatsMealsLuggage: React.FC = () => {
   const renderCurrentSection = () => {
     switch (currentSection) {
       case "seats":
-        return <Seats />;
+        return (
+          <Seats totalSeats={210} columns={["A", "B", "C", "D", "E", "F"]} />
+        );
       case "meals":
         return <Meals />;
       case "luggage":

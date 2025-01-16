@@ -1,0 +1,67 @@
+.SeatsComponents__seats-container {
+  padding: 20px;
+
+  .SeatsComponents__seat-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .SeatsComponents__seat-header {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+
+    .SeatsComponents__seat-section {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .SeatsComponents__row-number-placeholder {
+      width: 50px; /* Same width as row number */
+    }
+
+    .SeatsComponents__seat-column {
+      width: 35px; /* Match seat width */
+      text-align: center;
+      font-weight: bold;
+    }
+  }
+
+  .SeatsComponents__seat-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+
+    .SeatsComponents__seat-section {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .SeatsComponents__row-number {
+      width: 60px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .SeatsComponents__seat {
+      width: 33px;
+      height: 40px;
+      background-color: lightgray;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+
+      &.selected {
+        background-color: green;
+      }
+    }
+  }
+
+  .SeatsComponents__selected-seats {
+    margin-top: 20px;
+  }
+}
