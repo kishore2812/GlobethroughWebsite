@@ -21,7 +21,16 @@ const Seats: React.FC<SeatMapProps> = ({ totalSeats, columns }) => {
   return (
     <div className="SeatsComponents__seats-container">
       {/* Cone-shaped border at the top */}
-
+      <div className="SeatsComponents__triangle">
+        <div className="SeatsComponents__triangle_leftbottom"></div>
+        <div className="SeatsComponents__triangle_leftmiddle"></div>
+        <div className="SeatsComponents__triangle_lefttop">
+          <div className="SeatsComponents__triangle_lefttop_ball"></div>
+          <div className="SeatsComponents__triangle_lefttop_stick"></div>
+        </div>
+        <div className="SeatsComponents__triangle_rightbottom"></div>
+        <div className="SeatsComponents__triangle_rightmiddle"></div>
+      </div>
       {/* Seats container */}
       <div className="SeatsComponents__seat-grid">
         <div className="SeatsComponents__seat-header">

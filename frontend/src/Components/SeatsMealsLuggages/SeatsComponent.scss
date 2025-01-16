@@ -4,21 +4,105 @@
   flex-direction: column;
   align-items: center;
 
+  .SeatsComponents__triangle {
+    position: absolute;
+    margin-top: 50px;
+    width: 270px;
+    height: 270px;
+    border: 2px solid #ccc;
+    border-left: none;
+    border-bottom: none;
+    border-top-right-radius: 10%;
+    border-top-left-radius: 24px;
+    border-bottom-right-radius: 24px;
+    transform: rotate(-45deg);
+
+    .SeatsComponents__triangle_leftbottom {
+      width: 35px;
+      height: 37px;
+      margin-left: 70px;
+      margin-top: 30px;
+      border-bottom-right-radius: 24px;
+      border-bottom-left-radius: 24px;
+      transform: rotate(90deg);
+      background-color: #ccc;
+    }
+    .SeatsComponents__triangle_rightbottom {
+      position: absolute;
+      width: 35px;
+      height: 37px;
+      margin-left: 205px;
+      margin-top: 55px;
+      border-bottom-right-radius: 24px;
+      border-bottom-left-radius: 24px;
+      transform: rotate(0deg);
+      background-color: #ccc;
+    }
+    .SeatsComponents__triangle_leftmiddle {
+      position: absolute;
+      width: 34px;
+      height: 37px;
+      margin-left: 115px;
+      margin-top: -35px;
+      transform: rotate(90deg);
+      background-color: #ccc;
+    }
+    .SeatsComponents__triangle_rightmiddle {
+      position: absolute;
+      width: 34px;
+      height: 37px;
+      margin-left: 205px;
+      margin-top: 10px;
+      transform: rotate(0deg);
+      background-color: #ccc;
+    }
+    .SeatsComponents__triangle_lefttop {
+      width: 80px;
+      height: 80px;
+      margin-left: 160px;
+      margin-top: -35px;
+      background-color: #ccc; /* Color of the square */
+      border-top-right-radius: 25%;
+
+      .SeatsComponents__triangle_lefttop_ball {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background-color: white;
+        position: absolute;
+        top: 25%;
+        right: 25%;
+      }
+      .SeatsComponents__triangle_lefttop_stick {
+        width: 8px;
+        height: 70px;
+        position: absolute;
+        background-color: white;
+        right: 20%;
+        bottom: 65%;
+        transform: rotate(45deg);
+      }
+    }
+  }
+
   .SeatsComponents__seat-grid {
+    margin-top: 160px;
     position: relative;
     display: flex;
+    border-radius: 24px;
     flex-direction: column;
     align-items: center;
     border-left: 2px solid #ccc;
     border-right: 2px solid #ccc;
+    padding: 0 20px;
 
-    background-color: #f0f0f0;
     overflow: hidden; /* To ensure the seat content is within the border */
-    padding-top: 40px; /* Space between the trapezoids and the seat grid */
+
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 
   .SeatsComponents__seat-header {
+    padding-top: 50px;
     display: flex;
     justify-content: center;
     margin-bottom: 10px;
