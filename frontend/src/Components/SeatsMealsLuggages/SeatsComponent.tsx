@@ -20,8 +20,9 @@ const Seats: React.FC<SeatMapProps> = ({ totalSeats, columns }) => {
 
   return (
     <div className="SeatsComponents__seats-container">
-      <h3>Seats Selection</h3>
-      <p>Select your preferred seats:</p>
+      {/* Cone-shaped border at the top */}
+
+      {/* Seats container */}
       <div className="SeatsComponents__seat-grid">
         <div className="SeatsComponents__seat-header">
           <div className="SeatsComponents__seat-section">
@@ -40,6 +41,8 @@ const Seats: React.FC<SeatMapProps> = ({ totalSeats, columns }) => {
             ))}
           </div>
         </div>
+
+        {/* Rendering the rows of seats */}
         {Array.from({ length: rows }, (_, rowIndex) => (
           <div key={rowIndex} className="SeatsComponents__seat-row">
             <div className="SeatsComponents__seat-section">
@@ -78,6 +81,8 @@ const Seats: React.FC<SeatMapProps> = ({ totalSeats, columns }) => {
           </div>
         ))}
       </div>
+
+      {/* Display selected seats */}
       <div className="SeatsComponents__selected-seats">
         <h4>Selected Seats:</h4>
         <p>
