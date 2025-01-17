@@ -98,6 +98,10 @@
         margin: 0 8px;
         font-weight: bold;
       }
+
+      &.added {
+        background-color: #01493e; /* Change the background to green when added */
+      }
     }
 
     .meal-added {

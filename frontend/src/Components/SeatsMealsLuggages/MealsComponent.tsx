@@ -122,11 +122,15 @@ const Meals: React.FC = () => {
             </div>
             <span className="meal-price">{meal.price}</span>
           </div>
-          <div className="meal-count">
+
+          {/* Conditional class based on meal count */}
+          <div className={`meal-count ${meal.count > 0 ? "added" : ""}`}>
             <button onClick={() => decrementCount(meal.id)}>-</button>
             <span>{meal.count}</span>
             <button onClick={() => incrementCount(meal.id)}>+</button>
           </div>
+
+          {/* Show "Added" text if count > 0 */}
           {meal.count > 0 && (
             <span className="meal-added">Added {meal.count}</span>
           )}
