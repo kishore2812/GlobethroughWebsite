@@ -1,0 +1,103 @@
+.meals-container {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+
+  .meal-card {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    padding: 8px;
+
+    .meal-image {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+    }
+
+    .meal-details {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding-left: 16px;
+      flex: 1;
+
+      .meal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        h4 {
+          margin: 0;
+          font-size: 16px;
+          display: flex;
+          align-items: center;
+
+          .meal-type {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-left: 8px;
+            border: 1px solid #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            &::before {
+              content: "";
+              width: 8px;
+              height: 8px;
+              border-radius: 50%;
+            }
+
+            &.veg::before {
+              background-color: green;
+            }
+
+            &.nonveg::before {
+              background-color: red;
+            }
+          }
+        }
+      }
+
+      .meal-price {
+        margin-top: 8px;
+        font-weight: bold;
+      }
+    }
+    .meal-count {
+      background-color: #f2f2f2;
+      position: absolute;
+      top: 0;
+      right: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      margin-top: 8px;
+
+      button {
+        background-color: transparent;
+        border: none;
+        padding: 4px 8px;
+        cursor: pointer;
+      }
+
+      span {
+        margin: 0 8px;
+        font-weight: bold;
+      }
+    }
+    .meal-added {
+      margin-top: 4px;
+      color: #555;
+      font-size: 14px;
+      text-align: right;
+    }
+  }
+}
