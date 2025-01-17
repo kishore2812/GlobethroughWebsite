@@ -1,4 +1,5 @@
 import React from "react";
+import "./LuggageComponent.scss";
 
 const Luggage: React.FC = () => {
   return (
