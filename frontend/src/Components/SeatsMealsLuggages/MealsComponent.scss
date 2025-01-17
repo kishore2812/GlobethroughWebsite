@@ -1,8 +1,9 @@
 .meals-container {
+  padding: 15px;
   margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Two columns */
+  gap: 60px; /* Adjust the gap between the cards */
 
   .meal-card {
     display: flex;
@@ -72,6 +73,7 @@
         font-weight: bold;
       }
     }
+
     .meal-count {
       background-color: #f2f2f2;
       position: absolute;
@@ -97,6 +99,7 @@
         font-weight: bold;
       }
     }
+
     .meal-added {
       margin-top: 4px;
       color: #555;
