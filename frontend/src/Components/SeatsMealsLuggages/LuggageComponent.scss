@@ -1,0 +1,81 @@
+.luggage-container {
+  padding: 15px;
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Two columns */
+  gap: 60px; /* Adjust the gap between the cards */
+
+  .luggage-card {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    padding: 4px;
+
+    .luggage-icon {
+      width: 80px;
+      height: 80px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #f2f2f2;
+    }
+
+    .luggage-details {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding-left: 16px;
+      flex: 1;
+
+      .luggage-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        h4 {
+          margin: 0;
+          font-size: 16px;
+        }
+      }
+
+      .luggage-price {
+        margin-top: 8px;
+        font-weight: bold;
+      }
+    }
+
+    .luggage-count {
+      background-color: #f2f2f2;
+      position: absolute;
+      top: 0;
+      right: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      margin-top: 2px;
+      border-top-right-radius: 4px;
+      border-bottom-left-radius: 4px;
+      padding: 6px 16px;
+      cursor: pointer;
+
+      /* Text color */
+      font-weight: bold;
+
+      &.added {
+        background-color: #01493e;
+        color: white;
+      }
+    }
+
+    .luggage-added {
+      margin-top: 4px;
+      color: #555;
+      font-size: 14px;
+      text-align: right;
+    }
+  }
+}
