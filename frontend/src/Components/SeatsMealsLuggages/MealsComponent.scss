@@ -101,6 +101,14 @@
 
       &.added {
         background-color: #01493e; /* Change the background to green when added */
+
+        button {
+          color: white;
+        }
+
+        span {
+          color: white;
+        }
       }
     }
 
