@@ -1,5 +1,6 @@
 import React from "react";
 import "./Incentives.scss";
+import Header from "../../Components/Header/Header";
 
 interface Incentive {
   id: number;
@@ -34,6 +35,9 @@ const incentives: Incentive[] = [
 const IncentivesPage: React.FC = () => {
   return (
     <div className="incentives-page">
+      <div className="incentives-page-background"></div>
+      <Header />
+
       <h1>Our Incentives</h1>
       <div className="incentives-list">
         {incentives.map((incentive) => (
