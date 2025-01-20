@@ -1,4 +1,5 @@
 import React from "react";
+import "./Incentives.scss";
 
 interface Incentive {
   id: number;
