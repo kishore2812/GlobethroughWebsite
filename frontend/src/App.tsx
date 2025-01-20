@@ -14,6 +14,7 @@ import SetPasswordPage from "./Pages/SetPasswordPage/SetPasswordPage";
 import SubuserLoginPage from "./Pages/Signin_Page/subuserLogin";
 import TicketDetailPage from "./Pages/TicketDetailPage/TicketDetailPage";
 import SeatsMealsLuggage from "./Pages/SeatMealsLuggage/SeatsMealsLuggage";
+import IncentivesPage from "./Pages/IncentivesPage/Incentives";
 
 const App: React.FC = () => {
   return (
@@ -32,6 +33,7 @@ const App: React.FC = () => {
         <Route path="/set-password/:id" element={<SetPasswordPage />} />
         <Route path="/ticket-detail" element={<TicketDetailPage />} />
         <Route path="/seats-meals-luggage" element={<SeatsMealsLuggage />} />
+        <Route path="/incentives" element={<IncentivesPage />} />
       </Routes>
     </Router>
   );

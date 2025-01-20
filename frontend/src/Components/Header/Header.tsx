@@ -91,7 +91,7 @@ const Header = () => {
       <nav className="nav">
         <ul className="nav-links">
           <li>
-            <a href="/book-tickets">Book Tickets</a>
+            <a href="/homepage">Book Tickets</a>
           </li>
           <li>
             <a href="/incentives">Incentives</a>
