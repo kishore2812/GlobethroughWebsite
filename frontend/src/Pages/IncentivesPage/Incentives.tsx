@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Incentives.scss";
 import Header from "../../Components/Header/Header";
 
@@ -6,33 +6,41 @@ interface Incentive {
   id: number;
   title: string;
   description: string;
-  imageUrl: string;
 }
 
 const incentives: Incentive[] = [
   {
     id: 1,
-    title: "Discount on First Purchase",
-    description:
-      "Get 20% off on your first order when you sign up for our newsletter.",
-    imageUrl: "/images/discount.png",
+    title: "Book 100 Tickets",
+    description: "Unlock an ₹1400 . Start your journey to free trips!",
   },
   {
     id: 2,
-    title: "Free Shipping",
-    description: "Enjoy free shipping on orders over $50.",
-    imageUrl: "/images/free-shipping.png",
+    title: "Book 100 Tickets",
+    description: "Unlock an ₹1400 . Start your journey to free trips!",
   },
   {
     id: 3,
-    title: "Loyalty Points",
-    description:
-      "Earn points for every purchase and redeem them for discounts.",
-    imageUrl: "/images/loyalty-points.png",
+    title: "Book 100 Tickets",
+    description: "Unlock an ₹1400 . Start your journey to free trips!",
+  },
+  {
+    id: 4,
+    title: "Book 100 Tickets",
+    description: "Unlock an ₹1400 . Start your journey to free trips!",
   },
 ];
 
 const IncentivesPage: React.FC = () => {
+  const [claimed, setClaimed] = useState<{ [key: number]: boolean }>({});
+
+  const handleClaim = (id: number) => {
+    setClaimed((prevState) => ({
+      ...prevState,
+      [id]: true,
+    }));
+  };
+
   return (
     <div className="incentives-page">
       <div className="incentives-page-background">
@@ -42,7 +50,7 @@ const IncentivesPage: React.FC = () => {
       <Header />
       <div className="incentives-page__container">
         <div className="incentives-page__card">
-          <h1>Our Incentives</h1>
+          <h1>Incentives And Rewards</h1>
           <div className="incentives-page__content">
             {incentives.map((incentive) => (
               <div key={incentive.id} className="incentives-page__item">
@@ -50,8 +58,18 @@ const IncentivesPage: React.FC = () => {
                 <div className="incentives-page__description">
                   <h2>{incentive.title}</h2>
                   <p>{incentive.description}</p>
-                  <button className="incentives-page__button">Claim Now</button>
                 </div>
+                <button
+                  className={`incentives-page__button ${
+                    claimed[incentive.id]
+                      ? "incentives-page__button--claimed"
+                      : "incentives-page__button--claim-now"
+                  }`}
+                  onClick={() => handleClaim(incentive.id)}
+                  disabled={claimed[incentive.id]} // Disable the button after claiming
+                >
+                  {claimed[incentive.id] ? "Claimed" : "Claim Now"}
+                </button>
               </div>
             ))}
           </div>

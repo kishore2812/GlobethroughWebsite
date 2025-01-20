@@ -43,38 +43,38 @@
 
     .incentives-page__card {
       position: relative;
-      padding: 30px;
+      padding: 30px 50px;
       background-color: #fff;
       border-radius: 10px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       margin-top: 40px;
       border: 2px solid #ccc;
       width: 100%;
+      overflow: hidden;
 
       // Heading styles
       h1 {
         text-align: left;
-        font-size: 32px;
-        margin-bottom: 20px;
+        font-size: 24px;
+        margin-bottom: 50px;
         color: #333;
       }
 
       .incentives-page__content {
         display: flex;
         flex-direction: column;
-        gap: 20px;
+        gap: 30px;
 
         .incentives-page__item {
           display: flex;
           align-items: center;
-          border-bottom: 2px solid #ccc;
           padding-bottom: 15px;
 
           .incentives-page__number {
             width: 40px;
             height: 40px;
-            background-color: #00bcd4;
-            color: white;
+            background-color: #f2f2f2;
+            color: black;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -83,55 +83,69 @@
             margin-right: 20px;
             position: relative;
 
+            // Right line extending 20px
             &::after {
               content: "";
               position: absolute;
-              bottom: 0;
-              right: 0;
-              width: 50%;
-              height: 2px;
-              background-color: #ccc;
+              top: 50%;
+              right: -80px;
+              width: 80px;
+              height: 1px;
+              background-color: black;
             }
 
+            // Bottom line extending till the next number
             &::before {
               content: "";
               position: absolute;
-              top: 0;
-              right: 0;
-              height: 50%;
-              width: 2px;
-              background-color: #ccc;
+              bottom: -40px; /* Make the line extend till the next number */
+              left: 50%;
+              transform: translateX(-50%) rotate(90deg);
+              width: 80px; /* Ensure it spans across */
+              height: 0.5px;
+              background-color: black;
             }
           }
 
           .incentives-page__description {
             flex: 1;
+            margin-left: 80px;
 
             h2 {
-              font-size: 24px;
+              font-size: 20px;
               margin: 0;
-              color: #333;
+              color: black;
+              font-weight: 700;
             }
 
             p {
               font-size: 16px;
-              color: #666;
-              margin: 10px 0;
+              color: black;
+              font-weight: 500;
+              margin: 5px 0;
+            }
+          }
+          .incentives-page__button {
+            background-color: #00bcd4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-top: 10px;
+            width: 150px;
+            text-align: center;
+            transition: background-color 0.3s;
+
+            &--claim-now {
+              background-color: #01493e; // Blue for "Claim Now"
             }
 
-            .incentives-page__button {
-              background-color: #00bcd4;
-              color: white;
-              border: none;
-              padding: 10px 20px;
-              cursor: pointer;
-              border-radius: 5px;
-              font-size: 16px;
-              margin-top: 10px;
-
-              &:hover {
-                background-color: #0097a7;
-              }
+            &--claimed {
+              background-color: transparent; // Gray for "Claimed"
+              color: black;
+              border: 1px solid black;
             }
           }
         }
