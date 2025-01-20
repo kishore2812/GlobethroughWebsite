@@ -12,7 +12,7 @@
     z-index: -1; // Behind content
 
     // Top section (40% height)
-    &::before {
+    .incentives-page-background-before {
       content: "";
       position: absolute;
       top: 0;
@@ -22,8 +22,8 @@
       background-color: #01493e; // Top color
     }
 
-    // Bottom section (remaining height)
-    &::after {
+    // Bottom section (remaining 60% height)
+    .incentives-page-background-after {
       content: "";
       position: absolute;
       top: 40%;
@@ -31,6 +31,111 @@
       width: 100%;
       height: 60%;
       background-color: #e6ebf0; // Bottom color
+    }
+  }
+
+  // Card container for incentives
+  .incentives-page__container {
+    padding: 20px 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .incentives-page__card {
+      position: relative;
+      padding: 30px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-top: 40px;
+      border: 2px solid #ccc;
+      width: 100%;
+
+      // Heading styles
+      h1 {
+        text-align: left;
+        font-size: 32px;
+        margin-bottom: 20px;
+        color: #333;
+      }
+
+      .incentives-page__content {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
+        .incentives-page__item {
+          display: flex;
+          align-items: center;
+          border-bottom: 2px solid #ccc;
+          padding-bottom: 15px;
+
+          .incentives-page__number {
+            width: 40px;
+            height: 40px;
+            background-color: #00bcd4;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 18px;
+            margin-right: 20px;
+            position: relative;
+
+            &::after {
+              content: "";
+              position: absolute;
+              bottom: 0;
+              right: 0;
+              width: 50%;
+              height: 2px;
+              background-color: #ccc;
+            }
+
+            &::before {
+              content: "";
+              position: absolute;
+              top: 0;
+              right: 0;
+              height: 50%;
+              width: 2px;
+              background-color: #ccc;
+            }
+          }
+
+          .incentives-page__description {
+            flex: 1;
+
+            h2 {
+              font-size: 24px;
+              margin: 0;
+              color: #333;
+            }
+
+            p {
+              font-size: 16px;
+              color: #666;
+              margin: 10px 0;
+            }
+
+            .incentives-page__button {
+              background-color: #00bcd4;
+              color: white;
+              border: none;
+              padding: 10px 20px;
+              cursor: pointer;
+              border-radius: 5px;
+              font-size: 16px;
+              margin-top: 10px;
+
+              &:hover {
+                background-color: #0097a7;
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

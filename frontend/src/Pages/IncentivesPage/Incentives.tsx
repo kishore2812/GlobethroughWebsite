@@ -35,22 +35,27 @@ const incentives: Incentive[] = [
 const IncentivesPage: React.FC = () => {
   return (
     <div className="incentives-page">
-      <div className="incentives-page-background"></div>
+      <div className="incentives-page-background">
+        <div className="incentives-page-background-before"></div>
+        <div className="incentives-page-background-after"></div>
+      </div>
       <Header />
-
-      <h1>Our Incentives</h1>
-      <div className="incentives-list">
-        {incentives.map((incentive) => (
-          <div key={incentive.id} className="incentive-card">
-            <img
-              src={incentive.imageUrl}
-              alt={incentive.title}
-              className="incentive-image"
-            />
-            <h2>{incentive.title}</h2>
-            <p>{incentive.description}</p>
+      <div className="incentives-page__container">
+        <div className="incentives-page__card">
+          <h1>Our Incentives</h1>
+          <div className="incentives-page__content">
+            {incentives.map((incentive) => (
+              <div key={incentive.id} className="incentives-page__item">
+                <div className="incentives-page__number">{incentive.id}</div>
+                <div className="incentives-page__description">
+                  <h2>{incentive.title}</h2>
+                  <p>{incentive.description}</p>
+                  <button className="incentives-page__button">Claim Now</button>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
     </div>
   );
