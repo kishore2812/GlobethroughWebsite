@@ -1,19 +1,17 @@
 import { useState } from "react";
+import "./withdrawPage.scss";
+import Header from "../../Components/Header/Header";
 
 const Withdraw = () => {
   const [amount, setAmount] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
 
-  const handleWithdraw = (e) => {
-    e.preventDefault();
-    // Logic to handle withdrawal can go here
-    console.log("Withdrawal Request:", { amount, accountNumber });
-  };
-
   return (
-    <div>
+    <div className="WithdrawPage">
+      <div className="WithdrawPage__background"></div>
+      <Header />
       <h1>Withdraw Funds</h1>
-      <form onSubmit={handleWithdraw}>
+      <form>
         <div>
           <label htmlFor="amount">Amount:</label>
           <input
