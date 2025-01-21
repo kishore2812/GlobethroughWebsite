@@ -4,36 +4,44 @@ import Header from "../../Components/Header/Header";
 
 const Withdraw = () => {
   const [amount, setAmount] = useState("");
-  const [accountNumber, setAccountNumber] = useState("");
 
   return (
-    <div className="WithdrawPage">
-      <div className="WithdrawPage__background"></div>
+    <div className="withdraw-page">
+      <div className="withdraw-page-background"></div>
       <Header />
-      <h1>Withdraw Funds</h1>
-      <form>
-        <div>
-          <label htmlFor="amount">Amount:</label>
-          <input
-            type="number"
-            id="amount"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            required
-          />
+
+      <div className="withdraw-page-cards">
+        {/* First Card */}
+        <div className="withdraw-page-card">
+          <div className="withdraw-page-card-section wallet-balance">
+            <span>Wallet Balance</span>
+            <span>$1000</span>
+          </div>
+          <div className="withdraw-page-card-section smaller-text">
+            <span>Total Withdrawal Amount</span>
+            <span>$500</span>
+          </div>
+          <div className="withdraw-page-card-section smaller-text">
+            <span>Incentive Claims</span>
+            <span>$100</span>
+          </div>
+          <div className="withdraw-page-input-section">
+            <label htmlFor="withdrawAmount">Enter Amount to Withdraw</label>
+            <input
+              type="number"
+              id="withdrawAmount"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              placeholder="Withdraw Amount"
+            />
+          </div>
         </div>
-        <div>
-          <label htmlFor="accountNumber">Account Number:</label>
-          <input
-            type="text"
-            id="accountNumber"
-            value={accountNumber}
-            onChange={(e) => setAccountNumber(e.target.value)}
-            required
-          />
+
+        {/* Second Card */}
+        <div className="withdraw-page-card">
+          <div className="withdraw-page-credit-card-placeholder"></div>
         </div>
-        <button type="submit">Withdraw</button>
-      </form>
+      </div>
     </div>
   );
 };

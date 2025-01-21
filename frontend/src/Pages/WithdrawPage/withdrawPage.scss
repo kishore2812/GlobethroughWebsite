@@ -1,17 +1,16 @@
-.WithdrawPage {
+.withdraw-page {
   position: relative;
   min-height: 100vh;
+  padding: 20px;
 
-  // Background with two solid colors
-  .WithdrawPage__background {
+  .withdraw-page-background {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: -1; // Behind content
+    z-index: -1;
 
-    // Top section (40% height)
     &::before {
       content: "";
       position: absolute;
@@ -19,10 +18,9 @@
       left: 0;
       width: 100%;
       height: 40%;
-      background-color: #01493e; // Top color
+      background-color: #01493e;
     }
 
-    // Bottom section (remaining height)
     &::after {
       content: "";
       position: absolute;
@@ -30,7 +28,74 @@
       left: 0;
       width: 100%;
       height: 60%;
-      background-color: #e6ebf0; // Bottom color
+      background-color: #e6ebf0;
+    }
+  }
+
+  .withdraw-page-cards {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+    padding: 0px 40px;
+
+    .withdraw-page-card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      width: 40%;
+      display: flex;
+      flex-direction: column;
+
+      .withdraw-page-card-section {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+
+        &.wallet-balance {
+          padding-top: 20px;
+          font-size: 24px;
+          font-weight: 700;
+          border-bottom: 2px solid #b7b7b780;
+          padding-bottom: 10px;
+          margin-bottom: 20px;
+        }
+
+        &.smaller-text {
+          padding: 5px 0;
+          font-size: 16px;
+          font-weight: 500;
+          color: #000;
+        }
+
+        span {
+          display: block;
+        }
+      }
+
+      .withdraw-page-input-section {
+        margin-top: 20px;
+
+        label {
+          display: block;
+          margin-bottom: 8px;
+          font-weight: bold;
+        }
+
+        input {
+          width: 100%;
+          padding: 8px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+        }
+      }
+    }
+
+    .withdraw-page-credit-card-placeholder {
+      padding: 60px;
+      text-align: center;
+      border: 2px dashed #01493e;
+      border-radius: 8px;
     }
   }
 }
