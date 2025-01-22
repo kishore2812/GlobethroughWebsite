@@ -46,7 +46,7 @@ const Withdraw = () => {
         <div className="withdraw-page-card">
           <div className="withdraw-page-credit-card-placeholder">
             <CiCirclePlus className="plus-icon" />
-            <p>Add Credit Card</p>
+            <p>Add A New Card</p>
           </div>
         </div>
       </div>
