@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import "./homepage.scss";
 import Header from "../../Components/Header/Header";
 import { CgArrowsExchange } from "react-icons/cg";
-import airportData from "./airport.json";
 import {
   format,
   addMonths,
@@ -27,21 +26,15 @@ const prices: { [key: string]: number } = {
   "2024-12-15": 250,
   // Add more dates here
 };
+// Define an interface for the airport object
 interface Airport {
-  ID: number;
-  Name: string;
-  City: string;
-  Country: string;
-  IATA: string;
-  ICAO: string;
-  Latitude: number;
-  Longitude: number;
-  Altitude: number;
-  Timezone: number;
-  Category: string;
-  "Timezone Name": string;
-  Type: string;
-  Source: string;
+  id: string;
+  name: string;
+  iataCode: string | null;
+  address: {
+    cityName: string;
+    countryName: string;
+  };
 }
 
 const HomePage: React.FC = () => {
@@ -80,6 +73,7 @@ const HomePage: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [showTravelersModal, setShowTravelersModal] = useState(false);
   const [showClassModal, setShowClassModal] = useState(false);
+  const [airports, setAirports] = useState([]);
 
   //trip Type Selection
   const handleTripSelection = (tripType: "one-way" | "round-trip") => {
@@ -102,15 +96,36 @@ const HomePage: React.FC = () => {
     setIsAirportListModalOpen(false);
   };
 
-  const filteredAirports = searchQuery
-    ? airportData
-        .filter((airport: Airport) =>
-          `${airport.Name} ${airport.IATA} ${airport.ICAO} ${airport.City} ${airport.Country}`
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase())
-        )
-        .slice(0, 10) // Show only 10 airports
-    : [];
+  const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+
+    if (query.length > 0) {
+      try {
+        // Fetch token from backend
+        const tokenResponse = await fetch(
+          "http://localhost:5000/amadeus/token"
+        );
+        const { access_token } = await tokenResponse.json();
+
+        // Fetch airport data from Amadeus API
+        const response = await fetch(
+          `https://test.api.amadeus.com/v1/reference-data/locations?subType=CITY,AIRPORT&keyword=${query}&page%5Blimit%5D=10`,
+          {
+            headers: { Authorization: `Bearer ${access_token}` },
+          }
+        );
+
+        const data = await response.json();
+        setAirports(data.data || []);
+      } catch (err) {
+        console.error("Failed to fetch airports:", err);
+        setAirports([]);
+      }
+    } else {
+      setAirports([]);
+    }
+  };
 
   // Calendar Modal functions
   // Format the date as "Mon, Jan 28"
@@ -337,7 +352,7 @@ const HomePage: React.FC = () => {
               onClick={() => handleAirportOpenModal("from")}
             >
               <span className="homepage_label">
-                {fromAirport ? fromAirport.Name : "From Where - Select airport"}
+                {fromAirport ? fromAirport.name : "From Where - Select airport"}
               </span>
             </div>
 
@@ -353,7 +368,7 @@ const HomePage: React.FC = () => {
               onClick={() => handleAirportOpenModal("to")}
             >
               <span className="homepage_label">
-                {toAirport ? toAirport.Name : "To Where - Select airport"}
+                {toAirport ? toAirport.name : "To Where - Select airport"}
               </span>
             </div>
 
@@ -371,7 +386,7 @@ const HomePage: React.FC = () => {
                       type="text"
                       placeholder="Search airport..."
                       value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onChange={handleSearch}
                       className="homepage_modal-input"
                     />
                     <button
@@ -382,15 +397,16 @@ const HomePage: React.FC = () => {
                     </button>
                   </div>
                   <div className="homepage_modal-body">
-                    {filteredAirports.length > 0 ? (
-                      filteredAirports.map((airport) => (
+                    {airports.length > 0 ? (
+                      airports.map((airport) => (
                         <div
-                          key={airport.ID}
+                          key={airport.id}
                           className="homepage_airport-item"
                           onClick={() => handleSelectAirport(airport)}
                         >
-                          <strong>{airport.Name}</strong> ({airport.IATA}/
-                          {airport.ICAO}) - {airport.City}, {airport.Country}
+                          <strong>{airport.name}</strong> (
+                          {airport.iataCode || "N/A"}-{" "}
+                          {airport.address.cityName}, )
                         </div>
                       ))
                     ) : (

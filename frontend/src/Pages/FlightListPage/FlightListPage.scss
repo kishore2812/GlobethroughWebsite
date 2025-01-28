@@ -63,12 +63,12 @@
 
       .flightListPage-fromAirport,
       .flightListPage-toAirport {
-        font-size: 16px; // Smaller size for city name
+        font-size: 12px; // Smaller size for city name
         display: block;
       }
 
       .flightListPage-iataCode {
-        font-size: 20px; // Larger size for IATA code
+        font-size: 16px; // Larger size for IATA code
         font-weight: bold;
       }
 

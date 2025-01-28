@@ -6,6 +6,7 @@ const authRouter = require("./routes/authRoutes");
 const userRouter = require("./routes/userRoutes"); // Import the user routes
 const subuserRouter = require("./routes/subUserRoutes");
 const setPasswordRouter = require("./routes/setPasswordRoutes");
+const tokenRoutes = require("./routes/amadeusTokenRoutes");
 
 // Load environment variables
 dotenv.config();
@@ -41,6 +42,7 @@ app.use("/auth", authRouter); // Authentication routes
 app.use("/api", userRouter); // User-related routes (protected)
 app.use("/subuser", subuserRouter);
 app.use("/setpassword", setPasswordRouter);
+app.use("/amadeus", tokenRoutes);
 
 // Server Start
 const PORT = process.env.PORT || 5000;

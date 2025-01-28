@@ -58,18 +58,18 @@ const FlightListPage: React.FC = () => {
         <div className="flightListPage-airportInfo">
           <div className="flightListPage-fromAirport">
             <span className="flightListPage-iataCode">
-              {fromAirport?.IATA}, {}
+              {fromAirport?.iataCode},
             </span>
-            <span className="flightListPage-cityName">{fromAirport?.City}</span>
+            <span className="flightListPage-cityName">{fromAirport?.name}</span>
           </div>
           <div className="flightListPage-arrow">
             <FaArrowRight /> {/* Using FaArrowRight icon */}
           </div>
           <div className="flightListPage-toAirport">
             <span className="flightListPage-iataCode">
-              {toAirport?.IATA}, {}
+              {toAirport?.iataCode},
             </span>
-            <span className="flightListPage-cityName">{toAirport?.City}</span>
+            <span className="flightListPage-cityName">{toAirport?.name}</span>
           </div>
         </div>
 

@@ -6,10 +6,10 @@ type TripType = "one-way" | "round-trip";
 
 interface Airport {
   ID: number;
-  Name: string;
+  name: string;
   City: string;
   Country: string;
-  IATA: string;
+  iataCode: string;
   ICAO: string;
   Latitude: number;
   Longitude: number;
