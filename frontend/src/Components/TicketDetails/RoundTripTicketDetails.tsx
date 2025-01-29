@@ -88,10 +88,10 @@ const TicketDetailsRoundTrip: React.FC = () => {
               </p>
             </div>
             <p className="RoundTripTicketDetails__airport">
-              {fromAirport?.City},{fromAirport?.IATA}
+              {fromAirport?.address.cityName},{fromAirport?.iataCode}
             </p>
             <p className="RoundTripTicketDetails__airport">
-              {fromAirport?.Name}
+              {fromAirport?.name}
             </p>
           </div>
 
@@ -124,13 +124,13 @@ const TicketDetailsRoundTrip: React.FC = () => {
               className="RoundTripTicketDetails__airport"
               style={{ textAlign: "right" }}
             >
-              {toAirport?.City},{toAirport?.IATA}
+              {toAirport?.address.cityName},{toAirport?.iataCode}
             </p>
             <p
               className="RoundTripTicketDetails__airport"
               style={{ textAlign: "right" }}
             >
-              {toAirport?.Name}
+              {toAirport?.name}
             </p>
           </div>
         </div>
@@ -176,10 +176,10 @@ const TicketDetailsRoundTrip: React.FC = () => {
               </p>
             </div>
             <p className="RoundTripTicketDetails__airport">
-              {fromAirport?.City},{fromAirport?.IATA}
+              {fromAirport?.address.cityName},{fromAirport?.iataCode}
             </p>
             <p className="RoundTripTicketDetails__airport">
-              {fromAirport?.Name}
+              {fromAirport?.name}
             </p>
           </div>
 
@@ -212,13 +212,13 @@ const TicketDetailsRoundTrip: React.FC = () => {
               className="RoundTripTicketDetails__airport"
               style={{ textAlign: "right" }}
             >
-              {toAirport?.City},{toAirport?.IATA}
+              {toAirport?.address.cityName},{toAirport?.iataCode}
             </p>
             <p
               className="RoundTripTicketDetails__airport"
               style={{ textAlign: "right" }}
             >
-              {toAirport?.Name}
+              {toAirport?.name}
             </p>
           </div>
         </div>

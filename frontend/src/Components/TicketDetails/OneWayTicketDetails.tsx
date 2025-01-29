@@ -79,16 +79,16 @@ const TicketDetailsOneWay: React.FC = () => {
 
           <p className="OneWayTicketDetails__airportDetails">
             <span className="OneWayTicketDetails__iata">
-              {fromAirport?.IATA || "N/A"}
+              {fromAirport?.iataCode || "N/A"}
             </span>
             ,
             <span className="OneWayTicketDetails__city">
-              {fromAirport?.City || "N/A"}
+              {fromAirport?.address.cityName || "N/A"}
             </span>
           </p>
 
           <span className="OneWayTicketDetails__airport-name">
-            {fromAirport?.Name || "N/A"}
+            {fromAirport?.name || "N/A"}
           </span>
           <p>
             <span className="OneWayTicketDetails__airport-name">Terminal</span>
@@ -122,17 +122,17 @@ const TicketDetailsOneWay: React.FC = () => {
           </p>
           <p className="OneWayTicketDetails__airportDetails">
             <span className="OneWayTicketDetails__iata">
-              {toAirport?.IATA || "N/A"}
+              {toAirport?.iataCode || "N/A"}
             </span>
             ,
             <span className="OneWayTicketDetails__city">
-              {toAirport?.City || "N/A"}
+              {toAirport?.address.cityName || "N/A"}
             </span>
           </p>
 
           <p>
             <span className="OneWayTicketDetails__airport-name">
-              {toAirport?.Name || "N/A"}
+              {toAirport?.name || "N/A"}
             </span>
           </p>
 
