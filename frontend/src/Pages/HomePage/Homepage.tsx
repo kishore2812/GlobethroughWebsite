@@ -616,27 +616,27 @@ const HomePage: React.FC = () => {
                       type="radio"
                       name="class"
                       value="business"
-                      onChange={() => closeClassModal("Business")}
+                      onChange={() => closeClassModal("BUSINESS")}
                     />{" "}
-                    <span>Business</span>
+                    <span>BUSINESS</span>
                   </label>
                   <label className="homepage_Class_modal-content_label">
                     <input
                       type="radio"
                       name="class"
                       value="economy"
-                      onChange={() => closeClassModal("Economy")}
+                      onChange={() => closeClassModal("ECONOMY")}
                     />{" "}
-                    <span>Economy</span>
+                    <span>ECONOMY</span>
                   </label>
                   <label className="homepage_Class_modal-content_label">
                     <input
                       type="radio"
                       name="class"
                       value="first"
-                      onChange={() => closeClassModal("First")}
+                      onChange={() => closeClassModal("FIRST")}
                     />{" "}
-                    <span>First</span>
+                    <span>FIRST</span>
                   </label>
                   <button onClick={() => setShowClassModal(false)}>
                     Close
