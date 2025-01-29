@@ -5,6 +5,47 @@ import { IoAirplaneSharp } from "react-icons/io5";
 import axios from "axios";
 import "./FlightListOneWay.scss";
 
+// Helper functions to fetch the user's country and currency, and convert currency
+const fetchUserCountry = async () => {
+  try {
+    const response = await axios.get(
+      "https://api.ipgeolocation.io/ipgeo?apiKey=dc4ee33cead243e396eaca0c9c4bf19c"
+    );
+    console.log("User country data:", response.data); // Add logging here
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user country:", error);
+    throw new Error("Error fetching user country");
+  }
+};
+
+const fetchCurrencyConversionRate = async (currency: string) => {
+  try {
+    const response = await axios.get(
+      `https://v6.exchangerate-api.com/v6/eb7a0c52098e9debbb7e5f63/latest/EUR`
+    );
+
+    console.log("Currency conversion rate data:", response.data);
+
+    // Check if the currency exists in the conversion rates
+    if (
+      response.data &&
+      response.data.conversion_rates &&
+      response.data.conversion_rates[currency]
+    ) {
+      return response.data.conversion_rates[currency];
+    } else {
+      console.warn(
+        `Conversion rate for ${currency} not found. Falling back to default rate.`
+      );
+      return 1; // Default conversion rate (1:1) if currency not found
+    }
+  } catch (error) {
+    console.error("Error fetching conversion rate:", error);
+    return 1; // Default conversion rate (1:1) if API call fails
+  }
+};
+
 const FlightListOneWay: React.FC = () => {
   const navigate = useNavigate();
   const {
@@ -21,12 +62,14 @@ const FlightListOneWay: React.FC = () => {
   const [dictionaries, setDictionaries] = useState<any>({});
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [userCurrency, setUserCurrency] = useState<string>("USD");
+  const [conversionRate, setConversionRate] = useState<number | null>(null);
 
   const fetchToken = async () => {
     try {
       const response = await axios.get("http://localhost:5000/amadeus/token");
       return response.data.access_token;
-    } catch (error) {
+    } catch {
       setError("Error fetching token");
       return null;
     }
@@ -63,7 +106,7 @@ const FlightListOneWay: React.FC = () => {
         setFlights(data.data);
         setDictionaries(data.dictionaries);
       }
-    } catch (error) {
+    } catch {
       setError("Error fetching flight data");
     } finally {
       setLoading(false);
@@ -84,6 +127,24 @@ const FlightListOneWay: React.FC = () => {
       setError("Please check the search parameters and try again.");
     }
   }, [fromAirport, toAirport, departureDate, adults, children, selectedClass]);
+
+  // Fetch user's country and currency
+  useEffect(() => {
+    const fetchCountryData = async () => {
+      try {
+        const countryData = await fetchUserCountry();
+
+        const userCurrency = countryData.currency.code; // Get user's currency from API
+        setUserCurrency(userCurrency);
+        const rate = await fetchCurrencyConversionRate(userCurrency);
+        setConversionRate(rate);
+      } catch {
+        setError("Error fetching country and currency data");
+      }
+    };
+
+    fetchCountryData();
+  }, []);
 
   const handleBookNow = (flight: any) => {
     setSelectedFlight(flight);
@@ -106,6 +167,11 @@ const FlightListOneWay: React.FC = () => {
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div className="error">{error}</div>;
+
+  // Convert prices based on the conversion rate
+  const convertPrice = (priceInEuro: number) => {
+    return conversionRate ? priceInEuro * conversionRate : priceInEuro;
+  };
 
   // Find cheapest and fastest flights
   const cheapestFlight = flights.reduce(
@@ -192,7 +258,8 @@ const FlightListOneWay: React.FC = () => {
 
                 <div className="flightListOneWay__column">
                   <div className="flightListOneWay__price">
-                    ₹{flight.price?.total || "NA"}
+                    {userCurrency}{" "}
+                    {convertPrice(flight.price?.total || 0).toFixed(2)}
                   </div>
                   <button
                     className="flightListOneWay__bookNow"
@@ -206,6 +273,7 @@ const FlightListOneWay: React.FC = () => {
           );
         })
       )}
+      <div className="flightListOneWay__Extra"></div>
     </div>
   );
 };
