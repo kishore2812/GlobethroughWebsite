@@ -173,11 +173,16 @@ const FlightListOneWay: React.FC = () => {
     return conversionRate ? priceInEuro * conversionRate : priceInEuro;
   };
 
-  // Find cheapest and fastest flights
-  const cheapestFlight = flights.reduce(
-    (prev, curr) => (curr.price.total < prev.price.total ? curr : prev),
-    flights[0]
-  );
+  // Find the cheapest and fastest flights
+  const cheapestFlight = flights.reduce((prev, curr) => {
+    // Access the total price of the flight
+    const prevPrice = parseFloat(prev.price.total.replace(/[^\d.-]/g, "")); // Remove any non-numeric characters like currency symbols
+    const currPrice = parseFloat(curr.price.total.replace(/[^\d.-]/g, "")); // Same for current flight
+
+    // Compare the price
+    return currPrice < prevPrice ? curr : prev;
+  }, flights[0]);
+
   const fastestFlight = flights.reduce(
     (prev, curr) =>
       curr.itineraries[0].duration < prev.itineraries[0].duration ? curr : prev,
@@ -197,11 +202,11 @@ const FlightListOneWay: React.FC = () => {
             <div
               className={`flightListOneWay__card ${
                 flight.id === cheapestFlight.id
-                  ? "flightListOneWay__cheapest"
+                  ? "flightListOneWay__cheapest" // Label for cheapest flight
                   : ""
               } ${
                 flight.id === fastestFlight.id
-                  ? "flightListOneWay__fastest"
+                  ? "flightListOneWay__fastest" // Label for fastest flight
                   : ""
               }`}
               key={flight.id}
@@ -218,8 +223,10 @@ const FlightListOneWay: React.FC = () => {
                 {(flight.id === cheapestFlight.id ||
                   flight.id === fastestFlight.id) && (
                   <div className="flightListOneWay__tag">
-                    {flight.id === cheapestFlight.id && "Cheapest"}
-                    {flight.id === fastestFlight.id && "Fastest"}
+                    {flight.id === cheapestFlight.id && "Cheapest"}{" "}
+                    {/* Cheapest label */}
+                    {flight.id === fastestFlight.id && "Fastest"}{" "}
+                    {/* Fastest label */}
                   </div>
                 )}
               </div>
@@ -273,7 +280,6 @@ const FlightListOneWay: React.FC = () => {
           );
         })
       )}
-      <div className="flightListOneWay__Extra"></div>
     </div>
   );
 };
