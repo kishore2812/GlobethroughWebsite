@@ -98,7 +98,7 @@ const FlightListOneWay: React.FC<FlightListOneWayProps> = ({ flights }) => {
               </div>
 
               <div className="flightListOneWay__location">
-                {fromAirport?.City}, {fromAirport?.IATA}
+                {fromAirport?.address.cityName}, {fromAirport?.iataCode}
               </div>
             </div>
             <div className="flightListOneWay__column">
@@ -125,7 +125,7 @@ const FlightListOneWay: React.FC<FlightListOneWayProps> = ({ flights }) => {
               </div>
 
               <div className="flightListOneWay__location">
-                {toAirport?.City}, {toAirport?.IATA}
+                {toAirport?.address.cityName}, {toAirport?.iataCode}
               </div>
             </div>
             <div className="flightListOneWay__column">

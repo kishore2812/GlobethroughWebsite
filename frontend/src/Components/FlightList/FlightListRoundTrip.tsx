@@ -132,7 +132,7 @@ const FlightListRoundTrip: React.FC<FlightListRoundTripProps> = ({
 
           <p>
             <span className="Flight_list_round_trip__Airportdetails">
-              {fromAirport?.City}, {fromAirport?.IATA}
+              {fromAirport?.address.cityName}, {fromAirport?.iataCode}
             </span>
           </p>
         </div>
@@ -171,7 +171,7 @@ const FlightListRoundTrip: React.FC<FlightListRoundTripProps> = ({
           </p>
           <p>
             <span className="Flight_list_round_trip__Airportdetails">
-              {toAirport?.City}, {toAirport?.IATA}
+              {toAirport?.address.cityName}, {toAirport?.iataCode}
             </span>
           </p>
         </div>
@@ -224,7 +224,7 @@ const FlightListRoundTrip: React.FC<FlightListRoundTripProps> = ({
                   {formatTime(selectedDeparture?.startTime)}
                 </span>
                 <span className="Flight_list_round_trip__location">
-                  {fromAirport?.City}, {fromAirport?.IATA}
+                  {fromAirport?.address.cityName}, {fromAirport?.iataCode}
                 </span>
               </div>
               <FaArrowRight />
@@ -233,7 +233,7 @@ const FlightListRoundTrip: React.FC<FlightListRoundTripProps> = ({
                   {formatTime(selectedDeparture?.endTime)}
                 </span>
                 <span className="Flight_list_round_trip__location">
-                  {toAirport?.City}, {toAirport?.IATA}
+                  {toAirport?.address.cityName}, {toAirport?.iataCode}
                 </span>
               </div>
             </div>
@@ -252,7 +252,7 @@ const FlightListRoundTrip: React.FC<FlightListRoundTripProps> = ({
                   {formatTime(selectedReturn?.startTime)}
                 </span>
                 <span className="Flight_list_round_trip__location">
-                  {toAirport?.City}, {toAirport?.IATA}
+                  {toAirport?.address.cityName}, {toAirport?.iataCode}
                 </span>
               </div>
               <FaArrowRight />
@@ -261,7 +261,7 @@ const FlightListRoundTrip: React.FC<FlightListRoundTripProps> = ({
                   {formatTime(selectedReturn?.endTime)}
                 </span>
                 <span className="Flight_list_round_trip__location">
-                  {fromAirport?.City}, {fromAirport?.IATA}
+                  {fromAirport?.address.cityName}, {fromAirport?.iataCode}
                 </span>
               </div>
             </div>
