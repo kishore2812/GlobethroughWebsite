@@ -5,20 +5,13 @@ import { Flight } from "../Pages/FlightListPage/flightdata";
 type TripType = "one-way" | "round-trip";
 
 interface Airport {
-  ID: number;
+  id: string;
   name: string;
-  City: string;
-  Country: string;
-  iataCode: string;
-  ICAO: string;
-  Latitude: number;
-  Longitude: number;
-  Altitude: number;
-  Timezone: number;
-  Category: string;
-  TimezoneName: string;
-  Type: string;
-  Source: string;
+  iataCode: string | null;
+  address: {
+    cityName: string;
+    countryName: string;
+  };
 }
 
 interface Passenger {

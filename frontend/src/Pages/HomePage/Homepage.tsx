@@ -110,7 +110,7 @@ const HomePage: React.FC = () => {
 
         // Fetch airport data from Amadeus API
         const response = await fetch(
-          `https://test.api.amadeus.com/v1/reference-data/locations?subType=CITY,AIRPORT&keyword=${query}&page%5Blimit%5D=10`,
+          `https://test.api.amadeus.com/v1/reference-data/locations?subType=AIRPORT&keyword=${query}&page%5Blimit%5D=10`,
           {
             headers: { Authorization: `Bearer ${access_token}` },
           }
@@ -398,7 +398,7 @@ const HomePage: React.FC = () => {
                   </div>
                   <div className="homepage_modal-body">
                     {airports.length > 0 ? (
-                      airports.map((airport) => (
+                      airports.map((airport: Airport) => (
                         <div
                           key={airport.id}
                           className="homepage_airport-item"
