@@ -1,88 +1,93 @@
 .flightListRoundTrip {
-  &__container {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+
+  .flightListRoundTrip__container {
     display: flex;
     justify-content: space-between;
+    width: 100%;
+  }
+
+  .flightListRoundTrip__column {
+    width: 48%;
+    display: flex;
+    flex-direction: column;
     gap: 20px;
   }
 
-  &__column {
-    width: 48%;
-  }
-
-  &__card {
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+  .flightListRoundTrip__card {
+    background-color: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
     padding: 20px;
-    margin-bottom: 16px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-
-  &__header {
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 16px;
-  }
+    flex-direction: column;
+    gap: 10px;
 
-  &__carrier {
-    font-weight: bold;
-    font-size: 16px;
-  }
+    .flightListRoundTrip__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
 
-  &__flightNumber {
-    font-size: 14px;
-    color: #555;
-  }
+      .flightListRoundTrip__carrier {
+        font-weight: bold;
+        font-size: 16px;
+        color: #333;
+      }
 
-  &__row {
-    display: flex;
-    justify-content: space-between;
-  }
+      .flightListRoundTrip__flightNumber {
+        font-size: 14px;
+        color: #777;
+      }
+    }
 
-  &__column {
-    flex: 1;
-  }
+    .flightListRoundTrip__row {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
 
-  &__time {
-    font-size: 14px;
-    color: #333;
-  }
+      .flightListRoundTrip__column {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        text-align: center;
 
-  &__location {
-    font-size: 12px;
-    color: #777;
-  }
+        .flightListRoundTrip__time {
+          font-size: 18px;
+          font-weight: bold;
+          color: #333;
+        }
 
-  &__duration {
-    font-size: 12px;
-    font-weight: bold;
-    color: #555;
-  }
+        .flightListRoundTrip__location {
+          font-size: 14px;
+          color: #777;
+        }
 
-  &__lineWithIcon {
-    display: flex;
-    justify-content: center;
-    margin: 8px 0;
-  }
+        .flightListRoundTrip__duration {
+          font-size: 14px;
+          color: #555;
+        }
 
-  &__airplaneIcon {
-    font-size: 24px;
-    color: #ff6347;
-  }
+        .flightListRoundTrip__lineWithIcon {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
 
-  &__stops {
-    font-size: 12px;
-    color: #999;
-  }
+        .flightListRoundTrip__airplaneIcon {
+          font-size: 20px;
+          color: #333;
+        }
 
-  &__card:hover {
-    background-color: #f1f1f1;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-  }
-
-  .error {
-    color: red;
-    text-align: center;
-    font-weight: bold;
+        .flightListRoundTrip__stops {
+          font-size: 14px;
+          color: #777;
+        }
+      }
+    }
   }
 }
