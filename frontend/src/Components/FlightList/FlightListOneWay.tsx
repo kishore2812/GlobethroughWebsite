@@ -280,6 +280,7 @@ const FlightListOneWay: React.FC = () => {
           );
         })
       )}
+      <div className="flightListOneWay__Extra"></div>
     </div>
   );
 };
