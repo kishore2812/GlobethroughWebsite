@@ -1,287 +1,285 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { Flight } from "../../Pages/FlightListPage/flightdata";
+import React, { useState, useEffect } from "react";
 import useFlightStore from "../../Stores/FlightStore";
-import "./FlightListRoundTrip.scss";
 import { IoAirplaneSharp } from "react-icons/io5";
-import { FaArrowRight } from "react-icons/fa";
+import axios from "axios";
+import "./FlightListRoundTrip.scss";
 
-interface FlightListRoundTripProps {
-  flights: Flight[];
-}
+const FlightListRoundTrip: React.FC = () => {
+  const {
+    fromAirport,
+    toAirport,
+    departureDate,
+    returnDate,
+    adults,
+    children,
+    selectedClass,
+  } = useFlightStore();
 
-const FlightListRoundTrip: React.FC<FlightListRoundTripProps> = ({
-  flights,
-}) => {
-  const navigate = useNavigate();
-  const { fromAirport, toAirport, setSelectedDeparture, setSelectedReturn } =
-    useFlightStore();
-  const { selectedDeparture, selectedReturn } = useFlightStore();
+  const [departureFlights, setDepartureFlights] = useState<any[]>([]);
+  const [returnFlights, setReturnFlights] = useState<any[]>([]);
+  const [dictionaries, setDictionaries] = useState<any>({});
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Filter flights by type
-  const departureFlights = flights.filter(
-    (flight) => flight.type === "departure"
-  );
-  const returnFlights = flights.filter((flight) => flight.type === "return");
-
-  // Find the cheapest and fastest flight IDs for departure
-  const cheapestDepartureFlightId = departureFlights.reduce((prev, curr) =>
-    curr.price < prev.price ? curr : prev
-  ).id;
-
-  const fastestDepartureFlightId = departureFlights.reduce((prev, curr) =>
-    curr.duration < prev.duration ? curr : prev
-  ).id;
-
-  // Find the cheapest and fastest flight IDs for return
-  const cheapestReturnFlightId = returnFlights.reduce((prev, curr) =>
-    curr.price < prev.price ? curr : prev
-  ).id;
-
-  const fastestReturnFlightId = returnFlights.reduce((prev, curr) =>
-    curr.duration < prev.duration ? curr : prev
-  ).id;
-
-  const handleBookNow = () => {
-    if (selectedDeparture && selectedReturn) {
-      navigate("/ticket-detail", {
-        state: {
-          departureFlight: selectedDeparture,
-          returnFlight: selectedReturn,
-        },
-      });
-    } else {
-      alert("Please select both departure and return flights.");
+  const fetchToken = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/amadeus/token");
+      return response.data.access_token;
+    } catch {
+      setError("Error fetching token");
+      return null;
     }
   };
 
-  function formatTime(time: string | undefined): string {
-    if (!time) {
-      return "N/A"; // Fallback for undefined time
+  const fetchDepartureFlights = async (token: string) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await axios.get(
+        `https://test.api.amadeus.com/v2/shopping/flight-offers`,
+        {
+          params: {
+            originLocationCode: fromAirport?.iataCode,
+            destinationLocationCode: toAirport?.iataCode,
+            departureDate: departureDate,
+            adults: adults,
+            children: children,
+            travelClass: selectedClass,
+            nonStop: false,
+            max: 250,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const data = response.data;
+      if (data.data.length === 0) {
+        setError("No departure flights found for the selected criteria.");
+      } else {
+        setDepartureFlights(data.data);
+        setDictionaries(data.dictionaries);
+      }
+    } catch {
+      setError("Error fetching departure flight data");
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const fetchReturnFlights = async (token: string) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await axios.get(
+        `https://test.api.amadeus.com/v2/shopping/flight-offers`,
+        {
+          params: {
+            originLocationCode: toAirport?.iataCode,
+            destinationLocationCode: fromAirport?.iataCode,
+            departureDate: returnDate,
+            adults: adults,
+            children: children,
+            travelClass: selectedClass,
+            nonStop: false,
+            max: 250,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const data = response.data;
+      if (data.data.length === 0) {
+        setError("No return flights found for the selected criteria.");
+      } else {
+        setReturnFlights(data.data);
+        setDictionaries(data.dictionaries);
+      }
+    } catch {
+      setError("Error fetching return flight data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const loadFlights = async () => {
+      const token = await fetchToken();
+      if (token) {
+        fetchDepartureFlights(token);
+        fetchReturnFlights(token);
+      }
+    };
+
+    if (fromAirport && toAirport && departureDate && returnDate) {
+      loadFlights();
+    } else {
+      setError("Please check the search parameters and try again.");
+    }
+  }, [
+    fromAirport,
+    toAirport,
+    departureDate,
+    returnDate,
+    adults,
+    children,
+    selectedClass,
+  ]);
+
+  const formatTime = (time: string) => {
     const date = new Date(time);
-    return date.toLocaleTimeString("en-GB", {
+    return date.toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
+      hour12: true,
     });
-  }
+  };
 
-  const renderFlightCard = (
-    flight: Flight,
-    isSelected: boolean,
-    type: string
-  ) => (
-    <div
-      className={`Flight_list_round_trip__flight-card ${
-        isSelected ? "selected" : ""
-      }`}
-      onClick={() => {
-        if (type === "departure") {
-          setSelectedDeparture(flight); // Store in Zustand
-        } else {
-          setSelectedReturn(flight); // Store in Zustand
-        }
-      }}
-    >
-      {/* Labels */}
-      {type === "departure" && flight.id === fastestDepartureFlightId && (
-        <span className="Flight_list_round_trip__label fastest">Fastest</span>
-      )}
-      {type === "departure" && flight.id === cheapestDepartureFlightId && (
-        <span className="Flight_list_round_trip__label cheapest">Cheapest</span>
-      )}
-      {type === "return" && flight.id === fastestReturnFlightId && (
-        <span className="Flight_list_round_trip__label fastest">Fastest</span>
-      )}
-      {type === "return" && flight.id === cheapestReturnFlightId && (
-        <span className="Flight_list_round_trip__label cheapest">Cheapest</span>
-      )}
+  const formatDuration = (duration: string) => {
+    const match = duration.match(/PT(\d+)H(\d+)M/);
+    return match ? `${match[1]}h ${match[2]}m` : "NA";
+  };
 
-      {/* Row 1 */}
-      <div className="Flight_list_round_trip__flight-row">
-        <div className="Flight_list_round_trip__flight-logo">
-          <img src={flight.logo} alt={flight.flightNumber} />
-          <span className="Flight_list_round_trip__flightNumber">
-            <p>{flight.flightNumber}</p>
-          </span>
-        </div>
-        <div className="Flight_list_round_trip__flight-price">
-          ₹{flight.price}
-        </div>
-      </div>
-
-      {/* Row 2 */}
-      <div className="Flight_list_round_trip__flight-row details">
-        <div className="Flight_list_round_trip__time-location">
-          <p>
-            <span className="Flight_list_round_trip__time-uk">
-              {new Date(flight.startTime).toLocaleTimeString("en-GB", {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </span>{" "}
-            <span className="Flight_list_round_trip__time-us">
-              (
-              {new Date(flight.startTime).toLocaleTimeString("en-US", {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-              )
-            </span>
-          </p>
-
-          <p>
-            <span className="Flight_list_round_trip__Airportdetails">
-              {fromAirport?.address.cityName}, {fromAirport?.iataCode}
-            </span>
-          </p>
-        </div>
-        <div className="Flight_list_round_trip__duration-stops">
-          <span className="Flight_list_round_trip__duration">
-            <p>{flight.duration} hrs</p>
-          </span>
-
-          <div className="Flight_list_round_trip__lineWithIcon">
-            <div className="Flight_list_round_trip__line"></div>
-            <IoAirplaneSharp className="Flight_list_round_trip__airplaneIcon" />
-            <div className="Flight_list_round_trip__line"></div>
-          </div>
-          <p>
-            <span className="Flight_list_round_trip__duration">
-              {flight.stops} {flight.stops === 1 ? "Stop" : "Stops"}
-            </span>
-          </p>
-        </div>
-        <div className="Flight_list_round_trip__time-location">
-          <p>
-            <span className="Flight_list_round_trip__time-uk">
-              {new Date(flight.endTime).toLocaleTimeString("en-GB", {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </span>{" "}
-            <span className="Flight_list_round_trip__time-us">
-              (
-              {new Date(flight.endTime).toLocaleTimeString("en-US", {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-              )
-            </span>
-          </p>
-          <p>
-            <span className="Flight_list_round_trip__Airportdetails">
-              {toAirport?.address.cityName}, {toAirport?.iataCode}
-            </span>
-          </p>
-        </div>
-      </div>
-    </div>
-  );
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div className="error">{error}</div>;
 
   return (
-    <div>
-      <div className="Flight_list_round_trip">
-        <div className="Flight_list_round_trip__flight-section">
-          {departureFlights.map((flight) => (
-            <React.Fragment key={flight.id}>
-              {renderFlightCard(
-                flight,
-                selectedDeparture?.id === flight.id,
-                "departure"
-              )}
-            </React.Fragment>
-          ))}
-        </div>
-        <div className="Flight_list_round_trip__flight-section">
-          {returnFlights.map((flight) => (
-            <React.Fragment key={flight.id}>
-              {renderFlightCard(
-                flight,
-                selectedReturn?.id === flight.id,
-                "return"
-              )}
-            </React.Fragment>
-          ))}
-        </div>
-      </div>
+    <div className="flightListRoundTrip">
+      {departureFlights.length === 0 && returnFlights.length === 0 ? (
+        <div>No flights available</div>
+      ) : (
+        <div className="flightListRoundTrip__container">
+          <div className="flightListRoundTrip__column">
+            {/* Departure Flight Cards */}
+            {departureFlights.map((flight) => {
+              const firstSegmentDeparture =
+                flight.itineraries?.[0]?.segments?.[0];
+              const lastSegmentDeparture =
+                flight.itineraries?.[0]?.segments?.slice(-1)[0];
 
-      {/* Bottom Modal */}
-      {selectedDeparture && selectedReturn && (
-        <div className="Flight_list_round_trip__flight-bottom-modal-container">
-          <div className="Flight_list_round_trip__flight-bottom-modal">
-            <div className="Flight_list_round_trip__column">
-              {/* Departure Flight */}
-              <div className="Flight_list_round_trip__flight-logo">
-                <img
-                  src={selectedDeparture?.logo}
-                  alt={selectedDeparture?.flightNumber}
-                />
-                <span>{selectedDeparture?.flightNumber}</span>
-              </div>
-              <div className="Flight_list_round_trip__start-time">
-                <span className="Flight_list_round_trip__time">
-                  {formatTime(selectedDeparture?.startTime)}
-                </span>
-                <span className="Flight_list_round_trip__location">
-                  {fromAirport?.address.cityName}, {fromAirport?.iataCode}
-                </span>
-              </div>
-              <FaArrowRight />
-              <div className="Flight_list_round_trip__end-time">
-                <span className="Flight_list_round_trip__time">
-                  {formatTime(selectedDeparture?.endTime)}
-                </span>
-                <span className="Flight_list_round_trip__location">
-                  {toAirport?.address.cityName}, {toAirport?.iataCode}
-                </span>
-              </div>
-            </div>
+              if (!firstSegmentDeparture || !lastSegmentDeparture) {
+                return null; // Skip flights with missing segments
+              }
 
-            <div className="Flight_list_round_trip__column">
-              {/* Return Flight */}
-              <div className="Flight_list_round_trip__flight-logo">
-                <img
-                  src={selectedReturn?.logo}
-                  alt={selectedReturn?.flightNumber}
-                />
-                <span>{selectedReturn?.flightNumber}</span>
-              </div>
-              <div className="Flight_list_round_trip__start-time">
-                <span className="Flight_list_round_trip__time">
-                  {formatTime(selectedReturn?.startTime)}
-                </span>
-                <span className="Flight_list_round_trip__location">
-                  {toAirport?.address.cityName}, {toAirport?.iataCode}
-                </span>
-              </div>
-              <FaArrowRight />
-              <div className="Flight_list_round_trip__end-time">
-                <span className="Flight_list_round_trip__time">
-                  {formatTime(selectedReturn?.endTime)}
-                </span>
-                <span className="Flight_list_round_trip__location">
-                  {fromAirport?.address.cityName}, {fromAirport?.iataCode}
-                </span>
-              </div>
-            </div>
+              return (
+                <div className="flightListRoundTrip__card" key={flight.id}>
+                  <div className="flightListRoundTrip__header">
+                    <div className="flightListRoundTrip__carrier">
+                      {dictionaries.carriers?.[
+                        firstSegmentDeparture.carrierCode
+                      ] || "Unknown Airline"}
+                    </div>
+                    <div className="flightListRoundTrip__flightNumber">
+                      {firstSegmentDeparture.carrierCode}{" "}
+                      {firstSegmentDeparture.number}
+                    </div>
+                  </div>
 
-            <div className="Flight_list_round_trip__column">
-              {/* Price and Book Now */}
-              <div className="Flight_list_round_trip__total-price">
-                <span>
-                  ₹{" "}
-                  {(selectedDeparture?.price || 0) +
-                    (selectedReturn?.price || 0)}
-                </span>
-              </div>
-              <button onClick={handleBookNow}>Book Now</button>
-            </div>
+                  <div className="flightListRoundTrip__row">
+                    <div className="flightListRoundTrip__column">
+                      <div className="flightListRoundTrip__time">
+                        {formatTime(firstSegmentDeparture.departure.at)}
+                      </div>
+                      <div className="flightListRoundTrip__location">
+                        {fromAirport?.iataCode}
+                      </div>
+                    </div>
+
+                    <div className="flightListRoundTrip__column">
+                      <div className="flightListRoundTrip__duration">
+                        {formatDuration(flight.itineraries?.[0]?.duration)}
+                      </div>
+                      <div className="flightListRoundTrip__lineWithIcon">
+                        <IoAirplaneSharp className="flightListRoundTrip__airplaneIcon" />
+                      </div>
+                      <div className="flightListRoundTrip__stops">
+                        {flight.itineraries?.[0]?.segments.length - 1} Stop(s)
+                      </div>
+                    </div>
+
+                    <div className="flightListRoundTrip__column">
+                      <div className="flightListRoundTrip__time">
+                        {formatTime(lastSegmentDeparture.arrival.at)}
+                      </div>
+                      <div className="flightListRoundTrip__location">
+                        {toAirport?.iataCode}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="flightListRoundTrip__column">
+            {/* Return Flight Cards */}
+            {returnFlights.map((flight) => {
+              const firstSegmentReturn = flight.itineraries?.[0]?.segments?.[0];
+              const lastSegmentReturn =
+                flight.itineraries?.[0]?.segments?.slice(-1)[0];
+
+              if (!firstSegmentReturn || !lastSegmentReturn) {
+                return null; // Skip flights with missing segments
+              }
+
+              return (
+                <div className="flightListRoundTrip__card" key={flight.id}>
+                  <div className="flightListRoundTrip__header">
+                    <div className="flightListRoundTrip__carrier">
+                      {dictionaries.carriers?.[
+                        firstSegmentReturn.carrierCode
+                      ] || "Unknown Airline"}
+                    </div>
+                    <div className="flightListRoundTrip__flightNumber">
+                      {firstSegmentReturn.carrierCode}{" "}
+                      {firstSegmentReturn.number}
+                    </div>
+                  </div>
+
+                  <div className="flightListRoundTrip__row">
+                    <div className="flightListRoundTrip__column">
+                      <div className="flightListRoundTrip__time">
+                        {formatTime(firstSegmentReturn.departure.at)}
+                      </div>
+                      <div className="flightListRoundTrip__location">
+                        {toAirport?.iataCode}
+                      </div>
+                    </div>
+
+                    <div className="flightListRoundTrip__column">
+                      <div className="flightListRoundTrip__duration">
+                        {formatDuration(flight.itineraries?.[0]?.duration)}
+                      </div>
+                      <div className="flightListRoundTrip__lineWithIcon">
+                        <IoAirplaneSharp className="flightListRoundTrip__airplaneIcon" />
+                      </div>
+                      <div className="flightListRoundTrip__stops">
+                        {flight.itineraries?.[0]?.segments.length - 1} Stop(s)
+                      </div>
+                    </div>
+
+                    <div className="flightListRoundTrip__column">
+                      <div className="flightListRoundTrip__time">
+                        {formatTime(lastSegmentReturn.arrival.at)}
+                      </div>
+                      <div className="flightListRoundTrip__location">
+                        {fromAirport?.iataCode}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
-      <div className="flightListOneWay__Extra"></div>
     </div>
   );
 };
+
 export default FlightListRoundTrip;
