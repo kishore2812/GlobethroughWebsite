@@ -54,6 +54,10 @@ const FlightListRoundTrip: React.FC = () => {
     adults,
     children,
     selectedClass,
+    selectedDeparture,
+    setSelectedDeparture,
+    selectedReturn,
+    setSelectedReturn,
   } = useFlightStore();
 
   const [departureFlights, setDepartureFlights] = useState<any[]>([]);
@@ -220,45 +224,49 @@ const FlightListRoundTrip: React.FC = () => {
       ) : (
         <div className="flightListRoundTrip__container">
           <div className="flightListRoundTrip__column">
-            {/* Departure Flight Cards */}
             {departureFlights.map((flight) => {
-              const firstSegmentDeparture =
-                flight.itineraries?.[0]?.segments?.[0];
-              const lastSegmentDeparture =
+              const firstSegment = flight.itineraries?.[0]?.segments?.[0];
+              const lastSegment =
                 flight.itineraries?.[0]?.segments?.slice(-1)[0];
 
-              if (!firstSegmentDeparture || !lastSegmentDeparture) {
-                return null; // Skip flights with missing segments
-              }
+              if (!firstSegment || !lastSegment) return null; // Skip flights with missing segments
 
               return (
-                <div className="flightListRoundTrip__card" key={flight.id}>
+                <div
+                  className={`flightListRoundTrip__card ${
+                    selectedDeparture?.id === flight.id
+                      ? "flightListRoundTrip__selected"
+                      : ""
+                  }`}
+                  key={flight.id}
+                  onClick={() => setSelectedDeparture(flight)}
+                >
                   <div className="flightListRoundTrip__header">
                     <div className="flightListRoundTrip__carrier">
-                      {dictionaries.carriers?.[
-                        firstSegmentDeparture.carrierCode
-                      ] || "Unknown Airline"}
+                      {dictionaries.carriers?.[firstSegment.carrierCode] ||
+                        "Unknown Airline"}
                       <div className="flightListRoundTrip__flightNumber">
-                        {firstSegmentDeparture.carrierCode}{" "}
-                        {firstSegmentDeparture.number}
+                        {firstSegment.carrierCode} {firstSegment.number}
                       </div>
                     </div>
-                    <div className="flightListOneWay__price">
+                    <div className="flightListRoundTrip__price">
                       {userCurrency}{" "}
                       {convertPrice(flight.price?.total || 0).toFixed(2)}
                     </div>
                   </div>
 
                   <div className="flightListRoundTrip__row">
+                    {/* Departure Info */}
                     <div className="flightListRoundTrip__column">
                       <div className="flightListRoundTrip__time">
-                        {formatTime(firstSegmentDeparture.departure.at)}
+                        {formatTime(firstSegment.departure.at)}
                       </div>
                       <div className="flightListRoundTrip__location">
                         {fromAirport?.iataCode}
                       </div>
                     </div>
 
+                    {/* Duration & Stops */}
                     <div className="flightListRoundTrip__column">
                       <div className="flightListRoundTrip__duration">
                         {formatDuration(flight.itineraries?.[0]?.duration)}
@@ -271,11 +279,11 @@ const FlightListRoundTrip: React.FC = () => {
                       </div>
                     </div>
 
+                    {/* Arrival Info */}
                     <div className="flightListRoundTrip__column">
                       <div className="flightListRoundTrip__time">
-                        {formatTime(lastSegmentDeparture.arrival.at)}
+                        {formatTime(lastSegment.arrival.at)}
                       </div>
-
                       <div className="flightListRoundTrip__location">
                         {toAirport?.iataCode}
                       </div>
@@ -287,44 +295,49 @@ const FlightListRoundTrip: React.FC = () => {
           </div>
 
           <div className="flightListRoundTrip__column">
-            {/* Return Flight Cards */}
             {returnFlights.map((flight) => {
-              const firstSegmentReturn = flight.itineraries?.[0]?.segments?.[0];
-              const lastSegmentReturn =
+              const firstSegment = flight.itineraries?.[0]?.segments?.[0];
+              const lastSegment =
                 flight.itineraries?.[0]?.segments?.slice(-1)[0];
 
-              if (!firstSegmentReturn || !lastSegmentReturn) {
-                return null; // Skip flights with missing segments
-              }
+              if (!firstSegment || !lastSegment) return null; // Skip flights with missing segments
 
               return (
-                <div className="flightListRoundTrip__card" key={flight.id}>
+                <div
+                  className={`flightListRoundTrip__card ${
+                    selectedReturn?.id === flight.id
+                      ? "flightListRoundTrip__selected"
+                      : ""
+                  }`}
+                  key={flight.id}
+                  onClick={() => setSelectedReturn(flight)}
+                >
                   <div className="flightListRoundTrip__header">
                     <div className="flightListRoundTrip__carrier">
-                      {dictionaries.carriers?.[
-                        firstSegmentReturn.carrierCode
-                      ] || "Unknown Airline"}
+                      {dictionaries.carriers?.[firstSegment.carrierCode] ||
+                        "Unknown Airline"}
                       <div className="flightListRoundTrip__flightNumber">
-                        {firstSegmentReturn.carrierCode}{" "}
-                        {firstSegmentReturn.number}
+                        {firstSegment.carrierCode} {firstSegment.number}
                       </div>
                     </div>
-                    <div className="flightListOneWay__price">
+                    <div className="flightListRoundTrip__price">
                       {userCurrency}{" "}
                       {convertPrice(flight.price?.total || 0).toFixed(2)}
                     </div>
                   </div>
 
                   <div className="flightListRoundTrip__row">
+                    {/* Departure Info */}
                     <div className="flightListRoundTrip__column">
                       <div className="flightListRoundTrip__time">
-                        {formatTime(firstSegmentReturn.departure.at)}
+                        {formatTime(firstSegment.departure.at)}
                       </div>
                       <div className="flightListRoundTrip__location">
                         {toAirport?.iataCode}
                       </div>
                     </div>
 
+                    {/* Duration & Stops */}
                     <div className="flightListRoundTrip__column">
                       <div className="flightListRoundTrip__duration">
                         {formatDuration(flight.itineraries?.[0]?.duration)}
@@ -337,11 +350,11 @@ const FlightListRoundTrip: React.FC = () => {
                       </div>
                     </div>
 
+                    {/* Arrival Info */}
                     <div className="flightListRoundTrip__column">
                       <div className="flightListRoundTrip__time">
-                        {formatTime(lastSegmentReturn.arrival.at)}
+                        {formatTime(lastSegment.arrival.at)}
                       </div>
-
                       <div className="flightListRoundTrip__location">
                         {fromAirport?.iataCode}
                       </div>
