@@ -78,7 +78,7 @@ const Header = () => {
       {/* Logo or Back Button */}
       <div className="logo-back">
         {location.pathname === "/HomePage" ||
-        location.pathname === "/homepage/" ? ( // Ensure we check both with and without trailing slash
+        location.pathname === "/homepage/" ? (
           <img src="src/assets/images/logo.png" alt="Logo" />
         ) : (
           <span className="back-btn" onClick={handleBack}>
@@ -91,7 +91,7 @@ const Header = () => {
       <nav className="nav">
         <ul className="nav-links">
           <li>
-            <a href="/homepage">Book Tickets</a>
+            <a href="/Homepage">Book Tickets</a>
           </li>
           <li>
             <a href="/incentives">Incentives</a>

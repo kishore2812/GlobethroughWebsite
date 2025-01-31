@@ -65,7 +65,10 @@ const FlightListRoundTrip: React.FC = () => {
   const [departureFlights, setDepartureFlights] = useState<any[]>([]);
   const [returnFlights, setReturnFlights] = useState<any[]>([]);
   const [dictionaries, setDictionaries] = useState<any>({});
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loadingDeparture, setLoadingDeparture] = useState<boolean>(false);
+  const [loadingReturn, setLoadingReturn] = useState<boolean>(false);
+  const [flightsLoaded, setFlightsLoaded] = useState<boolean>(false); // To track if both are loaded
+
   const [error, setError] = useState<string | null>(null);
   const [userCurrency, setUserCurrency] = useState<string>("USD");
   const [conversionRate, setConversionRate] = useState<number | null>(null);
@@ -83,7 +86,7 @@ const FlightListRoundTrip: React.FC = () => {
   };
 
   const fetchDepartureFlights = async (token: string) => {
-    setLoading(true);
+    setLoadingDeparture(true); // Start loading departure
     setError(null);
 
     try {
@@ -116,12 +119,13 @@ const FlightListRoundTrip: React.FC = () => {
     } catch {
       setError("Error fetching departure flight data");
     } finally {
-      setLoading(false);
+      setLoadingDeparture(false); // Stop loading departure
+      checkFlightsLoaded();
     }
   };
 
   const fetchReturnFlights = async (token: string) => {
-    setLoading(true);
+    setLoadingReturn(true); // Start loading return
     setError(null);
 
     try {
@@ -154,7 +158,14 @@ const FlightListRoundTrip: React.FC = () => {
     } catch {
       setError("Error fetching return flight data");
     } finally {
-      setLoading(false);
+      setLoadingReturn(false); // Stop loading return
+      checkFlightsLoaded();
+    }
+  };
+
+  const checkFlightsLoaded = () => {
+    if (!loadingDeparture && !loadingReturn) {
+      setFlightsLoaded(true); // Both flights are loaded
     }
   };
 
@@ -258,7 +269,9 @@ const FlightListRoundTrip: React.FC = () => {
   const cheapestReturn = getCheapestFlight(returnFlights);
   const fastestReturn = getFastestFlight(returnFlights);
 
-  if (loading) return <div>Loading...</div>;
+  if (loadingDeparture || loadingReturn) {
+    return <div>Loading...</div>; // Show loading indicator until both are loaded
+  }
   if (error) return <div className="error">{error}</div>;
 
   const handleBookNow = () => {
@@ -276,7 +289,9 @@ const FlightListRoundTrip: React.FC = () => {
 
   return (
     <div className="flightListRoundTrip">
-      {departureFlights.length === 0 && returnFlights.length === 0 ? (
+      {departureFlights.length === 0 &&
+      returnFlights.length === 0 &&
+      flightsLoaded ? (
         <div>No flights available</div>
       ) : (
         <div className="flightListRoundTrip__container">
