@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { Flight } from "../Pages/FlightListPage/flightdata";
 
 type TripType = "one-way" | "round-trip";
 
@@ -35,13 +34,14 @@ interface FlightStore {
   selectedClass: string;
   fromAirport: Airport | null;
   toAirport: Airport | null;
-  selectedFlight: Flight | null;
-  selectedDeparture: Flight | null;
-  selectedReturn: Flight | null;
+  selectedFlight: any | null;
+  selectedDeparture: any | null;
+  selectedReturn: any | null;
   passengers: Passenger[];
-  setSelectedDeparture: (flight: Flight | null) => void;
-  setSelectedReturn: (flight: Flight | null) => void;
-  setSelectedFlight: (flight: Flight | null) => void;
+
+  setSelectedDeparture: (flight: any | null) => void;
+  setSelectedReturn: (flight: any | null) => void;
+  setSelectedFlight: (flight: any | null) => void;
   setSelectedTrip: (tripType: TripType) => void;
   setDepartureDate: (date: string | null) => void;
   setReturnDate: (date: string | null) => void;
