@@ -4,6 +4,47 @@ import { IoAirplaneSharp } from "react-icons/io5";
 import axios from "axios";
 import "./FlightListRoundTrip.scss";
 
+// Helper functions to fetch the user's country and currency, and convert currency
+const fetchUserCountry = async () => {
+  try {
+    const response = await axios.get(
+      "https://api.ipgeolocation.io/ipgeo?apiKey=dc4ee33cead243e396eaca0c9c4bf19c"
+    );
+    console.log("User country data:", response.data); // Add logging here
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user country:", error);
+    throw new Error("Error fetching user country");
+  }
+};
+
+const fetchCurrencyConversionRate = async (currency: string) => {
+  try {
+    const response = await axios.get(
+      `https://v6.exchangerate-api.com/v6/eb7a0c52098e9debbb7e5f63/latest/EUR`
+    );
+
+    console.log("Currency conversion rate data:", response.data);
+
+    // Check if the currency exists in the conversion rates
+    if (
+      response.data &&
+      response.data.conversion_rates &&
+      response.data.conversion_rates[currency]
+    ) {
+      return response.data.conversion_rates[currency];
+    } else {
+      console.warn(
+        `Conversion rate for ${currency} not found. Falling back to default rate.`
+      );
+      return 1; // Default conversion rate (1:1) if currency not found
+    }
+  } catch (error) {
+    console.error("Error fetching conversion rate:", error);
+    return 1; // Default conversion rate (1:1) if API call fails
+  }
+};
+
 const FlightListRoundTrip: React.FC = () => {
   const {
     fromAirport,
@@ -20,6 +61,8 @@ const FlightListRoundTrip: React.FC = () => {
   const [dictionaries, setDictionaries] = useState<any>({});
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [userCurrency, setUserCurrency] = useState<string>("USD");
+  const [conversionRate, setConversionRate] = useState<number | null>(null);
 
   const fetchToken = async () => {
     try {
@@ -107,6 +150,28 @@ const FlightListRoundTrip: React.FC = () => {
     }
   };
 
+  // Fetch user's country and currency
+  useEffect(() => {
+    const fetchCountryData = async () => {
+      try {
+        const countryData = await fetchUserCountry();
+
+        const userCurrency = countryData.currency.code; // Get user's currency from API
+        setUserCurrency(userCurrency);
+        const rate = await fetchCurrencyConversionRate(userCurrency);
+        setConversionRate(rate);
+      } catch {
+        setError("Error fetching country and currency data");
+      }
+    };
+
+    fetchCountryData();
+  }, []);
+
+  const convertPrice = (priceInEuro: number) => {
+    return conversionRate ? priceInEuro * conversionRate : priceInEuro;
+  };
+
   useEffect(() => {
     const loadFlights = async () => {
       const token = await fetchToken();
@@ -173,10 +238,14 @@ const FlightListRoundTrip: React.FC = () => {
                       {dictionaries.carriers?.[
                         firstSegmentDeparture.carrierCode
                       ] || "Unknown Airline"}
+                      <div className="flightListRoundTrip__flightNumber">
+                        {firstSegmentDeparture.carrierCode}{" "}
+                        {firstSegmentDeparture.number}
+                      </div>
                     </div>
-                    <div className="flightListRoundTrip__flightNumber">
-                      {firstSegmentDeparture.carrierCode}{" "}
-                      {firstSegmentDeparture.number}
+                    <div className="flightListOneWay__price">
+                      {userCurrency}{" "}
+                      {convertPrice(flight.price?.total || 0).toFixed(2)}
                     </div>
                   </div>
 
@@ -206,6 +275,7 @@ const FlightListRoundTrip: React.FC = () => {
                       <div className="flightListRoundTrip__time">
                         {formatTime(lastSegmentDeparture.arrival.at)}
                       </div>
+
                       <div className="flightListRoundTrip__location">
                         {toAirport?.iataCode}
                       </div>
@@ -234,10 +304,14 @@ const FlightListRoundTrip: React.FC = () => {
                       {dictionaries.carriers?.[
                         firstSegmentReturn.carrierCode
                       ] || "Unknown Airline"}
+                      <div className="flightListRoundTrip__flightNumber">
+                        {firstSegmentReturn.carrierCode}{" "}
+                        {firstSegmentReturn.number}
+                      </div>
                     </div>
-                    <div className="flightListRoundTrip__flightNumber">
-                      {firstSegmentReturn.carrierCode}{" "}
-                      {firstSegmentReturn.number}
+                    <div className="flightListOneWay__price">
+                      {userCurrency}{" "}
+                      {convertPrice(flight.price?.total || 0).toFixed(2)}
                     </div>
                   </div>
 
@@ -267,6 +341,7 @@ const FlightListRoundTrip: React.FC = () => {
                       <div className="flightListRoundTrip__time">
                         {formatTime(lastSegmentReturn.arrival.at)}
                       </div>
+
                       <div className="flightListRoundTrip__location">
                         {fromAirport?.iataCode}
                       </div>
