@@ -108,6 +108,62 @@
         }
       }
     }
+    .flightListOneWay__details {
+      border-top: 1px solid #ddd;
+      background-color: #f9f9f9;
+
+      .flightListOneWay__details__table {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .flightListOneWay__details__itinerary {
+        display: block;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .flightListOneWay__details__row {
+        display: flex;
+        justify-content: space-between;
+        padding: 5px;
+        border-bottom: 1px solid #eee;
+        background-color: #fff;
+
+        .flightListOneWay__details__column {
+          flex: 1;
+          text-align: center;
+
+          strong {
+            font-size: 16px;
+            color: #222;
+          }
+
+          p {
+            font-size: 14px;
+            color: #666;
+          }
+        }
+      }
+      .flightListOneWay__details__cabin__row {
+        display: flex;
+        justify-content: space-between;
+        padding: 5px;
+        background-color: white;
+      }
+
+      .flightListOneWay__details__layoverRow {
+        text-align: center;
+        padding: 10px;
+        background-color: #fff;
+        border: 1px solid #0b3e36;
+        font-size: 14px;
+        font-weight: bold;
+        color: #0b3e36;
+        margin: 5px 0;
+      }
+    }
   }
   .flightListRoundTrip__selected {
     border: 2px solid #1b5f54 !important;

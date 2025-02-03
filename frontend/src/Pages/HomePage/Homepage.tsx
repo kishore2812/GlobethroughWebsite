@@ -74,6 +74,7 @@ const HomePage: React.FC = () => {
   const [showTravelersModal, setShowTravelersModal] = useState(false);
   const [showClassModal, setShowClassModal] = useState(false);
   const [airports, setAirports] = useState([]);
+  const [debouncedQuery, setDebouncedQuery] = useState("");
 
   //trip Type Selection
   const handleTripSelection = (tripType: "one-way" | "round-trip") => {
@@ -96,37 +97,51 @@ const HomePage: React.FC = () => {
     setIsAirportListModalOpen(false);
   };
 
-  const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const query = e.target.value;
-    setSearchQuery(query);
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedQuery(searchQuery);
+    }, 500); // 0.5 sec delay
 
-    if (query.length > 0) {
-      try {
-        // Fetch token from backend
-        const tokenResponse = await fetch(
-          "http://localhost:5000/amadeus/token"
-        );
-        const { access_token } = await tokenResponse.json();
+    return () => {
+      clearTimeout(handler); // Clear previous timeout if user keeps typing
+    };
+  }, [searchQuery]);
 
-        // Fetch airport data from Amadeus API
-        const response = await fetch(
-          `https://test.api.amadeus.com/v1/reference-data/locations?subType=AIRPORT&keyword=${query}&page%5Blimit%5D=10`,
-          {
-            headers: { Authorization: `Bearer ${access_token}` },
-          }
-        );
+  useEffect(() => {
+    const fetchAirports = async () => {
+      if (debouncedQuery.length > 0) {
+        try {
+          // Fetch token from backend
+          const tokenResponse = await fetch(
+            "http://localhost:5000/amadeus/token"
+          );
+          const { access_token } = await tokenResponse.json();
 
-        const data = await response.json();
-        setAirports(data.data || []);
-      } catch (err) {
-        console.error("Failed to fetch airports:", err);
+          // Fetch airport data from Amadeus API
+          const response = await fetch(
+            `https://test.api.amadeus.com/v1/reference-data/locations?subType=AIRPORT&keyword=${debouncedQuery}&page%5Blimit%5D=10`,
+            {
+              headers: { Authorization: `Bearer ${access_token}` },
+            }
+          );
+
+          const data = await response.json();
+          setAirports(data.data || []);
+        } catch (err) {
+          console.error("Failed to fetch airports:", err);
+          setAirports([]);
+        }
+      } else {
         setAirports([]);
       }
-    } else {
-      setAirports([]);
-    }
-  };
+    };
 
+    fetchAirports();
+  }, [debouncedQuery]);
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
   // Calendar Modal functions
   // Format the date as "Mon, Jan 28"
   const formatDate = (date: Date) => {

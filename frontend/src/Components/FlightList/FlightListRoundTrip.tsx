@@ -72,6 +72,12 @@ const FlightListRoundTrip: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [userCurrency, setUserCurrency] = useState<string>("USD");
   const [conversionRate, setConversionRate] = useState<number | null>(null);
+  const [ViewFlightDetailsDeparture, setViewFlightDetailsDeparture] = useState<
+    string | null
+  >(null);
+  const [ViewFlightDetailsReturn, setViewFlightDetailsReturn] = useState<
+    string | null
+  >(null);
 
   const navigate = useNavigate();
 
@@ -286,6 +292,29 @@ const FlightListRoundTrip: React.FC = () => {
       alert("Please select both departure and return flights.");
     }
   };
+  const handleToggleDetailsDeparture = (flightId: string) => {
+    setViewFlightDetailsDeparture(
+      ViewFlightDetailsDeparture === flightId ? null : flightId
+    );
+  };
+  const handleToggleDetailsReturn = (flightId: string) => {
+    setViewFlightDetailsReturn(
+      ViewFlightDetailsReturn === flightId ? null : flightId
+    );
+  };
+
+  const calculateLayoverTime = (arrivalTime: string, departureTime: string) => {
+    const arrival = new Date(arrivalTime);
+    const departure = new Date(departureTime);
+    const differenceMs = departure.getTime() - arrival.getTime();
+
+    if (differenceMs < 0) return "N/A"; // If times are incorrect
+
+    const hours = Math.floor(differenceMs / (1000 * 60 * 60));
+    const minutes = Math.floor((differenceMs % (1000 * 60 * 60)) / (1000 * 60));
+
+    return `${hours}h ${minutes}m`;
+  };
 
   return (
     <div className="flightListRoundTrip">
@@ -371,6 +400,93 @@ const FlightListRoundTrip: React.FC = () => {
                       </div>
                     </div>
                   </div>
+                  {/* View Details */}
+                  <span
+                    className="flightListRoundTrip__viewDetails"
+                    onClick={() => handleToggleDetailsDeparture(flight.id)}
+                  >
+                    {ViewFlightDetailsDeparture === flight.id
+                      ? "Hide Details"
+                      : "View Details"}
+                  </span>
+                  {/* Flight Details */}
+                  {ViewFlightDetailsDeparture === flight.id && (
+                    <div className="flightListOneWay__details">
+                      <div className="flightListOneWay__table">
+                        {flight.itineraries?.[0]?.segments.map(
+                          (segment, index, segmentsArray) => (
+                            <React.Fragment key={index}>
+                              {/* Flight Segment Row */}
+                              <div className="flightListOneWay__details__row">
+                                {/* Column 1: Carrier Code & Flight Number */}
+                                <div className="flightListOneWay__details__column">
+                                  <strong>{segment.carrierCode}</strong>
+                                  <p>{segment.number}</p>
+                                </div>
+
+                                {/* Column 2: Departure Time, Airport, City, Terminal */}
+                                <div className="flightListOneWay__details__column">
+                                  <strong>
+                                    {formatTime(segment.departure.at)}
+                                  </strong>
+                                  <p>{segment.departure.iataCode}, </p>
+                                  <p>
+                                    Terminal:{" "}
+                                    {segment.departure.terminal || "N/A"}
+                                  </p>
+                                </div>
+
+                                {/* Column 3: Duration */}
+                                <div className="flightListOneWay__details__column">
+                                  <p>{formatDuration(segment.duration)}</p>
+                                </div>
+
+                                {/* Column 4: Arrival Time, Airport, City, Terminal */}
+                                <div className="flightListOneWay__details__column">
+                                  <strong>
+                                    {formatTime(segment.arrival.at)}
+                                  </strong>
+                                  <p>{segment.arrival.iataCode}, </p>
+                                  <p>
+                                    Terminal:{" "}
+                                    {segment.arrival.terminal || "N/A"}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="flightListOneWay__details__cabin__row">
+                                <p>
+                                  Cabin:{" "}
+                                  {flight.travelerPricings?.[0]
+                                    ?.fareDetailsBySegment?.[index]?.cabin ||
+                                    "N/A"}
+                                </p>
+                                <p>
+                                  Check-in:{" "}
+                                  {flight.travelerPricings?.[0]
+                                    ?.fareDetailsBySegment?.[index]
+                                    ?.includedCheckedBags?.weight || "N/A"}{" "}
+                                  kg
+                                </p>
+                              </div>
+
+                              {/* Layover Time as a Separate Row */}
+                              {index < segmentsArray.length - 1 && (
+                                <div className="flightListOneWay__details__layoverRow">
+                                  <p>
+                                    Layover Time:{" "}
+                                    {calculateLayoverTime(
+                                      segment.arrival.at,
+                                      segmentsArray[index + 1].departure.at
+                                    )}
+                                  </p>
+                                </div>
+                              )}
+                            </React.Fragment>
+                          )
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
               );
             })}
@@ -454,6 +570,92 @@ const FlightListRoundTrip: React.FC = () => {
                       </div>
                     </div>
                   </div>
+                  <span
+                    className="flightListRoundTrip__viewDetails"
+                    onClick={() => handleToggleDetailsReturn(flight.id)}
+                  >
+                    {ViewFlightDetailsReturn === flight.id
+                      ? "Hide Details"
+                      : "View Details"}
+                  </span>
+                  {/* Flight Details */}
+                  {ViewFlightDetailsReturn === flight.id && (
+                    <div className="flightListOneWay__details">
+                      <div className="flightListOneWay__table">
+                        {flight.itineraries?.[0]?.segments.map(
+                          (segment, index, segmentsArray) => (
+                            <React.Fragment key={index}>
+                              {/* Flight Segment Row */}
+                              <div className="flightListOneWay__details__row">
+                                {/* Column 1: Carrier Code & Flight Number */}
+                                <div className="flightListOneWay__details__column">
+                                  <strong>{segment.carrierCode}</strong>
+                                  <p>{segment.number}</p>
+                                </div>
+
+                                {/* Column 2: Departure Time, Airport, City, Terminal */}
+                                <div className="flightListOneWay__details__column">
+                                  <strong>
+                                    {formatTime(segment.departure.at)}
+                                  </strong>
+                                  <p>{segment.departure.iataCode}, </p>
+                                  <p>
+                                    Terminal:{" "}
+                                    {segment.departure.terminal || "N/A"}
+                                  </p>
+                                </div>
+
+                                {/* Column 3: Duration */}
+                                <div className="flightListOneWay__details__column">
+                                  <p>{formatDuration(segment.duration)}</p>
+                                </div>
+
+                                {/* Column 4: Arrival Time, Airport, City, Terminal */}
+                                <div className="flightListOneWay__details__column">
+                                  <strong>
+                                    {formatTime(segment.arrival.at)}
+                                  </strong>
+                                  <p>{segment.arrival.iataCode}, </p>
+                                  <p>
+                                    Terminal:{" "}
+                                    {segment.arrival.terminal || "N/A"}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="flightListOneWay__details__cabin__row">
+                                <p>
+                                  Cabin:{" "}
+                                  {flight.travelerPricings?.[0]
+                                    ?.fareDetailsBySegment?.[index]?.cabin ||
+                                    "N/A"}
+                                </p>
+                                <p>
+                                  Check-in:{" "}
+                                  {flight.travelerPricings?.[0]
+                                    ?.fareDetailsBySegment?.[index]
+                                    ?.includedCheckedBags?.weight || "N/A"}{" "}
+                                  kg
+                                </p>
+                              </div>
+
+                              {/* Layover Time as a Separate Row */}
+                              {index < segmentsArray.length - 1 && (
+                                <div className="flightListOneWay__details__layoverRow">
+                                  <p>
+                                    Layover Time:{" "}
+                                    {calculateLayoverTime(
+                                      segment.arrival.at,
+                                      segmentsArray[index + 1].departure.at
+                                    )}
+                                  </p>
+                                </div>
+                              )}
+                            </React.Fragment>
+                          )
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
               );
             })}
@@ -486,7 +688,8 @@ const FlightListRoundTrip: React.FC = () => {
               <div className="Flight_list_round_trip__end-time">
                 <span className="Flight_list_round_trip__time">
                   {formatTime(
-                    selectedDeparture?.itineraries[0]?.segments[0]?.arrival?.at
+                    selectedDeparture?.itineraries[0]?.segments?.slice(-1)[0]
+                      ?.arrival?.at
                   )}
                 </span>
                 <span className="Flight_list_round_trip__location">
@@ -517,7 +720,8 @@ const FlightListRoundTrip: React.FC = () => {
               <div className="Flight_list_round_trip__end-time">
                 <span className="Flight_list_round_trip__time">
                   {formatTime(
-                    selectedReturn?.itineraries[0]?.segments[0]?.arrival?.at
+                    selectedReturn?.itineraries[0]?.segments?.slice(-1)[0]
+                      ?.arrival?.at
                   )}
                 </span>
                 <span className="Flight_list_round_trip__location">

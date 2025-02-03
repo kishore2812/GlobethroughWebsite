@@ -4,6 +4,7 @@ import useFlightStore from "../../Stores/FlightStore";
 import { IoAirplaneSharp } from "react-icons/io5";
 import axios from "axios";
 import "./FlightListOneWay.scss";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 // Helper functions to fetch the user's country and currency, and convert currency
 const fetchUserCountry = async () => {
@@ -64,6 +65,7 @@ const FlightListOneWay: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [userCurrency, setUserCurrency] = useState<string>("USD");
   const [conversionRate, setConversionRate] = useState<number | null>(null);
+  const [selectedFlightId, setSelectedFlightId] = useState<string | null>(null);
 
   const fetchToken = async () => {
     try {
@@ -161,8 +163,14 @@ const FlightListOneWay: React.FC = () => {
   };
 
   const formatDuration = (duration: string) => {
-    const match = duration.match(/PT(\d+)H(\d+)M/);
-    return match ? `${match[1]}h ${match[2]}m` : "NA";
+    const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?/);
+
+    if (!match) return "NA";
+
+    const hours = match[1] ? `${match[1]}h` : "";
+    const minutes = match[2] ? `${match[2]}m` : "";
+
+    return `${hours} ${minutes}`.trim();
   };
 
   if (loading) return <div>Loading...</div>;
@@ -183,11 +191,38 @@ const FlightListOneWay: React.FC = () => {
     return currPrice < prevPrice ? curr : prev;
   }, flights[0]);
 
-  const fastestFlight = flights.reduce(
-    (prev, curr) =>
-      curr.itineraries[0].duration < prev.itineraries[0].duration ? curr : prev,
-    flights[0]
-  );
+  const fastestFlight = flights.reduce((prev, curr) => {
+    const parseDuration = (duration?: string) => {
+      if (!duration) return Infinity; // If duration is missing, return a large value
+      const match = duration.match(/(\d+)H(\d+)?M?/);
+      const hours = match?.[1] ? parseInt(match[1]) * 60 : 0;
+      const minutes = match?.[2] ? parseInt(match[2]) : 0;
+      return hours + minutes;
+    };
+
+    const prevMinutes = parseDuration(prev.itineraries?.[0]?.duration);
+    const currMinutes = parseDuration(curr.itineraries?.[0]?.duration);
+
+    return currMinutes < prevMinutes ? curr : prev;
+  }, flights[0]);
+
+  const handleToggleDetails = (flightId: string) => {
+    setSelectedFlightId(selectedFlightId === flightId ? null : flightId);
+  };
+
+  // Function to calculate layover time
+  const calculateLayoverTime = (arrivalTime: string, departureTime: string) => {
+    const arrival = new Date(arrivalTime);
+    const departure = new Date(departureTime);
+    const differenceMs = departure.getTime() - arrival.getTime();
+
+    if (differenceMs < 0) return "N/A"; // If times are incorrect
+
+    const hours = Math.floor(differenceMs / (1000 * 60 * 60));
+    const minutes = Math.floor((differenceMs % (1000 * 60 * 60)) / (1000 * 60));
+
+    return `${hours}h ${minutes}m`;
+  };
 
   return (
     <div className="flightListOneWay">
@@ -262,20 +297,113 @@ const FlightListOneWay: React.FC = () => {
                     {toAirport?.iataCode}
                   </div>
                 </div>
-
                 <div className="flightListOneWay__column">
                   <div className="flightListOneWay__price">
                     {userCurrency}{" "}
                     {convertPrice(flight.price?.total || 0).toFixed(2)}
                   </div>
+                </div>
+
+                <div className="flightListOneWay__column">
                   <button
                     className="flightListOneWay__bookNow"
                     onClick={() => handleBookNow(flight)}
                   >
                     Book Now
                   </button>
+                  <span
+                    className="flightListOneWay__viewDetails"
+                    onClick={() => handleToggleDetails(flight.id)}
+                  >
+                    {selectedFlightId === flight.id ? (
+                      <>
+                        Hide Details <FaChevronUp size={12} />
+                      </>
+                    ) : (
+                      <>
+                        View Details <FaChevronDown size={12} />
+                      </>
+                    )}
+                  </span>
                 </div>
               </div>
+              {/* Flight Details (Expanded) */}
+
+              {selectedFlightId === flight.id && (
+                <div className="flightListOneWay__details">
+                  <div className="flightListOneWay__table">
+                    {flight.itineraries?.[0]?.segments.map(
+                      (segment, index, segmentsArray) => (
+                        <React.Fragment key={index}>
+                          {/* Flight Segment Row */}
+                          <div className="flightListOneWay__details__row">
+                            {/* Column 1: Carrier Code & Flight Number */}
+                            <div className="flightListOneWay__details__column">
+                              <strong>{segment.carrierCode}</strong>
+                              <p>{segment.number}</p>
+                            </div>
+
+                            {/* Column 2: Departure Time, Airport, City, Terminal */}
+                            <div className="flightListOneWay__details__column">
+                              <strong>
+                                {formatTime(segment.departure.at)}
+                              </strong>
+                              <p>{segment.departure.iataCode}, </p>
+                              <p>
+                                Terminal: {segment.departure.terminal || "N/A"}
+                              </p>
+                            </div>
+
+                            {/* Column 3: Duration */}
+                            <div className="flightListOneWay__details__column">
+                              <p>{formatDuration(segment.duration)}</p>
+                            </div>
+
+                            {/* Column 4: Arrival Time, Airport, City, Terminal */}
+                            <div className="flightListOneWay__details__column">
+                              <strong>{formatTime(segment.arrival.at)}</strong>
+                              <p>{segment.arrival.iataCode}, </p>
+                              <p>
+                                Terminal: {segment.arrival.terminal || "N/A"}
+                              </p>
+                            </div>
+
+                            {/* Column 5: Baggage Allowance */}
+                            <div className="flightListOneWay__details__column">
+                              <p>
+                                Cabin:{" "}
+                                {flight.travelerPricings?.[0]
+                                  ?.fareDetailsBySegment?.[index]?.cabin ||
+                                  "N/A"}
+                              </p>
+                              <p>
+                                Check-in:{" "}
+                                {flight.travelerPricings?.[0]
+                                  ?.fareDetailsBySegment?.[index]
+                                  ?.includedCheckedBags?.weight || "N/A"}{" "}
+                                kg
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Layover Time as a Separate Row */}
+                          {index < segmentsArray.length - 1 && (
+                            <div className="flightListOneWay__details__layoverRow">
+                              <p>
+                                Layover Time:{" "}
+                                {calculateLayoverTime(
+                                  segment.arrival.at,
+                                  segmentsArray[index + 1].departure.at
+                                )}
+                              </p>
+                            </div>
+                          )}
+                        </React.Fragment>
+                      )
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           );
         })

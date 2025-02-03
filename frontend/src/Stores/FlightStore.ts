@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, PersistStorage } from "zustand/middleware";
 
 type TripType = "one-way" | "round-trip";
 
@@ -56,6 +56,20 @@ interface FlightStore {
 
 const today = new Date().toISOString().split("T")[0]; // Format as "YYYY-MM-DD"
 
+// Custom sessionStorage handler to conform to Zustand PersistStorage interface
+const sessionStorageWrapper: PersistStorage<FlightStore> = {
+  getItem: (name) => {
+    const item = sessionStorage.getItem(name);
+    return item ? JSON.parse(item) : null;
+  },
+  setItem: (name, value) => {
+    sessionStorage.setItem(name, JSON.stringify(value));
+  },
+  removeItem: (name) => {
+    sessionStorage.removeItem(name);
+  },
+};
+
 const useFlightStore = create(
   persist<FlightStore>(
     (set) => ({
@@ -88,7 +102,8 @@ const useFlightStore = create(
       setPassengers: (passengers) => set({ passengers }),
     }),
     {
-      name: "flight-store", // Unique storage key for persistence
+      name: "flight-store",
+      storage: sessionStorageWrapper, // Use the custom sessionStorage wrapper
     }
   )
 );
