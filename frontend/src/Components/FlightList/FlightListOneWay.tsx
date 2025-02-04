@@ -65,7 +65,9 @@ const FlightListOneWay: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [userCurrency, setUserCurrency] = useState<string>("USD");
   const [conversionRate, setConversionRate] = useState<number | null>(null);
-  const [selectedFlightId, setSelectedFlightId] = useState<string | null>(null);
+  const [selectedFlightIdDetails, setSelectedFlightIdDetails] = useState<
+    string | null
+  >(null);
 
   const fetchToken = async () => {
     try {
@@ -207,7 +209,9 @@ const FlightListOneWay: React.FC = () => {
   }, flights[0]);
 
   const handleToggleDetails = (flightId: string) => {
-    setSelectedFlightId(selectedFlightId === flightId ? null : flightId);
+    setSelectedFlightIdDetails(
+      selectedFlightIdDetails === flightId ? null : flightId
+    );
   };
 
   // Function to calculate layover time
@@ -315,7 +319,7 @@ const FlightListOneWay: React.FC = () => {
                     className="flightListOneWay__viewDetails"
                     onClick={() => handleToggleDetails(flight.id)}
                   >
-                    {selectedFlightId === flight.id ? (
+                    {selectedFlightIdDetails === flight.id ? (
                       <>
                         Hide Details <FaChevronUp size={12} />
                       </>
@@ -329,7 +333,7 @@ const FlightListOneWay: React.FC = () => {
               </div>
               {/* Flight Details (Expanded) */}
 
-              {selectedFlightId === flight.id && (
+              {selectedFlightIdDetails === flight.id && (
                 <div className="flightListOneWay__details">
                   <div className="flightListOneWay__table">
                     {flight.itineraries?.[0]?.segments.map(

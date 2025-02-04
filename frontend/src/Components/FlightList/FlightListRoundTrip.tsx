@@ -3,7 +3,7 @@ import useFlightStore from "../../Stores/FlightStore";
 import { IoAirplaneSharp } from "react-icons/io5";
 import axios from "axios";
 import "./FlightListRoundTrip.scss";
-import { FaArrowRight } from "react-icons/fa";
+import { FaArrowRight, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 // Helper functions to fetch the user's country and currency, and convert currency
@@ -316,6 +316,15 @@ const FlightListRoundTrip: React.FC = () => {
     return `${hours}h ${minutes}m`;
   };
 
+  // Utility function to get refundable ticket info from a flight's pricing data
+  const getRefundableTicketInfo = (pricingData) => {
+    const fareDetails =
+      pricingData?.[0]?.fareDetailsBySegment?.[0]?.amenities || [];
+    return fareDetails.find(
+      (amenity) => amenity.description === "REFUNDABLE TICKET"
+    );
+  };
+
   return (
     <div className="flightListRoundTrip">
       {departureFlights.length === 0 &&
@@ -331,7 +340,9 @@ const FlightListRoundTrip: React.FC = () => {
                 flight.itineraries?.[0]?.segments?.slice(-1)[0];
 
               if (!firstSegment || !lastSegment) return null; // Skip flights with missing segments
-
+              const refundableInfo = getRefundableTicketInfo(
+                flight.travelerPricings
+              );
               return (
                 <div
                   className={`flightListRoundTrip__card ${
@@ -365,7 +376,6 @@ const FlightListRoundTrip: React.FC = () => {
                       {convertPrice(flight.price?.total || 0).toFixed(2)}
                     </div>
                   </div>
-
                   <div className="flightListRoundTrip__row">
                     {/* Departure Info */}
                     <div className="flightListRoundTrip__column">
@@ -400,15 +410,40 @@ const FlightListRoundTrip: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  {/* View Details */}
-                  <span
-                    className="flightListRoundTrip__viewDetails"
-                    onClick={() => handleToggleDetailsDeparture(flight.id)}
-                  >
-                    {ViewFlightDetailsDeparture === flight.id
-                      ? "Hide Details"
-                      : "View Details"}
-                  </span>
+                  <div className="flightListRoundTrip__Refundable__Details">
+                    {/* Refundable or Non-Refundable on Left */}
+                    <p>
+                      {refundableInfo ? (
+                        <span style={{ color: "green", fontWeight: "bold" }}>
+                          Refundable
+                        </span>
+                      ) : (
+                        <span style={{ color: "red", fontWeight: "bold" }}>
+                          Non-Refundable
+                        </span>
+                      )}
+                    </p>
+
+                    {/* View Details on Right */}
+                    <span
+                      className={`flightListRoundTrip__viewDetails ${
+                        ViewFlightDetailsDeparture === flight.id ? "open" : ""
+                      }`}
+                      onClick={() => handleToggleDetailsDeparture(flight.id)}
+                    >
+                      {ViewFlightDetailsDeparture === flight.id ? (
+                        <>
+                          Hide Details{" "}
+                          <FaChevronUp size={12} className="chevron-icon " />
+                        </>
+                      ) : (
+                        <>
+                          View Details{" "}
+                          <FaChevronDown size={12} className="chevron-icon " />
+                        </>
+                      )}
+                    </span>
+                  </div>
                   {/* Flight Details */}
                   {ViewFlightDetailsDeparture === flight.id && (
                     <div className="flightListOneWay__details">
@@ -499,7 +534,9 @@ const FlightListRoundTrip: React.FC = () => {
                 flight.itineraries?.[0]?.segments?.slice(-1)[0];
 
               if (!firstSegment || !lastSegment) return null; // Skip flights with missing segments
-
+              const refundableInfo = getRefundableTicketInfo(
+                flight.travelerPricings
+              );
               return (
                 <div
                   className={`flightListRoundTrip__card ${
@@ -570,14 +607,40 @@ const FlightListRoundTrip: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  <span
-                    className="flightListRoundTrip__viewDetails"
-                    onClick={() => handleToggleDetailsReturn(flight.id)}
-                  >
-                    {ViewFlightDetailsReturn === flight.id
-                      ? "Hide Details"
-                      : "View Details"}
-                  </span>
+                  <div className="flightListRoundTrip__Refundable__Details">
+                    {/* Refundable or Non-Refundable on Left */}
+                    <p>
+                      {refundableInfo ? (
+                        <span style={{ color: "green", fontWeight: "bold" }}>
+                          Refundable
+                        </span>
+                      ) : (
+                        <span style={{ color: "red", fontWeight: "bold" }}>
+                          Non-Refundable
+                        </span>
+                      )}
+                    </p>
+
+                    {/* View Details on Right */}
+                    <span
+                      className={`flightListRoundTrip__viewDetails ${
+                        ViewFlightDetailsReturn === flight.id ? "open" : ""
+                      }`}
+                      onClick={() => handleToggleDetailsReturn(flight.id)}
+                    >
+                      {ViewFlightDetailsReturn === flight.id ? (
+                        <>
+                          Hide Details{" "}
+                          <FaChevronUp size={12} className="chevron-icon " />
+                        </>
+                      ) : (
+                        <>
+                          View Details{" "}
+                          <FaChevronDown size={12} className="chevron-icon " />
+                        </>
+                      )}
+                    </span>
+                  </div>
                   {/* Flight Details */}
                   {ViewFlightDetailsReturn === flight.id && (
                     <div className="flightListOneWay__details">

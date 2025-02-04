@@ -7,7 +7,7 @@
     display: flex;
     justify-content: space-between;
     width: 100%;
-    padding-bottom: 100px;
+    padding-bottom: 150px;
   }
 
   .flightListRoundTrip__column {
@@ -162,6 +162,31 @@
         font-weight: bold;
         color: #0b3e36;
         margin: 5px 0;
+      }
+    }
+    .flightListRoundTrip__Refundable__Details {
+      display: flex;
+      justify-content: space-between; // Ensures left & right alignment
+      align-items: center;
+      padding: 0 0;
+
+      p {
+        margin: 0;
+        font-size: 16px;
+      }
+
+      .flightListRoundTrip__viewDetails {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        font-weight: bold;
+        color: #0b3e36; // Blue color for visibility
+        transition: color 0.3s ease-in-out;
+
+        .chevron-icon {
+          margin-left: 5px;
+          transition: transform 0.3s ease-in-out;
+        }
       }
     }
   }
