@@ -1,74 +1,34 @@
 // FlightFilter.tsx
-
 import React from "react";
-import useFlightStore from "../../Stores/FlightStore"; // Import Zustand store
+import { useFilterStore } from "../../Stores/FilterStore"; // Import filter store
 import "./FlightFilter.scss"; // Import styles
 
-interface FlightFilterProps {
-  selectedFilter: "cheapest" | "fastest";
-  selectedStops: number | null;
-  flightData: {
-    type: "departure" | "return";
-    price: number;
-    duration: number;
-  }[]; // Assuming flightData has type "departure" or "return"
-  onFilterChange: (filter: "cheapest" | "fastest") => void;
-  onStopsChange: (stops: number | null) => void;
-  onResetFilters: () => void; // Add reset filters function
-}
+const FlightFilter: React.FC = () => {
+  // Access selectedFilter, selectedStops, and actions directly from the store
+  const {
+    selectedFilter,
+    selectedStops,
+    setSelectedFilter,
+    setSelectedStops,
+    resetFilters,
+  } = useFilterStore();
 
-const FlightFilter: React.FC<FlightFilterProps> = ({
-  selectedFilter,
-  selectedStops,
-  flightData,
-  onFilterChange,
-  onStopsChange,
-  onResetFilters,
-}) => {
-  // Access selectedTrip from Zustand store
-  const selectedTrip = useFlightStore((state) => state.selectedTrip);
-
-  // Calculate total flight count based on trip type and flight data
-  const calculateFlightCount = () => {
-    let totalFlights = 0;
-
-    if (selectedTrip === "one-way") {
-      // For one-way trips, count only departure flights
-      totalFlights = flightData.filter(
-        (flight) => flight.type === "departure"
-      ).length;
-    } else if (selectedTrip === "round-trip") {
-      // For round-trip, count both departure and return flights
-      totalFlights =
-        flightData.filter((flight) => flight.type === "departure").length +
-        flightData.filter((flight) => flight.type === "return").length;
-    }
-
-    return totalFlights;
-  };
-
-  const totalFlights = calculateFlightCount();
-
+  // Handle filter updates when a user selects a filter option
   return (
     <div className="flightListFilter-filterCard">
       <h2 className="flightListFilter-filterHeading">Filters</h2>
-
-      {/* Flight Count Section */}
-      <div className="flightListFilter-flightCount">
-        <p>Showing {totalFlights} flights</p>
-      </div>
 
       {/* Cheapest and Fastest Buttons */}
       <div className="flightListFilter-filterButtons">
         <button
           className={selectedFilter === "cheapest" ? "selected" : ""}
-          onClick={() => onFilterChange("cheapest")}
+          onClick={() => setSelectedFilter("cheapest")} // Update selectedFilter in Zustand
         >
           Cheapest
         </button>
         <button
           className={selectedFilter === "fastest" ? "selected" : ""}
-          onClick={() => onFilterChange("fastest")}
+          onClick={() => setSelectedFilter("fastest")} // Update selectedFilter in Zustand
         >
           Fastest
         </button>
@@ -81,7 +41,7 @@ const FlightFilter: React.FC<FlightFilterProps> = ({
           <input
             type="checkbox"
             checked={selectedStops === 0}
-            onChange={() => onStopsChange(selectedStops === 0 ? null : 0)}
+            onChange={() => setSelectedStops(selectedStops === 0 ? null : 0)} // Update selectedStops in Zustand
           />
           Non-Stops
         </label>
@@ -89,7 +49,7 @@ const FlightFilter: React.FC<FlightFilterProps> = ({
           <input
             type="checkbox"
             checked={selectedStops === 1}
-            onChange={() => onStopsChange(selectedStops === 1 ? null : 1)}
+            onChange={() => setSelectedStops(selectedStops === 1 ? null : 1)} // Update selectedStops in Zustand
           />
           1 Stop
         </label>
@@ -97,7 +57,7 @@ const FlightFilter: React.FC<FlightFilterProps> = ({
           <input
             type="checkbox"
             checked={selectedStops === 2}
-            onChange={() => onStopsChange(selectedStops === 2 ? null : 2)}
+            onChange={() => setSelectedStops(selectedStops === 2 ? null : 2)} // Update selectedStops in Zustand
           />
           More than 1
         </label>
@@ -107,7 +67,7 @@ const FlightFilter: React.FC<FlightFilterProps> = ({
       <div className="flightListFilter-resetfilterbutton">
         <button
           className="flightListFilter-resetFilters"
-          onClick={onResetFilters}
+          onClick={resetFilters} // Reset filters in Zustand
         >
           Reset Filters
         </button>

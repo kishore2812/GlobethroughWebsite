@@ -5,6 +5,7 @@ import { IoAirplaneSharp } from "react-icons/io5";
 import axios from "axios";
 import "./FlightListOneWay.scss";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { useFilterStore } from "../../Stores/FilterStore";
 
 // Helper functions to fetch the user's country and currency, and convert currency
 const fetchUserCountry = async () => {
@@ -57,6 +58,9 @@ const FlightListOneWay: React.FC = () => {
     children,
     selectedClass,
   } = useFlightStore();
+
+  const { selectedFilter, selectedStops } = useFilterStore();
+
   const { setSelectedFlight } = useFlightStore();
 
   const [flights, setFlights] = useState<any[]>([]);
@@ -228,12 +232,36 @@ const FlightListOneWay: React.FC = () => {
     return `${hours}h ${minutes}m`;
   };
 
+  const filteredFlights = flights
+    .filter((flight) => {
+      if (selectedStops === null) return true;
+      const stopsCount = flight.itineraries?.[0]?.segments.length - 1;
+      return selectedStops === stopsCount;
+    })
+    .sort((a, b) => {
+      if (selectedFilter === "cheapest") {
+        return (
+          parseFloat(a.price.total.replace(/[^\d.-]/g, "")) -
+          parseFloat(b.price.total.replace(/[^\d.-]/g, ""))
+        );
+      }
+      if (selectedFilter === "fastest") {
+        const getDuration = (flight: any) => {
+          const match =
+            flight.itineraries?.[0]?.duration.match(/(\d+)H(\d+)?M?/);
+          return parseInt(match?.[1] || "0") * 60 + parseInt(match?.[2] || "0");
+        };
+        return getDuration(a) - getDuration(b);
+      }
+      return 0;
+    });
+
   return (
     <div className="flightListOneWay">
-      {flights.length === 0 ? (
+      {filteredFlights.length === 0 ? (
         <div>No flights available</div>
       ) : (
-        flights.map((flight) => {
+        filteredFlights.map((flight) => {
           const firstSegment = flight.itineraries?.[0]?.segments?.[0];
           const lastSegment = flight.itineraries?.[0]?.segments?.slice(-1)[0];
 

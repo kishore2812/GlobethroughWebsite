@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { flightData } from "./flightdata"; // Import the data and interface
 import FlightFilter from "../../Components/FlightFilter/FlightFilter";
 import FlightListOneWay from "../../Components/FlightList/FlightListOneWay";
@@ -6,17 +6,22 @@ import FlightListRoundTrip from "../../Components/FlightList/FlightListRoundTrip
 import useFlightStore from "../../Stores/FlightStore";
 import Header from "../../Components/Header/Header"; // Import the Header component
 import { FaArrowRight } from "react-icons/fa"; // Import FaArrowRight
-import "./FlightListPage.scss"; // Import the SCSS file for styles
-import { CiEdit } from "react-icons/ci";
+import { CiEdit } from "react-icons/ci"; // Import CiEdit for edit button
 import { useNavigate } from "react-router-dom";
+import { useFilterStore } from "../../Stores/FilterStore"; // Import useFilterStore
+import "./FlightListPage.scss"; // Import the SCSS file for styles
 
 const FlightListPage: React.FC = () => {
-  const [filter, setFilter] = useState<"cheapest" | "fastest">("cheapest");
-  const [selectedStops, setSelectedStops] = useState<number | null>(null);
-  const { selectedTrip } = useFlightStore();
-
-  // Get data from Zustand store
+  // Use Zustand to get the selected filter and stops
   const {
+    selectedFilter,
+    selectedStops,
+    setSelectedFilter,
+    setSelectedStops,
+    resetFilters,
+  } = useFilterStore();
+  const {
+    selectedTrip,
     fromAirport,
     toAirport,
     departureDate,
@@ -31,21 +36,17 @@ const FlightListPage: React.FC = () => {
   // Calculate total travelers by summing adults, children, and infants
   const totalTravelers = adults + children + infants;
 
+  // Sort flights based on selected filter
   const sortedFlights = [...flightData].sort((a, b) => {
     if (selectedStops !== null) {
       if (a.stops === selectedStops && b.stops !== selectedStops) return -1;
       if (b.stops === selectedStops && a.stops !== selectedStops) return 1;
     }
-    if (filter === "cheapest") return a.price - b.price;
-    if (filter === "fastest") return a.duration - b.duration;
+    if (selectedFilter === "cheapest") return a.price - b.price;
+    if (selectedFilter === "fastest") return a.duration - b.duration;
     return a.stops - b.stops;
   });
 
-  // Function to reset filters
-  const resetFilters = () => {
-    setFilter("cheapest"); // Reset to default filter (cheapest)
-    setSelectedStops(null); // Clear selected stops
-  };
   const handleClick = () => {
     navigate("/homepage");
   };
@@ -53,7 +54,6 @@ const FlightListPage: React.FC = () => {
   return (
     <div className="flightListPage-container">
       <Header /> {/* Render Header at the top */}
-      {/* Section Below the Header for Airport Info */}
       <div className="flightListPage-infoContainer">
         <div className="flightListPage-airportInfo">
           <div className="flightListPage-fromAirport">
@@ -65,7 +65,7 @@ const FlightListPage: React.FC = () => {
             </span>
           </div>
           <div className="flightListPage-arrow">
-            <FaArrowRight /> {/* Using FaArrowRight icon */}
+            <FaArrowRight />
           </div>
           <div className="flightListPage-toAirport">
             <span className="flightListPage-iataCode">
@@ -77,7 +77,6 @@ const FlightListPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Departure Date, Travelers, and Selected Class in a Single Row */}
         <div className="flightListPage-detailsRow">
           <span>
             {departureDate
@@ -86,8 +85,8 @@ const FlightListPage: React.FC = () => {
                   month: "short",
                   day: "numeric",
                 })
-              : "N/A"}{" "}
-            .{/* Default text if departureDate is null */}
+              : "N/A"}
+            .
           </span>
           <span>{totalTravelers} Travelers .</span>
           <span>{selectedClass}</span>
@@ -96,21 +95,17 @@ const FlightListPage: React.FC = () => {
           </div>
         </div>
       </div>
-      {/* Main Content Section */}
       <div className="flightListPage-mainContent">
-        {/* Filter Component on the Left */}
         <div className="flightListPage-filterContainer">
           <FlightFilter
-            selectedFilter={filter}
-            selectedStops={selectedStops}
-            flightData={flightData}
-            onFilterChange={setFilter}
-            onStopsChange={setSelectedStops}
-            onResetFilters={resetFilters}
+            selectedFilter={selectedFilter} // Pass selectedFilter from Zustand
+            selectedStops={selectedStops} // Pass selectedStops from Zustand
+            onFilterChange={setSelectedFilter} // Update filter in Zustand
+            onStopsChange={setSelectedStops} // Update stops in Zustand
+            onResetFilters={resetFilters} // Reset filters via Zustand
           />
         </div>
 
-        {/* Flight List Component on the Right */}
         <div className="flightListPage-flightListContainer">
           {selectedTrip === "one-way" ? (
             <FlightListOneWay
