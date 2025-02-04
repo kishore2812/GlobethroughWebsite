@@ -5,6 +5,7 @@ import axios from "axios";
 import "./FlightListRoundTrip.scss";
 import { FaArrowRight, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { useFilterStore } from "../../Stores/FilterStore";
 
 // Helper functions to fetch the user's country and currency, and convert currency
 const fetchUserCountry = async () => {
@@ -61,6 +62,7 @@ const FlightListRoundTrip: React.FC = () => {
     selectedReturn,
     setSelectedReturn,
   } = useFlightStore();
+  const { selectedFilter, selectedStops } = useFilterStore();
 
   const [departureFlights, setDepartureFlights] = useState<any[]>([]);
   const [returnFlights, setReturnFlights] = useState<any[]>([]);
@@ -325,6 +327,53 @@ const FlightListRoundTrip: React.FC = () => {
     );
   };
 
+  const filteredFlightsDeparture = departureFlights
+    .filter((flight) => {
+      if (selectedStops === null) return true;
+      const stopsCount = flight.itineraries?.[0]?.segments.length - 1;
+      return selectedStops === stopsCount;
+    })
+    .sort((a, b) => {
+      if (selectedFilter === "cheapest") {
+        return (
+          parseFloat(a.price.total.replace(/[^\d.-]/g, "")) -
+          parseFloat(b.price.total.replace(/[^\d.-]/g, ""))
+        );
+      }
+      if (selectedFilter === "fastest") {
+        const getDuration = (flight: any) => {
+          const match =
+            flight.itineraries?.[0]?.duration.match(/(\d+)H(\d+)?M?/);
+          return parseInt(match?.[1] || "0") * 60 + parseInt(match?.[2] || "0");
+        };
+        return getDuration(a) - getDuration(b);
+      }
+      return 0;
+    });
+  const filteredFlightsReturn = returnFlights
+    .filter((flight) => {
+      if (selectedStops === null) return true;
+      const stopsCount = flight.itineraries?.[0]?.segments.length - 1;
+      return selectedStops === stopsCount;
+    })
+    .sort((a, b) => {
+      if (selectedFilter === "cheapest") {
+        return (
+          parseFloat(a.price.total.replace(/[^\d.-]/g, "")) -
+          parseFloat(b.price.total.replace(/[^\d.-]/g, ""))
+        );
+      }
+      if (selectedFilter === "fastest") {
+        const getDuration = (flight: any) => {
+          const match =
+            flight.itineraries?.[0]?.duration.match(/(\d+)H(\d+)?M?/);
+          return parseInt(match?.[1] || "0") * 60 + parseInt(match?.[2] || "0");
+        };
+        return getDuration(a) - getDuration(b);
+      }
+      return 0;
+    });
+
   return (
     <div className="flightListRoundTrip">
       {departureFlights.length === 0 &&
@@ -334,7 +383,7 @@ const FlightListRoundTrip: React.FC = () => {
       ) : (
         <div className="flightListRoundTrip__container">
           <div className="flightListRoundTrip__column">
-            {departureFlights.map((flight) => {
+            {filteredFlightsDeparture.map((flight) => {
               const firstSegment = flight.itineraries?.[0]?.segments?.[0];
               const lastSegment =
                 flight.itineraries?.[0]?.segments?.slice(-1)[0];
@@ -528,7 +577,7 @@ const FlightListRoundTrip: React.FC = () => {
           </div>
 
           <div className="flightListRoundTrip__column">
-            {returnFlights.map((flight) => {
+            {filteredFlightsReturn.map((flight) => {
               const firstSegment = flight.itineraries?.[0]?.segments?.[0];
               const lastSegment =
                 flight.itineraries?.[0]?.segments?.slice(-1)[0];
