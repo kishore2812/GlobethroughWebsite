@@ -19,27 +19,25 @@ const TicketDetailsRoundTrip: React.FC = () => {
   }
 
   // Format time function
-  const formatTime = (time: string | number | null | undefined) => {
-    if (!time) {
-      return { hours24: "N/A", hours12: "N/A" };
-    }
 
+  const formatTime = (time: string) => {
     const date = new Date(time);
-    if (isNaN(date.getTime())) {
-      return { hours24: "N/A", hours12: "N/A" };
-    }
-
-    const hours24 = date.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    });
-    const hours12 = date.toLocaleTimeString([], {
+    return date.toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
       hour12: true,
     });
-    return { hours24, hours12 };
+  };
+
+  const formatDuration = (duration: string) => {
+    const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?/);
+
+    if (!match) return "NA";
+
+    const hours = match[1] ? `${match[1]}h` : "";
+    const minutes = match[2] ? `${match[2]}m` : "";
+
+    return `${hours} ${minutes}`.trim();
   };
 
   const formatDate = (date: string | number | Date | null | undefined) => {
@@ -56,21 +54,12 @@ const TicketDetailsRoundTrip: React.FC = () => {
 
   // Render Departure Flight Card
   const renderDepartureFlight = () => {
-    const startTime = formatTime(selectedDeparture.startTime);
-    const endTime = formatTime(selectedDeparture.endTime);
-
     return (
       <div className="RoundTripTicketDetails__flight-ticket-card">
         <div className="RoundTripTicketDetails__row">
           <div className="RoundTripTicketDetails__flight-info">
-            <img
-              src={selectedDeparture.logo}
-              alt={selectedDeparture.flightNumber}
-              className="RoundTripTicketDetails__flight-logo"
-            />
-            <p className="RoundTripTicketDetails__flight-number">
-              {selectedDeparture.flightNumber}
-            </p>
+            {selectedDeparture.itineraries?.[0]?.segments?.[0].carrierCode}{" "}
+            {selectedDeparture.itineraries?.[0]?.segments?.[0].number}
           </div>
           <div className="RoundTripTicketDetails__selected-class">
             <p>{selectedClass}</p>
@@ -81,10 +70,12 @@ const TicketDetailsRoundTrip: React.FC = () => {
           <div className="RoundTripTicketDetails__column-left">
             <div className="RoundTripTicketDetails__time">
               <p className="RoundTripTicketDetails__time-24hr">
-                {startTime.hours24}
-              </p>
-              <p className="RoundTripTicketDetails__time-12hr">
-                ({startTime.hours12})
+                <span>
+                  {formatTime(
+                    selectedDeparture.itineraries?.[0]?.segments?.[0].departure
+                      .at
+                  )}
+                </span>
               </p>
             </div>
             <p className="RoundTripTicketDetails__airport">
@@ -97,7 +88,9 @@ const TicketDetailsRoundTrip: React.FC = () => {
 
           <div className="RoundTripTicketDetails__column-center">
             <p className="RoundTripTicketDetails__duration">
-              {selectedDeparture.duration} hrs
+              {formatDuration(
+                selectedDeparture.itineraries?.[0]?.duration || "N/A"
+              )}{" "}
             </p>
 
             {/* Arrow with line */}
@@ -107,17 +100,18 @@ const TicketDetailsRoundTrip: React.FC = () => {
             </div>
 
             <p className="RoundTripTicketDetails__stops">
-              {selectedDeparture.stops} Stops
+              {selectedDeparture.itineraries?.[0]?.segments.length - 1 || "N/A"}{" "}
+              stops
             </p>
           </div>
 
           <div className="RoundTripTicketDetails__column-right">
             <div className="RoundTripTicketDetails__end-time">
               <p className="RoundTripTicketDetails__time-24hr">
-                {endTime.hours24}
-              </p>
-              <p className="RoundTripTicketDetails__time-12hr">
-                ({endTime.hours12})
+                {formatTime(
+                  selectedDeparture.itineraries?.[0]?.segments?.slice(-1)[0]
+                    ?.arrival.at
+                )}
               </p>
             </div>
             <p
@@ -144,21 +138,12 @@ const TicketDetailsRoundTrip: React.FC = () => {
 
   // Render Return Flight Card
   const renderReturnFlight = () => {
-    const startTime = formatTime(selectedReturn.startTime);
-    const endTime = formatTime(selectedReturn.endTime);
-
     return (
       <div className="RoundTripTicketDetails__flight-ticket-card">
         <div className="RoundTripTicketDetails__row">
           <div className="RoundTripTicketDetails__flight-info">
-            <img
-              src={selectedReturn.logo}
-              alt={selectedReturn.flightNumber}
-              className="RoundTripTicketDetails__flight-logo"
-            />
-            <p className="RoundTripTicketDetails__flight-number">
-              {selectedReturn.flightNumber}
-            </p>
+            {selectedReturn.itineraries?.[0]?.segments?.[0].carrierCode}{" "}
+            {selectedReturn.itineraries?.[0]?.segments?.[0].number}
           </div>
           <div className="RoundTripTicketDetails__selected-class">
             <p> {selectedClass}</p>
@@ -169,10 +154,10 @@ const TicketDetailsRoundTrip: React.FC = () => {
           <div className="RoundTripTicketDetails__column-left">
             <div className="RoundTripTicketDetails__time">
               <p className="RoundTripTicketDetails__time-24hr">
-                {startTime.hours24}
-              </p>
-              <p className="RoundTripTicketDetails__time-12hr">
-                ({startTime.hours12})
+                {formatTime(
+                  selectedReturn.itineraries?.[0]?.segments?.slice(-1)[0]
+                    .arrival.at
+                )}
               </p>
             </div>
             <p className="RoundTripTicketDetails__airport">
@@ -185,7 +170,9 @@ const TicketDetailsRoundTrip: React.FC = () => {
 
           <div className="RoundTripTicketDetails__column-center">
             <p className="RoundTripTicketDetails__duration">
-              {selectedReturn.duration} hrs
+              {formatDuration(
+                selectedReturn.itineraries?.[0]?.duration || "N/A"
+              )}{" "}
             </p>
 
             {/* Arrow with line */}
@@ -195,17 +182,17 @@ const TicketDetailsRoundTrip: React.FC = () => {
             </div>
 
             <p className="RoundTripTicketDetails__stops">
-              {selectedReturn.stops} Stops
+              {selectedReturn.itineraries?.[0]?.segments.length - 1 || "N/A"}{" "}
+              stops
             </p>
           </div>
 
           <div className="RoundTripTicketDetails__column-right">
             <div className="RoundTripTicketDetails__end-time">
               <p className="RoundTripTicketDetails__time-24hr">
-                {endTime.hours24}
-              </p>
-              <p className="RoundTripTicketDetails__time-12hr">
-                ({endTime.hours12})
+                {formatTime(
+                  selectedReturn.itineraries?.[0]?.segments?.[0]?.departure.at
+                )}
               </p>
             </div>
             <p
