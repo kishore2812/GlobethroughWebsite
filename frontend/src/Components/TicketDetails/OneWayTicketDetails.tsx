@@ -12,23 +12,24 @@ const TicketDetailsOneWay: React.FC = () => {
     selectedClass,
   } = useFlightStore();
 
-  const formatTime = (time: string | number | null | undefined) => {
-    if (!time) {
-      return { hours24: "N/A", hours12: "N/A" };
-    }
-
+  const formatTime = (time: string) => {
     const date = new Date(time);
-    const hours24 = date.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    });
-    const hours12 = date.toLocaleTimeString([], {
+    return date.toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
       hour12: true,
     });
-    return { hours24, hours12 };
+  };
+
+  const formatDuration = (duration: string) => {
+    const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?/);
+
+    if (!match) return "NA";
+
+    const hours = match[1] ? `${match[1]}h` : "";
+    const minutes = match[2] ? `${match[2]}m` : "";
+
+    return `${hours} ${minutes}`.trim();
   };
 
   const formatDate = (date: string | number | null | undefined) => {
@@ -42,8 +43,6 @@ const TicketDetailsOneWay: React.FC = () => {
     return formattedDate.toLocaleDateString("en-US", options);
   };
 
-  const startTime = formatTime(selectedFlight?.startTime ?? "");
-  const endTime = formatTime(selectedFlight?.endTime ?? "");
   const formattedDepartureDate = formatDate(departureDate);
 
   return (
@@ -51,12 +50,10 @@ const TicketDetailsOneWay: React.FC = () => {
       {/* Row 1 */}
       <div className="OneWayTicketDetails__row OneWayTicketDetails__row-1">
         <div className="OneWayTicketDetails__flight-logo">
-          <img
-            src={selectedFlight?.logo || ""}
-            alt={selectedFlight?.flightNumber || "Flight"}
-            style={{ width: "80px" }}
-          />
-          <p>{selectedFlight?.flightNumber || "N/A"}</p>
+          <p>
+            {selectedFlight.itineraries?.[0]?.segments?.[0].carrierCode}{" "}
+            {selectedFlight.itineraries?.[0]?.segments?.[0].number}
+          </p>
         </div>
         <div className="OneWayTicketDetails__selected-class">
           <p>{selectedClass || "N/A"}</p>
@@ -69,11 +66,9 @@ const TicketDetailsOneWay: React.FC = () => {
         <div className="OneWayTicketDetails__column OneWayTicketDetails__column-left">
           <p className="OneWayTicketDetails__time">
             <span className="OneWayTicketDetails__start-time-24hr">
-              {startTime.hours24}
-            </span>
-            <span className="OneWayTicketDetails__start-time-12hr">
-              {" "}
-              ({startTime.hours12})
+              {formatTime(
+                selectedFlight.itineraries?.[0]?.segments?.[0].departure.at
+              )}
             </span>
           </p>
 
@@ -98,14 +93,22 @@ const TicketDetailsOneWay: React.FC = () => {
         {/* Column 2 - Center aligned */}
         <div className="OneWayTicketDetails__column OneWayTicketDetails__column-center OneWayTicketDetails__duration-info">
           <div className="OneWayTicketDetails__info-item">
-            <p>{selectedFlight?.duration || "N/A"} hrs</p>
+            <p>
+              {formatDuration(
+                selectedFlight.itineraries?.[0]?.duration || "N/A"
+              )}{" "}
+              hrs
+            </p>
           </div>
           <div className="OneWayTicketDetails__arrow">
             <span className="OneWayTicketDetails__long-arrow"></span>
             <FaChevronRight className="OneWayTicketDetails__chevron-right" />
           </div>
           <div className="OneWayTicketDetails__info-item">
-            <p>{selectedFlight?.stops || "N/A"} stops</p>
+            <p>
+              {selectedFlight.itineraries?.[0]?.segments.length - 1 || "N/A"}{" "}
+              stops
+            </p>
           </div>
         </div>
 
@@ -113,11 +116,9 @@ const TicketDetailsOneWay: React.FC = () => {
         <div className="OneWayTicketDetails__column OneWayTicketDetails__column-right">
           <p className="OneWayTicketDetails__time">
             <span className="OneWayTicketDetails__start-time-24hr">
-              {endTime.hours24}
-            </span>
-            <span className="OneWayTicketDetails__start-time-12hr">
-              {" "}
-              ({endTime.hours12})
+              {formatTime(
+                selectedFlight.itineraries?.[0]?.segments?.[0]?.arrival.at
+              )}
             </span>
           </p>
           <p className="OneWayTicketDetails__airportDetails">

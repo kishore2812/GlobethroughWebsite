@@ -13,11 +13,14 @@ const PriceDetails: React.FC = () => {
 
   const baseFare =
     selectedTrip === "one-way"
-      ? selectedFlight?.price || 0
-      : (selectedDeparture?.price || 0) + (selectedReturn?.price || 0);
+      ? Number(selectedFlight?.price?.total) || 0
+      : (Number(selectedDeparture?.price?.total) || 0) +
+        (Number(selectedReturn?.price?.total) || 0);
 
   const totalBasePrice =
-    adults * baseFare + children * baseFare + infants * baseFare;
+    Number(adults) * baseFare +
+    Number(children) * baseFare +
+    Number(infants) * baseFare;
 
   const tax = (totalBasePrice * 0.2).toFixed(2);
 
