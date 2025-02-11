@@ -7,7 +7,6 @@ import { FaArrowRight, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useFilterStore } from "../../Stores/FilterStore";
 
-// Helper functions to fetch the user's country and currency, and convert currency
 const fetchUserCountry = async () => {
   try {
     const response = await axios.get(
@@ -18,33 +17,6 @@ const fetchUserCountry = async () => {
   } catch (error) {
     console.error("Error fetching user country:", error);
     throw new Error("Error fetching user country");
-  }
-};
-
-const fetchCurrencyConversionRate = async (currency: string) => {
-  try {
-    const response = await axios.get(
-      `https://v6.exchangerate-api.com/v6/eb7a0c52098e9debbb7e5f63/latest/EUR`
-    );
-
-    console.log("Currency conversion rate data:", response.data);
-
-    // Check if the currency exists in the conversion rates
-    if (
-      response.data &&
-      response.data.conversion_rates &&
-      response.data.conversion_rates[currency]
-    ) {
-      return response.data.conversion_rates[currency];
-    } else {
-      console.warn(
-        `Conversion rate for ${currency} not found. Falling back to default rate.`
-      );
-      return 1; // Default conversion rate (1:1) if currency not found
-    }
-  } catch (error) {
-    console.error("Error fetching conversion rate:", error);
-    return 1; // Default conversion rate (1:1) if API call fails
   }
 };
 
@@ -61,6 +33,7 @@ const FlightListRoundTrip: React.FC = () => {
     setSelectedDeparture,
     selectedReturn,
     setSelectedReturn,
+    userCurrency,
   } = useFlightStore();
   const { selectedFilter, selectedStops } = useFilterStore();
 
@@ -72,8 +45,7 @@ const FlightListRoundTrip: React.FC = () => {
   const [flightsLoaded, setFlightsLoaded] = useState<boolean>(false); // To track if both are loaded
 
   const [error, setError] = useState<string | null>(null);
-  const [userCurrency, setUserCurrency] = useState<string>("USD");
-  const [conversionRate, setConversionRate] = useState<number | null>(null);
+
   const [ViewFlightDetailsDeparture, setViewFlightDetailsDeparture] = useState<
     string | null
   >(null);
@@ -94,6 +66,8 @@ const FlightListRoundTrip: React.FC = () => {
   };
 
   const fetchDepartureFlights = async (token: string) => {
+    console.log("flights");
+    if (!userCurrency) return;
     setLoadingDeparture(true); // Start loading departure
     setError(null);
 
@@ -110,6 +84,7 @@ const FlightListRoundTrip: React.FC = () => {
             travelClass: selectedClass,
             nonStop: false,
             max: 250,
+            currencyCode: userCurrency,
           },
           headers: {
             Authorization: `Bearer ${token}`,
@@ -133,6 +108,7 @@ const FlightListRoundTrip: React.FC = () => {
   };
 
   const fetchReturnFlights = async (token: string) => {
+    if (!userCurrency) return;
     setLoadingReturn(true); // Start loading return
     setError(null);
 
@@ -149,6 +125,7 @@ const FlightListRoundTrip: React.FC = () => {
             travelClass: selectedClass,
             nonStop: false,
             max: 250,
+            currencyCode: userCurrency,
           },
           headers: {
             Authorization: `Bearer ${token}`,
@@ -182,11 +159,8 @@ const FlightListRoundTrip: React.FC = () => {
     const fetchCountryData = async () => {
       try {
         const countryData = await fetchUserCountry();
-
         const userCurrency = countryData.currency.code; // Get user's currency from API
-        setUserCurrency(userCurrency);
-        const rate = await fetchCurrencyConversionRate(userCurrency);
-        setConversionRate(rate);
+        useFlightStore.getState().setUserCurrency(userCurrency);
       } catch {
         setError("Error fetching country and currency data");
       }
@@ -194,10 +168,6 @@ const FlightListRoundTrip: React.FC = () => {
 
     fetchCountryData();
   }, []);
-
-  const convertPrice = (priceInEuro: number) => {
-    return conversionRate ? priceInEuro * conversionRate : priceInEuro;
-  };
 
   useEffect(() => {
     const loadFlights = async () => {
@@ -422,7 +392,7 @@ const FlightListRoundTrip: React.FC = () => {
                     </div>
                     <div className="flightListRoundTrip__price">
                       {userCurrency}{" "}
-                      {convertPrice(flight.price?.total || 0).toFixed(2)}
+                      {Number(flight.price?.total || 0).toFixed(2)}
                     </div>
                   </div>
                   <div className="flightListRoundTrip__row">
@@ -618,7 +588,7 @@ const FlightListRoundTrip: React.FC = () => {
                     </div>
                     <div className="flightListRoundTrip__price">
                       {userCurrency}{" "}
-                      {convertPrice(flight.price?.total || 0).toFixed(2)}
+                      {Number(flight.price?.total || 0).toFixed(2)}
                     </div>
                   </div>
 
@@ -847,9 +817,9 @@ const FlightListRoundTrip: React.FC = () => {
               <div className="Flight_list_round_trip__total-price">
                 <span>
                   {userCurrency}{" "}
-                  {convertPrice(
+                  {(
                     parseFloat(selectedDeparture?.price?.total || "0") +
-                      parseFloat(selectedReturn?.price?.total || "0")
+                    parseFloat(selectedReturn?.price?.total || "0")
                   ).toFixed(2)}
                 </span>
               </div>

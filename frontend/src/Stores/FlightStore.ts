@@ -38,7 +38,8 @@ interface FlightStore {
   selectedDeparture: any | null;
   selectedReturn: any | null;
   passengers: Passenger[];
-
+  userCurrency: string | null;
+  setUserCurrency: (currency: string) => void;
   setSelectedDeparture: (flight: any | null) => void;
   setSelectedReturn: (flight: any | null) => void;
   setSelectedFlight: (flight: any | null) => void;
@@ -86,7 +87,8 @@ const useFlightStore = create(
       selectedDeparture: null,
       selectedReturn: null,
       passengers: [], // Initialize with an empty array
-
+      userCurrency: null,
+      setUserCurrency: (currency) => set({ userCurrency: currency }),
       setSelectedDeparture: (flight) => set({ selectedDeparture: flight }),
       setSelectedReturn: (flight) => set({ selectedReturn: flight }),
       setSelectedFlight: (flight) => set({ selectedFlight: flight }),

@@ -21,33 +21,6 @@ const fetchUserCountry = async () => {
   }
 };
 
-const fetchCurrencyConversionRate = async (currency: string) => {
-  try {
-    const response = await axios.get(
-      `https://v6.exchangerate-api.com/v6/eb7a0c52098e9debbb7e5f63/latest/EUR`
-    );
-
-    console.log("Currency conversion rate data:", response.data);
-
-    // Check if the currency exists in the conversion rates
-    if (
-      response.data &&
-      response.data.conversion_rates &&
-      response.data.conversion_rates[currency]
-    ) {
-      return response.data.conversion_rates[currency];
-    } else {
-      console.warn(
-        `Conversion rate for ${currency} not found. Falling back to default rate.`
-      );
-      return 1; // Default conversion rate (1:1) if currency not found
-    }
-  } catch (error) {
-    console.error("Error fetching conversion rate:", error);
-    return 1; // Default conversion rate (1:1) if API call fails
-  }
-};
-
 const FlightListOneWay: React.FC = () => {
   const navigate = useNavigate();
   const {
@@ -57,6 +30,7 @@ const FlightListOneWay: React.FC = () => {
     adults,
     children,
     selectedClass,
+    userCurrency,
   } = useFlightStore();
 
   const { selectedFilter, selectedStops } = useFilterStore();
@@ -67,8 +41,6 @@ const FlightListOneWay: React.FC = () => {
   const [dictionaries, setDictionaries] = useState<any>({});
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [userCurrency, setUserCurrency] = useState<string>("USD");
-  const [conversionRate, setConversionRate] = useState<number | null>(null);
   const [selectedFlightIdDetails, setSelectedFlightIdDetails] = useState<
     string | null
   >(null);
@@ -83,7 +55,29 @@ const FlightListOneWay: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchCountryData = async () => {
+      try {
+        const countryData = await fetchUserCountry();
+        const userCurrency = countryData.currency.code; // Get user's currency from API
+        useFlightStore.getState().setUserCurrency(userCurrency);
+        console.log("User Currency:", userCurrency);
+      } catch {
+        setError("Error fetching country and currency data");
+      }
+    };
+
+    fetchCountryData();
+  }, []); // Fetch user currency on mount
+
   const fetchFlights = async (token: string) => {
+    if (!userCurrency) {
+      console.warn(
+        "Skipping flight fetch because userCurrency is not available."
+      );
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
@@ -100,6 +94,7 @@ const FlightListOneWay: React.FC = () => {
             travelClass: selectedClass,
             nonStop: false,
             max: 250,
+            currencyCode: userCurrency, // Ensuring this is available before API call
           },
           headers: {
             Authorization: `Bearer ${token}`,
@@ -123,36 +118,32 @@ const FlightListOneWay: React.FC = () => {
 
   useEffect(() => {
     const loadFlights = async () => {
+      if (!userCurrency) {
+        console.log("Waiting for userCurrency before fetching flights...");
+        return; // Do not proceed if userCurrency is not set
+      }
+
       const token = await fetchToken();
       if (token) {
         fetchFlights(token);
       }
     };
 
-    if (fromAirport && toAirport && departureDate) {
+    if (fromAirport && toAirport && departureDate && userCurrency) {
       loadFlights();
-    } else {
-      setError("Please check the search parameters and try again.");
     }
-  }, [fromAirport, toAirport, departureDate, adults, children, selectedClass]);
+  }, [
+    fromAirport,
+    toAirport,
+    departureDate,
+    adults,
+    children,
+    selectedClass,
+    userCurrency,
+  ]);
+  // Add userCurrency as a dependency to ensure flights are fetched only after it's available
 
   // Fetch user's country and currency
-  useEffect(() => {
-    const fetchCountryData = async () => {
-      try {
-        const countryData = await fetchUserCountry();
-
-        const userCurrency = countryData.currency.code; // Get user's currency from API
-        setUserCurrency(userCurrency);
-        const rate = await fetchCurrencyConversionRate(userCurrency);
-        setConversionRate(rate);
-      } catch {
-        setError("Error fetching country and currency data");
-      }
-    };
-
-    fetchCountryData();
-  }, []);
 
   const handleBookNow = (flight: any) => {
     setSelectedFlight(flight);
@@ -181,11 +172,6 @@ const FlightListOneWay: React.FC = () => {
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div className="error">{error}</div>;
-
-  // Convert prices based on the conversion rate
-  const convertPrice = (priceInEuro: number) => {
-    return conversionRate ? priceInEuro * conversionRate : priceInEuro;
-  };
 
   // Find the cheapest and fastest flights
   const cheapestFlight = flights.reduce((prev, curr) => {
@@ -331,8 +317,7 @@ const FlightListOneWay: React.FC = () => {
                 </div>
                 <div className="flightListOneWay__column">
                   <div className="flightListOneWay__price">
-                    {userCurrency}{" "}
-                    {convertPrice(flight.price?.total || 0).toFixed(2)}
+                    {userCurrency} {Number(flight.price?.total || 0).toFixed(2)}
                   </div>
                 </div>
 
