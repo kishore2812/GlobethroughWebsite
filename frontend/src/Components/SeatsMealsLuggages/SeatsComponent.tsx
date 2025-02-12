@@ -1,107 +1,161 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./SeatsComponent.scss"; // Import the compiled SCSS file
+import axios from "axios";
+import useFlightStore from "../../Stores/FlightStore";
 
-interface SeatMapProps {
-  totalSeats: number;
-  columns: string[];
+interface Seat {
+  number: string;
+  characteristicsCodes: string[];
+  available: boolean;
+  price?: { total: string; currency: string };
+  coordinates: { x: number; y: number };
 }
 
-const Seats: React.FC<SeatMapProps> = ({ totalSeats, columns }) => {
-  const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
+interface Deck {
+  deckType: string;
+  deckConfiguration: {
+    width: number;
+    length: number;
+  };
+  seats: Seat[];
+}
 
-  // Calculate number of rows needed
-  const rows = Math.ceil(totalSeats / columns.length);
+interface FlightSeatMap {
+  id: string;
+  departure: { iataCode: string; at: string };
+  arrival: { iataCode: string; at: string };
+  decks: Deck[];
+}
 
-  const handleSeatClick = (seat: string) => {
-    setSelectedSeats((prev) =>
-      prev.includes(seat) ? prev.filter((s) => s !== seat) : [...prev, seat]
+const SeatsComponent: React.FC = () => {
+  const [seatMaps, setSeatMaps] = useState<FlightSeatMap[]>([]);
+  const [selectedSeats, setSelectedSeats] = useState<Record<string, string[]>>(
+    {}
+  );
+  const [currentFlightIndex, setCurrentFlightIndex] = useState(0);
+
+  const { selectedFlight } = useFlightStore();
+
+  const fetchToken = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/amadeus/token");
+      return response.data.access_token;
+    } catch {
+      return null;
+    }
+  };
+
+  const fetchSeatMaps = async (token: string, flightOffer: any) => {
+    try {
+      const response = await axios.post(
+        `https://test.api.amadeus.com/v1/shopping/seatmaps`,
+        { data: [flightOffer] },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.data.data) {
+        console.error("Unexpected seat map response format:", response.data);
+        return;
+      }
+
+      setSeatMaps(response.data.data);
+    } catch (error) {
+      console.error("Error fetching seat map:", error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchSeats = async () => {
+      const token = await fetchToken();
+      if (token && selectedFlight) {
+        fetchSeatMaps(token, selectedFlight);
+      }
+    };
+
+    fetchSeats();
+  }, [selectedFlight]);
+
+  const handleSeatClick = (flightId: string, seatNumber: string) => {
+    setSelectedSeats((prev) => {
+      const prevSeats = prev[flightId] || [];
+      return {
+        ...prev,
+        [flightId]: prevSeats.includes(seatNumber)
+          ? prevSeats.filter((s) => s !== seatNumber)
+          : [...prevSeats, seatNumber],
+      };
+    });
+  };
+
+  const handleNextFlight = () => {
+    setCurrentFlightIndex((prevIndex) =>
+      prevIndex < seatMaps.length - 1 ? prevIndex + 1 : 0
     );
   };
 
-  return (
-    <div className="SeatsComponents__seats-container">
-      {/* Cone-shaped border at the top */}
-      <div className="SeatsComponents__triangle">
-        <div className="SeatsComponents__triangle_leftbottom"></div>
-        <div className="SeatsComponents__triangle_leftmiddle"></div>
-        <div className="SeatsComponents__triangle_lefttop">
-          <div className="SeatsComponents__triangle_lefttop_ball"></div>
-          <div className="SeatsComponents__triangle_lefttop_stick"></div>
-        </div>
-        <div className="SeatsComponents__triangle_rightbottom"></div>
-        <div className="SeatsComponents__triangle_rightmiddle"></div>
-      </div>
-      {/* Seats container */}
-      <div className="SeatsComponents__seat-grid">
-        <div className="SeatsComponents__seat-header">
-          <div className="SeatsComponents__seat-section">
-            {columns.slice(0, 3).map((column) => (
-              <div key={column} className="SeatsComponents__seat-column">
-                {column}
-              </div>
-            ))}
-          </div>
-          <div className="SeatsComponents__row-number-placeholder"></div>
-          <div className="SeatsComponents__seat-section">
-            {columns.slice(3).map((column) => (
-              <div key={column} className="SeatsComponents__seat-column">
-                {column}
-              </div>
-            ))}
-          </div>
-        </div>
+  const handlePrevFlight = () => {
+    setCurrentFlightIndex((prevIndex) =>
+      prevIndex > 0 ? prevIndex - 1 : seatMaps.length - 1
+    );
+  };
 
-        {/* Rendering the rows of seats */}
-        {Array.from({ length: rows }, (_, rowIndex) => (
-          <div key={rowIndex} className="SeatsComponents__seat-row">
-            <div className="SeatsComponents__seat-section">
-              {columns.slice(0, 3).map((column, colIndex) => {
-                const seatNumber = rowIndex * columns.length + colIndex + 1;
-                if (seatNumber > totalSeats) return null;
-                const seatId = `${column}${seatNumber}`;
-                return (
-                  <button
-                    key={seatId}
-                    className={`SeatsComponents__seat ${
-                      selectedSeats.includes(seatId) ? "selected" : ""
-                    }`}
-                    onClick={() => handleSeatClick(seatId)}
-                  />
-                );
-              })}
-            </div>
-            <div className="SeatsComponents__row-number">{rowIndex + 1}</div>
-            <div className="SeatsComponents__seat-section">
-              {columns.slice(3).map((column, colIndex) => {
-                const seatNumber = rowIndex * columns.length + colIndex + 4;
-                if (seatNumber > totalSeats) return null;
-                const seatId = `${column}${seatNumber}`;
-                return (
-                  <button
-                    key={seatId}
-                    className={`SeatsComponents__seat ${
-                      selectedSeats.includes(seatId) ? "selected" : ""
-                    }`}
-                    onClick={() => handleSeatClick(seatId)}
-                  />
-                );
-              })}
-            </div>
+  if (seatMaps.length === 0) return <p>Loading seat maps...</p>;
+
+  const currentFlight = seatMaps[currentFlightIndex];
+
+  return (
+    <div className="SeatsComponents__container">
+      {/* Flight Info & Navigation */}
+      <div className="SeatsComponents__flight-header">
+        <button onClick={handlePrevFlight}>&#9664; Prev</button>
+        <h3>
+          {currentFlight.departure.iataCode} → {currentFlight.arrival.iataCode}
+        </h3>
+        <button onClick={handleNextFlight}>Next &#9654;</button>
+      </div>
+
+      {/* Seats Layout */}
+      <div className="SeatsComponents__seat-grid">
+        {currentFlight.decks.map((deck) => (
+          <div key={deck.deckType} className="SeatsComponents__deck">
+            {deck.seats.map((seat) => (
+              <button
+                key={seat.number}
+                className={`SeatsComponents__seat ${
+                  selectedSeats[currentFlight.id]?.includes(seat.number)
+                    ? "selected"
+                    : ""
+                }`}
+                onClick={() => handleSeatClick(currentFlight.id, seat.number)}
+                disabled={!seat.available}
+              >
+                {seat.number}{" "}
+                {seat.price
+                  ? `(${seat.price.total} ${seat.price.currency})`
+                  : ""}
+              </button>
+            ))}
           </div>
         ))}
       </div>
 
-      {/* Display selected seats */}
+      {/* Selected Seats */}
       <div className="SeatsComponents__selected-seats">
-        <h4>Selected Seats:</h4>
+        <h4>
+          Selected Seats for {currentFlight.departure.iataCode} →{" "}
+          {currentFlight.arrival.iataCode}:
+        </h4>
         <p>
-          {selectedSeats.length > 0
-            ? selectedSeats.join(", ")
-            : "No seats selected"}
+          {selectedSeats[currentFlight.id]?.join(", ") || "No seats selected"}
         </p>
       </div>
     </div>
   );
 };
 
-export default Seats;
+export default SeatsComponent;

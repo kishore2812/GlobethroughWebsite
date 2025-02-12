@@ -45,16 +45,6 @@ const FlightListOneWay: React.FC = () => {
     string | null
   >(null);
 
-  const fetchToken = async () => {
-    try {
-      const response = await axios.get("http://localhost:5000/amadeus/token");
-      return response.data.access_token;
-    } catch {
-      setError("Error fetching token");
-      return null;
-    }
-  };
-
   useEffect(() => {
     const fetchCountryData = async () => {
       try {
@@ -69,6 +59,16 @@ const FlightListOneWay: React.FC = () => {
 
     fetchCountryData();
   }, []); // Fetch user currency on mount
+
+  const fetchToken = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/amadeus/token");
+      return response.data.access_token;
+    } catch {
+      setError("Error fetching token");
+      return null;
+    }
+  };
 
   const fetchFlights = async (token: string) => {
     if (!userCurrency) {
