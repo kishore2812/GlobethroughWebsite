@@ -1,0 +1,97 @@
+<div className="SeatsComponents__triangle">
+            <div className="SeatsComponents__triangle_leftbottom"></div>
+            <div className="SeatsComponents__triangle_leftmiddle"></div>
+            <div className="SeatsComponents__triangle_lefttop">
+              <div className="SeatsComponents__triangle_lefttop_ball"></div>
+              <div className="SeatsComponents__triangle_lefttop_stick"></div>
+            </div>
+            <div className="SeatsComponents__triangle_rightbottom"></div>
+            <div className="SeatsComponents__triangle_rightmiddle"></div>
+          </div>
+
+
+
+
+
+
+
+.SeatsComponents__triangle {
+    position: absolute;
+    margin-top: 50px;
+    width: 270px;
+    height: 270px;
+    border: 2px solid #ccc;
+    border-left: none;
+    border-bottom: none;
+    border-top-right-radius: 10%;
+    border-top-left-radius: 24px;
+    border-bottom-right-radius: 24px;
+    transform: rotate(-45deg);
+
+    .SeatsComponents__triangle_leftbottom {
+      width: 35px;
+      height: 37px;
+      margin-left: 70px;
+      margin-top: 30px;
+      border-bottom-right-radius: 24px;
+      border-bottom-left-radius: 24px;
+      transform: rotate(90deg);
+      background-color: #ccc;
+    }
+    .SeatsComponents__triangle_rightbottom {
+      position: absolute;
+      width: 35px;
+      height: 37px;
+      margin-left: 205px;
+      margin-top: 55px;
+      border-bottom-right-radius: 24px;
+      border-bottom-left-radius: 24px;
+      transform: rotate(0deg);
+      background-color: #ccc;
+    }
+    .SeatsComponents__triangle_leftmiddle {
+      position: absolute;
+      width: 34px;
+      height: 37px;
+      margin-left: 115px;
+      margin-top: -35px;
+      transform: rotate(90deg);
+      background-color: #ccc;
+    }
+    .SeatsComponents__triangle_rightmiddle {
+      position: absolute;
+      width: 34px;
+      height: 37px;
+      margin-left: 205px;
+      margin-top: 10px;
+      transform: rotate(0deg);
+      background-color: #ccc;
+    }
+    .SeatsComponents__triangle_lefttop {
+      width: 80px;
+      height: 80px;
+      margin-left: 160px;
+      margin-top: -35px;
+      background-color: #ccc; /* Color of the square */
+      border-top-right-radius: 25%;
+
+      .SeatsComponents__triangle_lefttop_ball {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background-color: white;
+        position: absolute;
+        top: 25%;
+        right: 25%;
+      }
+      .SeatsComponents__triangle_lefttop_stick {
+        width: 8px;
+        height: 70px;
+        position: absolute;
+        background-color: white;
+        right: 20%;
+        bottom: 65%;
+        transform: rotate(45deg);
+      }
+    }
+  }

@@ -164,16 +164,6 @@ const SeatsComponent: React.FC = () => {
       {/* Seat Map */}
       {currentFlight.decks && currentFlight.decks.length > 0 ? (
         <div className="SeatsComponent__grid">
-          <div className="SeatsComponents__triangle">
-            <div className="SeatsComponents__triangle_leftbottom"></div>
-            <div className="SeatsComponents__triangle_leftmiddle"></div>
-            <div className="SeatsComponents__triangle_lefttop">
-              <div className="SeatsComponents__triangle_lefttop_ball"></div>
-              <div className="SeatsComponents__triangle_lefttop_stick"></div>
-            </div>
-            <div className="SeatsComponents__triangle_rightbottom"></div>
-            <div className="SeatsComponents__triangle_rightmiddle"></div>
-          </div>
           {currentFlight.decks.map((deck) => (
             <div key={deck.deckType} className="SeatsComponent__deck">
               {deck.seats.map((seat) => {
