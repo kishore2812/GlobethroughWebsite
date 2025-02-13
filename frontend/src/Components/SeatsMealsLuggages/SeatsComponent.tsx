@@ -208,10 +208,9 @@ const SeatsComponent: React.FC = () => {
                       disabled={!isAvailable}
                     ></button>
                     <span className="SeatsComponent__tooltip">
-                      <div>{seat.number}</div>
-
-                      <div>{seatTypeText}</div>
-
+                      <span>
+                        <strong>{seat.number}</strong> | {seatTypeText}
+                      </span>
                       <div>
                         {extraChargeCurrencyCode}
                         {extraCharge}
