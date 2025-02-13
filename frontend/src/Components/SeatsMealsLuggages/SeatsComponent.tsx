@@ -10,7 +10,7 @@ interface Seat {
   available: boolean;
   price?: { total: string; currency: string };
   coordinates: { x: number; y: number };
-  flightIds: string[]; // Added to store multiple flight IDs for multi-stop
+  flightIds: string[];
 }
 
 interface Deck {
@@ -23,7 +23,7 @@ interface FlightSeatMap {
   id: string;
   departure: { iataCode: string; at: string };
   arrival: { iataCode: string; at: string };
-  decks: Deck[];
+  decks?: Deck[]; // Made optional to handle missing seat maps
 }
 
 const SeatsComponent: React.FC = () => {
@@ -107,15 +107,15 @@ const SeatsComponent: React.FC = () => {
   };
 
   const handleNextSegment = () => {
-    setCurrentSegmentIndex((prevIndex) =>
-      prevIndex < seatMaps.length - 1 ? prevIndex + 1 : 0
-    );
+    if (currentSegmentIndex < seatMaps.length - 1) {
+      setCurrentSegmentIndex((prevIndex) => prevIndex + 1);
+    }
   };
 
   const handlePrevSegment = () => {
-    setCurrentSegmentIndex((prevIndex) =>
-      prevIndex > 0 ? prevIndex - 1 : seatMaps.length - 1
-    );
+    if (currentSegmentIndex > 0) {
+      setCurrentSegmentIndex((prevIndex) => prevIndex - 1);
+    }
   };
 
   if (seatMaps.length === 0) return <p>Loading seat maps...</p>;
@@ -125,41 +125,54 @@ const SeatsComponent: React.FC = () => {
   return (
     <div className="SeatsComponents__container">
       {/* Flight Info & Navigation */}
-
       <div className="SeatsComponents__flight-header">
-        <button onClick={handlePrevSegment}>&#9664; Prev</button>
+        <button
+          onClick={handlePrevSegment}
+          disabled={currentSegmentIndex === 0}
+        >
+          &#9664; Prev
+        </button>
         <h3>
-          {currentFlight.departure.iataCode} → {currentFlight.arrival.iataCode}{" "}
+          {currentFlight.departure.iataCode} → {currentFlight.arrival.iataCode}
         </h3>
-        <button onClick={handleNextSegment}>Next &#9654;</button>
+        <button
+          onClick={handleNextSegment}
+          disabled={currentSegmentIndex === seatMaps.length - 1}
+        >
+          Next &#9654;
+        </button>
       </div>
 
-      {/* Seats Layout */}
-      <div className="SeatsComponents__seat-grid">
-        {currentFlight.decks.map((deck) => (
-          <div key={deck.deckType} className="SeatsComponents__deck">
-            {deck.seats.map((seat) => (
-              <button
-                key={seat.number}
-                className={`SeatsComponents__seat ${
-                  selectedSeats[currentFlight.id]?.includes(seat.number)
-                    ? "selected"
-                    : ""
-                }`}
-                onClick={() => handleSeatClick(currentFlight.id, seat.number)}
-                disabled={!seat.available}
-              >
-                {seat.number}{" "}
-                {seat.price
-                  ? `(${seat.price.total} ${seat.price.currency})`
-                  : ""}
-                <br />
-                {seat.flightIds ? seat.flightIds.join(", ") : ""}
-              </button>
-            ))}
-          </div>
-        ))}
-      </div>
+      {/* Seat Map or Message */}
+      {currentFlight.decks && currentFlight.decks.length > 0 ? (
+        <div className="SeatsComponents__seat-grid">
+          {currentFlight.decks.map((deck) => (
+            <div key={deck.deckType} className="SeatsComponents__deck">
+              {deck.seats.map((seat) => (
+                <button
+                  key={seat.number}
+                  className={`SeatsComponents__seat ${
+                    selectedSeats[currentFlight.id]?.includes(seat.number)
+                      ? "selected"
+                      : ""
+                  }`}
+                  onClick={() => handleSeatClick(currentFlight.id, seat.number)}
+                  disabled={!seat.available}
+                >
+                  {seat.number}{" "}
+                  {seat.price
+                    ? `(${seat.price.total} ${seat.price.currency})`
+                    : ""}
+                </button>
+              ))}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="SeatsComponents__no-seatmap">
+          Seat map not provided for this flight.
+        </p>
+      )}
 
       {/* Selected Seats */}
       <div className="SeatsComponents__selected-seats">
