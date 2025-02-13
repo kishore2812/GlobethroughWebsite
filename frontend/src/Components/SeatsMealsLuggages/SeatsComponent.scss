@@ -133,6 +133,10 @@
     opacity: 0;
     transition: opacity 0.3s;
 
+    .SeatsComponent__tooltip span {
+      display: block;
+    }
+
     &::after {
       content: "";
       position: absolute;
