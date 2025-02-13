@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
-import "./SeatsComponent.scss"; // Import the compiled SCSS file
+import "./SeatsComponent.scss";
 import axios from "axios";
 import useFlightStore from "../../Stores/FlightStore";
 
@@ -9,14 +10,12 @@ interface Seat {
   available: boolean;
   price?: { total: string; currency: string };
   coordinates: { x: number; y: number };
+  flightIds: string[]; // Added to store multiple flight IDs for multi-stop
 }
 
 interface Deck {
   deckType: string;
-  deckConfiguration: {
-    width: number;
-    length: number;
-  };
+  deckConfiguration: { width: number; length: number };
   seats: Seat[];
 }
 
@@ -32,53 +31,68 @@ const SeatsComponent: React.FC = () => {
   const [selectedSeats, setSelectedSeats] = useState<Record<string, string[]>>(
     {}
   );
-  const [currentFlightIndex, setCurrentFlightIndex] = useState(0);
+  const [currentSegmentIndex, setCurrentSegmentIndex] = useState(0);
 
-  const { selectedFlight } = useFlightStore();
-
-  const fetchToken = async () => {
-    try {
-      const response = await axios.get("http://localhost:5000/amadeus/token");
-      return response.data.access_token;
-    } catch {
-      return null;
-    }
-  };
-
-  const fetchSeatMaps = async (token: string, flightOffer: any) => {
-    try {
-      const response = await axios.post(
-        `https://test.api.amadeus.com/v1/shopping/seatmaps`,
-        { data: [flightOffer] },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.data.data) {
-        console.error("Unexpected seat map response format:", response.data);
-        return;
-      }
-
-      setSeatMaps(response.data.data);
-    } catch (error) {
-      console.error("Error fetching seat map:", error);
-    }
-  };
+  const { selectedTrip, selectedFlight, selectedDeparture, selectedReturn } =
+    useFlightStore();
 
   useEffect(() => {
-    const fetchSeats = async () => {
-      const token = await fetchToken();
-      if (token && selectedFlight) {
-        fetchSeatMaps(token, selectedFlight);
+    const fetchToken = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/amadeus/token");
+        return response.data.access_token;
+      } catch {
+        return null;
       }
     };
 
-    fetchSeats();
-  }, [selectedFlight]);
+    const fetchSeatMaps = async (token: string, flightOffers: any[]) => {
+      try {
+        const response = await axios.post(
+          `https://test.api.amadeus.com/v1/shopping/seatmaps`,
+          { data: flightOffers },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!response.data.data) {
+          console.error("Unexpected seat map response format:", response.data);
+          return;
+        }
+
+        setSeatMaps(response.data.data);
+      } catch (error) {
+        console.error("Error fetching seat maps:", error);
+      }
+    };
+
+    const loadSeatMaps = async () => {
+      const token = await fetchToken();
+      if (!token) return;
+
+      const flightOffers: any[] = [];
+
+      if (selectedTrip === "one-way" && selectedFlight) {
+        flightOffers.push(selectedFlight);
+      } else if (
+        selectedTrip === "round-trip" &&
+        selectedDeparture &&
+        selectedReturn
+      ) {
+        flightOffers.push(selectedDeparture, selectedReturn);
+      }
+
+      if (flightOffers.length > 0) {
+        fetchSeatMaps(token, flightOffers);
+      }
+    };
+
+    loadSeatMaps();
+  }, [selectedTrip, selectedFlight, selectedDeparture, selectedReturn]);
 
   const handleSeatClick = (flightId: string, seatNumber: string) => {
     setSelectedSeats((prev) => {
@@ -92,31 +106,32 @@ const SeatsComponent: React.FC = () => {
     });
   };
 
-  const handleNextFlight = () => {
-    setCurrentFlightIndex((prevIndex) =>
+  const handleNextSegment = () => {
+    setCurrentSegmentIndex((prevIndex) =>
       prevIndex < seatMaps.length - 1 ? prevIndex + 1 : 0
     );
   };
 
-  const handlePrevFlight = () => {
-    setCurrentFlightIndex((prevIndex) =>
+  const handlePrevSegment = () => {
+    setCurrentSegmentIndex((prevIndex) =>
       prevIndex > 0 ? prevIndex - 1 : seatMaps.length - 1
     );
   };
 
   if (seatMaps.length === 0) return <p>Loading seat maps...</p>;
 
-  const currentFlight = seatMaps[currentFlightIndex];
+  const currentFlight = seatMaps[currentSegmentIndex];
 
   return (
     <div className="SeatsComponents__container">
       {/* Flight Info & Navigation */}
+
       <div className="SeatsComponents__flight-header">
-        <button onClick={handlePrevFlight}>&#9664; Prev</button>
+        <button onClick={handlePrevSegment}>&#9664; Prev</button>
         <h3>
-          {currentFlight.departure.iataCode} → {currentFlight.arrival.iataCode}
+          {currentFlight.departure.iataCode} → {currentFlight.arrival.iataCode}{" "}
         </h3>
-        <button onClick={handleNextFlight}>Next &#9654;</button>
+        <button onClick={handleNextSegment}>Next &#9654;</button>
       </div>
 
       {/* Seats Layout */}
@@ -138,6 +153,8 @@ const SeatsComponent: React.FC = () => {
                 {seat.price
                   ? `(${seat.price.total} ${seat.price.currency})`
                   : ""}
+                <br />
+                {seat.flightIds ? seat.flightIds.join(", ") : ""}
               </button>
             ))}
           </div>
