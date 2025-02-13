@@ -7,10 +7,12 @@ import useFlightStore from "../../Stores/FlightStore";
 interface Seat {
   number: string;
   characteristicsCodes: string[];
-  available: boolean;
-  price?: { total: string; currency: string };
+  travelerPricing?: {
+    travelerId: string;
+    seatAvailabilityStatus: string;
+    price?: { total: string; currency: string };
+  }[];
   coordinates: { x: number; y: number };
-  flightIds: string[];
 }
 
 interface Deck {
@@ -23,18 +25,25 @@ interface FlightSeatMap {
   id: string;
   departure: { iataCode: string; at: string };
   arrival: { iataCode: string; at: string };
-  decks?: Deck[]; // Made optional to handle missing seat maps
+  decks?: Deck[];
 }
 
 const SeatsComponent: React.FC = () => {
   const [seatMaps, setSeatMaps] = useState<FlightSeatMap[]>([]);
+  const [seatCharacteristics, setSeatCharacteristics] = useState<
+    Record<string, string>
+  >({});
   const [selectedSeats, setSelectedSeats] = useState<Record<string, string[]>>(
     {}
   );
   const [currentSegmentIndex, setCurrentSegmentIndex] = useState(0);
 
+  // Fetch trip details and passenger count from Zustand stores
   const { selectedTrip, selectedFlight, selectedDeparture, selectedReturn } =
     useFlightStore();
+  const { adults, children, infants } = useFlightStore();
+
+  const passengerCount = adults + children + infants; // Total passengers
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -65,6 +74,7 @@ const SeatsComponent: React.FC = () => {
         }
 
         setSeatMaps(response.data.data);
+        setSeatCharacteristics(response.data.dictionaries.seatCharacteristics);
       } catch (error) {
         console.error("Error fetching seat maps:", error);
       }
@@ -97,12 +107,20 @@ const SeatsComponent: React.FC = () => {
   const handleSeatClick = (flightId: string, seatNumber: string) => {
     setSelectedSeats((prev) => {
       const prevSeats = prev[flightId] || [];
-      return {
-        ...prev,
-        [flightId]: prevSeats.includes(seatNumber)
-          ? prevSeats.filter((s) => s !== seatNumber)
-          : [...prevSeats, seatNumber],
-      };
+
+      if (prevSeats.includes(seatNumber)) {
+        // Deselect if already selected
+        return {
+          ...prev,
+          [flightId]: prevSeats.filter((s) => s !== seatNumber),
+        };
+      } else if (prevSeats.length < passengerCount) {
+        // Add seat if within limit
+        return { ...prev, [flightId]: [...prevSeats, seatNumber] };
+      } else {
+        // Replace first seat if exceeding limit
+        return { ...prev, [flightId]: [...prevSeats.slice(1), seatNumber] };
+      }
     });
   };
 
@@ -123,9 +141,9 @@ const SeatsComponent: React.FC = () => {
   const currentFlight = seatMaps[currentSegmentIndex];
 
   return (
-    <div className="SeatsComponents__container">
+    <div className="SeatsComponent__container">
       {/* Flight Info & Navigation */}
-      <div className="SeatsComponents__flight-header">
+      <div className="SeatsComponent__header">
         <button
           onClick={handlePrevSegment}
           disabled={currentSegmentIndex === 0}
@@ -143,43 +161,73 @@ const SeatsComponent: React.FC = () => {
         </button>
       </div>
 
-      {/* Seat Map or Message */}
+      {/* Seat Map */}
       {currentFlight.decks && currentFlight.decks.length > 0 ? (
-        <div className="SeatsComponents__seat-grid">
+        <div className="SeatsComponent__grid">
           {currentFlight.decks.map((deck) => (
-            <div key={deck.deckType} className="SeatsComponents__deck">
-              {deck.seats.map((seat) => (
-                <button
-                  key={seat.number}
-                  className={`SeatsComponents__seat ${
-                    selectedSeats[currentFlight.id]?.includes(seat.number)
-                      ? "selected"
-                      : ""
-                  }`}
-                  onClick={() => handleSeatClick(currentFlight.id, seat.number)}
-                  disabled={!seat.available}
-                >
-                  {seat.number}{" "}
-                  {seat.price
-                    ? `(${seat.price.total} ${seat.price.currency})`
-                    : ""}
-                </button>
-              ))}
+            <div key={deck.deckType} className="SeatsComponent__deck">
+              {deck.seats.map((seat) => {
+                const isAvailable = seat.travelerPricing?.some(
+                  (pricing) => pricing.seatAvailabilityStatus === "AVAILABLE"
+                );
+
+                const seatTypeCodes = seat.characteristicsCodes.filter((code) =>
+                  ["A", "W", "9"].includes(code)
+                );
+                const seatTypeText = seatTypeCodes
+                  .map((code) => seatCharacteristics[code])
+                  .join(", ");
+                const extraChargeCurrencyCode =
+                  seat.characteristicsCodes.includes("CH")
+                    ? seat.travelerPricing?.[0]?.price?.currency
+                    : null;
+
+                const extraCharge = seat.characteristicsCodes.includes("CH")
+                  ? seat.travelerPricing?.[0]?.price?.total
+                  : null;
+
+                return (
+                  <div
+                    key={seat.number}
+                    className="SeatsComponent__seat-container"
+                    style={{
+                      gridColumn: seat.coordinates.y + 1,
+                      gridRow: seat.coordinates.x + 1,
+                    }}
+                  >
+                    <button
+                      className={`SeatsComponent__seat ${
+                        selectedSeats[currentFlight.id]?.includes(seat.number)
+                          ? "selected"
+                          : ""
+                      }`}
+                      onClick={() =>
+                        isAvailable &&
+                        handleSeatClick(currentFlight.id, seat.number)
+                      }
+                      disabled={!isAvailable}
+                    >
+                      {seat.number}
+                    </button>
+                    <span className="SeatsComponent__tooltip">
+                      {seatTypeText}({extraChargeCurrencyCode}
+                      {extraCharge})
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           ))}
         </div>
       ) : (
-        <p className="SeatsComponents__no-seatmap">
+        <p className="SeatsComponent__no-seatmap">
           Seat map not provided for this flight.
         </p>
       )}
 
       {/* Selected Seats */}
-      <div className="SeatsComponents__selected-seats">
-        <h4>
-          Selected Seats for {currentFlight.departure.iataCode} →{" "}
-          {currentFlight.arrival.iataCode}:
-        </h4>
+      <div className="SeatsComponent__selected">
+        <h4>Selected Seats:</h4>
         <p>
           {selectedSeats[currentFlight.id]?.join(", ") || "No seats selected"}
         </p>
