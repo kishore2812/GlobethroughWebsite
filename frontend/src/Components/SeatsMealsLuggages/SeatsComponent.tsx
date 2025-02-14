@@ -179,7 +179,7 @@ const SeatsComponent: React.FC = () => {
             className="SeatsComponent__airplane-nose"
             style={{
               maxWidth: "450px",
-              textAlign: "center",
+
               margin: "0",
             }}
           >
