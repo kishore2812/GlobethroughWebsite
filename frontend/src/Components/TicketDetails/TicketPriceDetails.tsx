@@ -1,6 +1,7 @@
 import React from "react";
 import useFlightStore from "../../Stores/FlightStore";
 import "./TicketPrice.scss";
+import useSeatStore from "../../Stores/seatStore";
 
 const PriceDetails: React.FC = () => {
   const selectedTrip = useFlightStore((state) => state.selectedTrip);
@@ -10,6 +11,7 @@ const PriceDetails: React.FC = () => {
   const adults = useFlightStore((state) => state.adults);
   const children = useFlightStore((state) => state.children);
   const infants = useFlightStore((state) => state.infants);
+  const { selectedSeats } = useSeatStore();
 
   const baseFare =
     selectedTrip === "one-way"
@@ -21,6 +23,10 @@ const PriceDetails: React.FC = () => {
     Number(adults) * baseFare +
     Number(children) * baseFare +
     Number(infants) * baseFare;
+
+  const totalSeatPrice = Object.values(selectedSeats)
+    .flat()
+    .reduce((acc, seat) => acc + seat.price, 0);
 
   const tax = (totalBasePrice * 0.2).toFixed(2);
 
@@ -85,7 +91,7 @@ const PriceDetails: React.FC = () => {
       <div className="price-details__total">
         <div className="price-details__label">Grand Total</div>
         <div className="price-details__value">
-          ₹{(totalBasePrice + parseFloat(tax)).toFixed(2)}
+          ₹{(totalBasePrice + totalSeatPrice + parseFloat(tax)).toFixed(2)}
         </div>
       </div>
     </div>

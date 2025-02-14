@@ -4,6 +4,7 @@ import "./SeatsComponent.scss";
 import axios from "axios";
 import useFlightStore from "../../Stores/FlightStore";
 import airplaneNose from "../../assets/images/FlightDeckFront.png";
+import useSeatStore from "../../Stores/seatStore";
 
 interface Seat {
   number: string;
@@ -34,16 +35,16 @@ const SeatsComponent: React.FC = () => {
   const [seatCharacteristics, setSeatCharacteristics] = useState<
     Record<string, string>
   >({});
-  const [selectedSeats, setSelectedSeats] = useState<Record<string, string[]>>(
-    {}
-  );
+
   const [currentSegmentIndex, setCurrentSegmentIndex] = useState(0);
-  const [gridWidth, setGridWidth] = useState(0);
+  const [, setGridWidth] = useState(0);
 
   // Fetch trip details and passenger count from Zustand stores
   const { selectedTrip, selectedFlight, selectedDeparture, selectedReturn } =
     useFlightStore();
   const { adults, children, infants } = useFlightStore();
+  const { selectedSeats, selectSeat, deselectSeat, resetSeats } =
+    useSeatStore();
 
   const passengerCount = adults + children + infants; // Total passengers
 
@@ -115,24 +116,24 @@ const SeatsComponent: React.FC = () => {
     loadSeatMaps();
   }, [selectedTrip, selectedFlight, selectedDeparture, selectedReturn]);
 
-  const handleSeatClick = (flightId: string, seatNumber: string) => {
-    setSelectedSeats((prev) => {
-      const prevSeats = prev[flightId] || [];
+  useEffect(() => {
+    resetSeats(); // Reset seat selections when flight changes
+  }, [selectedTrip, selectedFlight, selectedDeparture, selectedReturn]);
 
-      if (prevSeats.includes(seatNumber)) {
-        // Deselect if already selected
-        return {
-          ...prev,
-          [flightId]: prevSeats.filter((s) => s !== seatNumber),
-        };
-      } else if (prevSeats.length < passengerCount) {
-        // Add seat if within limit
-        return { ...prev, [flightId]: [...prevSeats, seatNumber] };
-      } else {
-        // Replace first seat if exceeding limit
-        return { ...prev, [flightId]: [...prevSeats.slice(1), seatNumber] };
-      }
-    });
+  const handleSeatClick = (flightId: string, seat: Seat) => {
+    const prevSeats = selectedSeats[flightId] || [];
+    const isSelected = prevSeats.some((s) => s.number === seat.number);
+
+    if (isSelected) {
+      deselectSeat(flightId, seat.number);
+    } else if (prevSeats.length < passengerCount) {
+      const seatPrice = seat.travelerPricing?.[0]?.price?.total
+        ? parseFloat(seat.travelerPricing[0].price.total)
+        : 0;
+      selectSeat(flightId, { number: seat.number, price: seatPrice });
+    } else {
+      console.warn("Seat selection limit reached!");
+    }
   };
 
   const handleNextSegment = () => {
@@ -148,7 +149,6 @@ const SeatsComponent: React.FC = () => {
   };
 
   if (seatMaps.length === 0) return <p>Loading seat maps...</p>;
-
   const currentFlight = seatMaps[currentSegmentIndex];
 
   return (
@@ -218,6 +218,10 @@ const SeatsComponent: React.FC = () => {
                   const extraCharge = seat.characteristicsCodes.includes("CH")
                     ? seat.travelerPricing?.[0]?.price?.total
                     : null;
+                  const isSelected =
+                    selectedSeats[currentFlight.id]?.some(
+                      (s) => s.number === seat.number
+                    ) ?? false;
 
                   return (
                     <div
@@ -230,13 +234,10 @@ const SeatsComponent: React.FC = () => {
                     >
                       <button
                         className={`SeatsComponent__seat ${
-                          selectedSeats[currentFlight.id]?.includes(seat.number)
-                            ? "selected"
-                            : ""
+                          isSelected ? "selected" : ""
                         }`}
                         onClick={() =>
-                          isAvailable &&
-                          handleSeatClick(currentFlight.id, seat.number)
+                          isAvailable && handleSeatClick(currentFlight.id, seat)
                         }
                         disabled={!isAvailable}
                       ></button>
@@ -266,7 +267,8 @@ const SeatsComponent: React.FC = () => {
       <div className="SeatsComponent__selected">
         <h4>Selected Seats:</h4>
         <p>
-          {selectedSeats[currentFlight.id]?.join(", ") || "No seats selected"}
+          {selectedSeats[currentFlight.id]?.map((s) => s.number).join(", ") ||
+            "No seats selected"}
         </p>
       </div>
     </div>
