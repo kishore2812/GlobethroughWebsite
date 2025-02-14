@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useRef, useState } from "react";
 import "./SeatsComponent.scss";
@@ -175,7 +176,6 @@ const SeatsComponent: React.FC = () => {
             className="SeatsComponent__airplane-nose"
             style={{
               maxWidth: "450px",
-
               margin: "0",
             }}
           >
