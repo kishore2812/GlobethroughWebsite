@@ -4,11 +4,11 @@
   align-items: center;
   justify-content: center;
   width: 80%;
-  max-width: 900px;
+  max-width: 800px;
   margin: auto;
   padding: 20px;
 
-  border-radius: 8px;
+  border-radius: 0px;
 
   position: relative;
 }
@@ -51,6 +51,9 @@
   display: flex;
   justify-content: center;
   position: relative;
+  border: 1px solid #ccc;
+  border-top: none;
+  width: 50%;
 }
 
 /* Selected Seats (Now positioned to the left side) */
@@ -77,10 +80,6 @@
 .SeatsComponent__deck {
   display: grid;
   gap: 12px;
-  padding: 20px;
-  border: 2px solid #ccc;
-  border-top: none;
-  border-radius: 10px;
 }
 
 /* Seat Button */

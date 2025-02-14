@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./SeatsComponent.scss";
 import axios from "axios";
 import useFlightStore from "../../Stores/FlightStore";
+import airplaneNose from "../../assets/images/FlightDeckFront.png";
 
 interface Seat {
   number: string;
@@ -37,6 +38,7 @@ const SeatsComponent: React.FC = () => {
     {}
   );
   const [currentSegmentIndex, setCurrentSegmentIndex] = useState(0);
+  const [gridWidth, setGridWidth] = useState(0);
 
   // Fetch trip details and passenger count from Zustand stores
   const { selectedTrip, selectedFlight, selectedDeparture, selectedReturn } =
@@ -44,6 +46,15 @@ const SeatsComponent: React.FC = () => {
   const { adults, children, infants } = useFlightStore();
 
   const passengerCount = adults + children + infants; // Total passengers
+
+  const gridRef = useRef<HTMLDivElement>(null);
+
+  // Capture the seat grid's width dynamically
+  useEffect(() => {
+    if (gridRef.current) {
+      setGridWidth(gridRef.current.offsetWidth);
+    }
+  }, [seatMaps]); // Update when seat maps change
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -163,64 +174,83 @@ const SeatsComponent: React.FC = () => {
 
       {/* Seat Map */}
       {currentFlight.decks && currentFlight.decks.length > 0 ? (
-        <div className="SeatsComponent__grid">
-          {currentFlight.decks.map((deck) => (
-            <div key={deck.deckType} className="SeatsComponent__deck">
-              {deck.seats.map((seat) => {
-                const isAvailable = seat.travelerPricing?.some(
-                  (pricing) => pricing.seatAvailabilityStatus === "AVAILABLE"
-                );
+        <div>
+          <div
+            className="SeatsComponent__airplane-nose"
+            style={{
+              width: "476px",
+              textAlign: "center",
+              margin: "0",
+            }}
+          >
+            <img
+              src={airplaneNose}
+              alt="Airplane Nose"
+              style={{
+                width: "100%",
+                height: "auto",
+              }}
+            />
+          </div>
+          <div ref={gridRef} className="SeatsComponent__grid">
+            {currentFlight.decks.map((deck) => (
+              <div key={deck.deckType} className="SeatsComponent__deck">
+                {deck.seats.map((seat) => {
+                  const isAvailable = seat.travelerPricing?.some(
+                    (pricing) => pricing.seatAvailabilityStatus === "AVAILABLE"
+                  );
 
-                const seatTypeCodes = seat.characteristicsCodes.filter((code) =>
-                  ["A", "W", "9"].includes(code)
-                );
-                const seatTypeText = seatTypeCodes
-                  .map((code) => seatCharacteristics[code])
-                  .join(", ");
-                const extraChargeCurrencyCode =
-                  seat.characteristicsCodes.includes("CH")
-                    ? seat.travelerPricing?.[0]?.price?.currency
+                  const seatTypeCodes = seat.characteristicsCodes.filter(
+                    (code) => ["A", "W", "9"].includes(code)
+                  );
+                  const seatTypeText = seatTypeCodes
+                    .map((code) => seatCharacteristics[code])
+                    .join(", ");
+                  const extraChargeCurrencyCode =
+                    seat.characteristicsCodes.includes("CH")
+                      ? seat.travelerPricing?.[0]?.price?.currency
+                      : null;
+
+                  const extraCharge = seat.characteristicsCodes.includes("CH")
+                    ? seat.travelerPricing?.[0]?.price?.total
                     : null;
 
-                const extraCharge = seat.characteristicsCodes.includes("CH")
-                  ? seat.travelerPricing?.[0]?.price?.total
-                  : null;
-
-                return (
-                  <div
-                    key={seat.number}
-                    className="SeatsComponent__seat-container"
-                    style={{
-                      gridColumn: seat.coordinates.y + 1,
-                      gridRow: seat.coordinates.x + 1,
-                    }}
-                  >
-                    <button
-                      className={`SeatsComponent__seat ${
-                        selectedSeats[currentFlight.id]?.includes(seat.number)
-                          ? "selected"
-                          : ""
-                      }`}
-                      onClick={() =>
-                        isAvailable &&
-                        handleSeatClick(currentFlight.id, seat.number)
-                      }
-                      disabled={!isAvailable}
-                    ></button>
-                    <span className="SeatsComponent__tooltip">
-                      <span>
-                        <strong>{seat.number}</strong> | {seatTypeText}
+                  return (
+                    <div
+                      key={seat.number}
+                      className="SeatsComponent__seat-container"
+                      style={{
+                        gridColumn: seat.coordinates.y + 1,
+                        gridRow: seat.coordinates.x + 1,
+                      }}
+                    >
+                      <button
+                        className={`SeatsComponent__seat ${
+                          selectedSeats[currentFlight.id]?.includes(seat.number)
+                            ? "selected"
+                            : ""
+                        }`}
+                        onClick={() =>
+                          isAvailable &&
+                          handleSeatClick(currentFlight.id, seat.number)
+                        }
+                        disabled={!isAvailable}
+                      ></button>
+                      <span className="SeatsComponent__tooltip">
+                        <span>
+                          <strong>{seat.number}</strong> | {seatTypeText}
+                        </span>
+                        <div>
+                          {extraChargeCurrencyCode}
+                          {extraCharge}
+                        </div>
                       </span>
-                      <div>
-                        {extraChargeCurrencyCode}
-                        {extraCharge}
-                      </div>
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          ))}
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
         </div>
       ) : (
         <p className="SeatsComponent__no-seatmap">
