@@ -178,7 +178,7 @@ const SeatsComponent: React.FC = () => {
           <div
             className="SeatsComponent__airplane-nose"
             style={{
-              width: "476px",
+              maxWidth: "450px",
               textAlign: "center",
               margin: "0",
             }}
@@ -195,17 +195,21 @@ const SeatsComponent: React.FC = () => {
           <div ref={gridRef} className="SeatsComponent__grid">
             {currentFlight.decks.map((deck) => (
               <div key={deck.deckType} className="SeatsComponent__deck">
-                {deck.seats.map((seat) => {
+                {deck.seats?.map((seat) => {
+                  if (!seat || !seat.characteristicsCodes) return null; // Safety check
+
                   const isAvailable = seat.travelerPricing?.some(
                     (pricing) => pricing.seatAvailabilityStatus === "AVAILABLE"
                   );
 
-                  const seatTypeCodes = seat.characteristicsCodes.filter(
-                    (code) => ["A", "W", "9"].includes(code)
-                  );
+                  const seatTypeCodes = (
+                    seat.characteristicsCodes || []
+                  ).filter((code) => ["A", "W", "9"].includes(code));
+
                   const seatTypeText = seatTypeCodes
                     .map((code) => seatCharacteristics[code])
                     .join(", ");
+
                   const extraChargeCurrencyCode =
                     seat.characteristicsCodes.includes("CH")
                       ? seat.travelerPricing?.[0]?.price?.currency
