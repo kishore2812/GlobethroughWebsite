@@ -42,11 +42,9 @@ const SeatsComponent: React.FC = () => {
   // Fetch trip details and passenger count from Zustand stores
   const { selectedTrip, selectedFlight, selectedDeparture, selectedReturn } =
     useFlightStore();
-  const { adults, children, infants } = useFlightStore();
+
   const { selectedSeats, selectSeat, deselectSeat, resetSeats } =
     useSeatStore();
-
-  const passengerCount = adults + children + infants; // Total passengers
 
   const gridRef = useRef<HTMLDivElement>(null);
 
@@ -126,13 +124,11 @@ const SeatsComponent: React.FC = () => {
 
     if (isSelected) {
       deselectSeat(flightId, seat.number);
-    } else if (prevSeats.length < passengerCount) {
+    } else {
       const seatPrice = seat.travelerPricing?.[0]?.price?.total
         ? parseFloat(seat.travelerPricing[0].price.total)
         : 0;
       selectSeat(flightId, { number: seat.number, price: seatPrice });
-    } else {
-      console.warn("Seat selection limit reached!");
     }
   };
 
