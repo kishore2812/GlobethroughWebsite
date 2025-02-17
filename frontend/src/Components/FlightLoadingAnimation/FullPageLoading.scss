@@ -1,0 +1,26 @@
+.full-page-loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Aligns the content at the top */
+  align-items: center;
+  z-index: 50; /* Ensures it stays above other content */
+
+  .loading-gif {
+    margin-top: 50px; /* Space from the top of the viewport */
+    width: 400px; /* Adjust width */
+    height: auto; /* Maintain aspect ratio */
+  }
+
+  .loading-text {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: 500;
+    color: #333;
+  }
+}

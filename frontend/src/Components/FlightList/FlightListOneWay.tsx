@@ -6,6 +6,7 @@ import axios from "axios";
 import "./FlightListOneWay.scss";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { useFilterStore } from "../../Stores/FilterStore";
+import LoadingPage from "../FlightLoadingAnimation/Loading";
 
 // Helper functions to fetch the user's country and currency, and convert currency
 const fetchUserCountry = async () => {
@@ -170,7 +171,7 @@ const FlightListOneWay: React.FC = () => {
     return `${hours} ${minutes}`.trim();
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <LoadingPage />;
   if (error) return <div className="error">{error}</div>;
 
   // Find the cheapest and fastest flights
