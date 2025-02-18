@@ -6,6 +6,7 @@ import "./FlightListRoundTrip.scss";
 import { FaArrowRight, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useFilterStore } from "../../Stores/FilterStore";
+import LoadingPage from "../FlightLoadingAnimation/Loading";
 
 const fetchUserCountry = async () => {
   try {
@@ -248,7 +249,7 @@ const FlightListRoundTrip: React.FC = () => {
   const fastestReturn = getFastestFlight(returnFlights);
 
   if (loadingDeparture || loadingReturn) {
-    return <div>Loading...</div>; // Show loading indicator until both are loaded
+    return <LoadingPage />;
   }
   if (error) return <div className="error">{error}</div>;
 

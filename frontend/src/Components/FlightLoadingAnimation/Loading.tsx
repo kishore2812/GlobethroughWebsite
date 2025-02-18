@@ -5,7 +5,8 @@ const FullPageLoading = () => {
   return (
     <div className="full-page-loading">
       <img src={loadingGif} alt="Loading..." className="loading-gif" />
-      <p className="loading-text">Loading...</p>
+      <p className="loading-text">Searching for the Flights</p>
+      <p>Sit back and relax as we scan for the perfect flights just for you.</p>
     </div>
   );
 };
