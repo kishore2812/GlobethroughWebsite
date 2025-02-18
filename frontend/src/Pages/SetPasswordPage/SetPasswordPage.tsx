@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import "./SetPassword.scss";
 
-const SetPassword = () => {
+const SetPasswordModal = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const { id } = useParams(); // Get subuser ID from the URL
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     try {
       const response = await axios.post(
@@ -18,7 +19,7 @@ const SetPassword = () => {
       );
       setSuccess(response.data.message);
       setError("");
-      setTimeout(() => navigate("/signin/:role"), 2000); // Redirect to login after 3 seconds
+      setTimeout(() => navigate("/signin/:role"), 2000); // Redirect after 2 seconds
     } catch (err) {
       if (axios.isAxiosError(err)) {
         setError(err.response?.data?.error || "Failed to set password.");
@@ -32,24 +33,31 @@ const SetPassword = () => {
   };
 
   return (
-    <div>
-      <h1>Set Your Password</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          New Password:
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </label>
-        <button type="submit">Set Password</button>
-      </form>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {success && <p style={{ color: "green" }}>{success}</p>}
+    <div className="subusersetpassword-overlay">
+      <div className="subusersetpassword-modal">
+        <h1>Set Your Password</h1>
+        <form className="subusersetpassword-form" onSubmit={handleSubmit}>
+          <label>
+            New Password:
+            <input
+              type="password"
+              className="subusersetpassword-input"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </label>
+          <button type="submit" className="subusersetpassword-button">
+            Set Password
+          </button>
+        </form>
+        {error && <p className="subusersetpassword-message error">{error}</p>}
+        {success && (
+          <p className="subusersetpassword-message success">{success}</p>
+        )}
+      </div>
     </div>
   );
 };
 
-export default SetPassword;
+export default SetPasswordModal;
