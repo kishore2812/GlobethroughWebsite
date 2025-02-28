@@ -4,6 +4,7 @@ import axios from "axios";
 import "./SignIn.scss";
 import { IoEye } from "react-icons/io5";
 import { IoEyeOff } from "react-icons/io5";
+import { AxiosError } from "axios";
 
 const SignIn: React.FC = () => {
   const navigate = useNavigate();
@@ -23,8 +24,18 @@ const SignIn: React.FC = () => {
       // Store token in localStorage
       localStorage.setItem("token", token);
       navigate("/HomePage");
-    } catch {
-      setError("Invalid email or password, please try again.");
+    } catch (err) {
+      const error = err as AxiosError<{ message: string }>; // Type casting
+
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        setError(error.response.data.message); // Display the exact backend error
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
     }
   };
 

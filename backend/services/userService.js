@@ -2,8 +2,31 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User"); // Assuming you have a User model
 
+exports.findUserByEmail = async (email) => {
+  // Find user by email
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new Error("User not found");
+  }
+  return user;
+};
+
+exports.verifyPassword = async (user, password) => {
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) {
+    throw new Error("Invalid password");
+  }
+  return true;
+};
+
 // Service to create a new user
-exports.createUser = async ({ firstName, lastName, email, password }) => {
+exports.createUser = async ({
+  firstName,
+  lastName,
+  email,
+  password,
+  approved,
+}) => {
   // Check if user already exists by email
   const existingUser = await User.findOne({ email });
   if (existingUser) {
@@ -19,6 +42,7 @@ exports.createUser = async ({ firstName, lastName, email, password }) => {
     lastName,
     email,
     password: hashedPassword,
+    approved,
   });
 
   // Save user to database
