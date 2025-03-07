@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
 import useFlightStore from "../../Stores/FlightStore";
 import { IoAirplaneSharp } from "react-icons/io5";
@@ -291,11 +292,11 @@ const FlightListRoundTrip: React.FC = () => {
   };
 
   // Utility function to get refundable ticket info from a flight's pricing data
-  const getRefundableTicketInfo = (pricingData) => {
+  const getRefundableTicketInfo = (pricingData: any) => {
     const fareDetails =
       pricingData?.[0]?.fareDetailsBySegment?.[0]?.amenities || [];
     return fareDetails.find(
-      (amenity) => amenity.description === "REFUNDABLE TICKET"
+      (amenity: any) => amenity.description === "REFUNDABLE TICKET"
     );
   };
 
@@ -470,7 +471,7 @@ const FlightListRoundTrip: React.FC = () => {
                     <div className="flightListOneWay__details">
                       <div className="flightListOneWay__table">
                         {flight.itineraries?.[0]?.segments.map(
-                          (segment, index, segmentsArray) => (
+                          (segment: any, index: any, segmentsArray: any) => (
                             <React.Fragment key={index}>
                               {/* Flight Segment Row */}
                               <div className="flightListOneWay__details__row">
@@ -667,7 +668,7 @@ const FlightListRoundTrip: React.FC = () => {
                     <div className="flightListOneWay__details">
                       <div className="flightListOneWay__table">
                         {flight.itineraries?.[0]?.segments.map(
-                          (segment, index, segmentsArray) => (
+                          (segment: any, index: any, segmentsArray: any) => (
                             <React.Fragment key={index}>
                               {/* Flight Segment Row */}
                               <div className="flightListOneWay__details__row">

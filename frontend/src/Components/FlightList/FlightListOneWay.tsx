@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useFlightStore from "../../Stores/FlightStore";
@@ -352,7 +353,7 @@ const FlightListOneWay: React.FC = () => {
                 <div className="flightListOneWay__details">
                   <div className="flightListOneWay__table">
                     {flight.itineraries?.[0]?.segments.map(
-                      (segment, index, segmentsArray) => (
+                      (segment: any, index: any, segmentsArray: any) => (
                         <React.Fragment key={index}>
                           {/* Flight Segment Row */}
                           <div className="flightListOneWay__details__row">
