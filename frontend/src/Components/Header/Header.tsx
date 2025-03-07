@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom"; // For navigation and route detection
 import { jwtDecode } from "jwt-decode"; // To decode JWT token
 import { FaRegUserCircle, FaChevronRight, FaArrowLeft } from "react-icons/fa"; // For icons
+import logo from "../../assets/images/logo.png";
 
 import "./Header.scss";
 import { api } from "../../Services/api";
@@ -74,7 +75,7 @@ const Header = () => {
       <div className="logo-back">
         {location.pathname === "/HomePage" ||
         location.pathname === "/homepage/" ? (
-          <img src="src/assets/images/logo.png" alt="Logo" />
+          <img src={logo} alt="Logo" />
         ) : (
           <span className="back-btn" onClick={handleBack}>
             <FaArrowLeft />

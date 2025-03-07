@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom"; // For redirection in React Rout
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import "./SignIn.scss";
 import { api } from "../../Services/api";
+import logo from "../../assets/images/logo.png";
+import Loading_animation from "../../assets/images/Front_loading_animation.gif";
 
 const SubUserLoginPage = () => {
   const [email, setEmail] = useState("");
@@ -43,13 +45,9 @@ const SubUserLoginPage = () => {
               Sign in to continue accessing your account.
             </p>
             <div className="logo-container">
+              <img src={logo} alt="Logo" className="logo" />
               <img
-                src="/src/assets/images/logo.png"
-                alt="Logo"
-                className="logo"
-              />
-              <img
-                src="/src/assets/images/Front_loading_animation.gif"
+                src={Loading_animation}
                 alt="Animated GIF"
                 className="background-image"
               />

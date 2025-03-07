@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Register.scss";
 import { api } from "../../Services/api";
+import logo from "../../assets/images/logo.png";
+import front_Loading_animation from "../../assets/images/Front_loading_animation.gif";
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
@@ -45,13 +47,9 @@ const Register: React.FC = () => {
             Sign in to continue accessing your account.
           </p>
           <div className="logo-container">
+            <img src={logo} alt="Logo" className="logo" />
             <img
-              src="/src/assets/images/logo.png"
-              alt="Logo"
-              className="logo"
-            />
-            <img
-              src="/src/assets/images/Front_loading_animation.gif"
+              src={front_Loading_animation}
               alt="Animated GIF"
               className="background-image"
             />

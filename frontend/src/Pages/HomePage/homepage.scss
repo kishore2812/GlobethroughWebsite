@@ -23,12 +23,13 @@
     }
     .homepage_tripType_card {
       display: flex;
-      align-items: flex-start; // Aligns content to the left
-      justify-content: flex-start; // Aligns content to the left
+      align-items: flex-start;
+      justify-content: flex-start;
       position: relative;
       background-color: white;
       padding: 20px;
       padding-bottom: 0;
+      margin-bottom: 0;
       border-top-left-radius: 15px;
 
       height: fit-content; // Ensures the height fits the content
