@@ -10,7 +10,6 @@ const Withdraw = () => {
     <div className="withdraw-page">
       <div className="withdraw-page-background"></div>
       <Header />
-
       <div className="withdraw-page-cards">
         {/* First Card */}
         <div className="withdraw-page-card">

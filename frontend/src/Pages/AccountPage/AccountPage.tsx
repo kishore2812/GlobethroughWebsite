@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { jwtDecode } from "jwt-decode"; // Correct the import for jwtDecode
 import { useNavigate } from "react-router-dom";
 import { FaEdit, FaSave, FaUsers, FaUserPlus } from "react-icons/fa";
 import AccountHeader from "../../Components/Header/AccountHeader";
 import "./AccountPage.scss";
+import { api } from "../../Services/api";
 
 interface DecodedToken {
   userType: string;
@@ -36,10 +36,10 @@ const AccountPage: React.FC = () => {
 
         const endpoint =
           decoded.userType === "user"
-            ? "http://localhost:5000/api/user/info"
-            : "http://localhost:5000/subuser/subuserinfo";
+            ? "/api/user/info"
+            : "/subuser/subuserinfo";
 
-        const response = await axios.get(endpoint, {
+        const response = await api.get(endpoint, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -63,11 +63,9 @@ const AccountPage: React.FC = () => {
 
       const decoded: DecodedToken = jwtDecode(token);
       const endpoint =
-        decoded.userType === "user"
-          ? "http://localhost:5000/api/user/update"
-          : "http://localhost:5000/subuser/update";
+        decoded.userType === "user" ? "/user/update" : "/subuser/update";
 
-      const response = await axios.put(
+      const response = await api.put(
         endpoint,
         { firstName: newFirstName },
         { headers: { Authorization: `Bearer ${token}` } }
@@ -90,11 +88,9 @@ const AccountPage: React.FC = () => {
 
       const decoded: DecodedToken = jwtDecode(token);
       const endpoint =
-        decoded.userType === "user"
-          ? "http://localhost:5000/api/user/update"
-          : "http://localhost:5000/subuser/update";
+        decoded.userType === "user" ? "/api/user/update" : "/subuser/update";
 
-      const response = await axios.put(
+      const response = await api.put(
         endpoint,
         { phone: newPhone },
         { headers: { Authorization: `Bearer ${token}` } }

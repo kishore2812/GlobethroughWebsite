@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import "./SignIn.scss";
 import { IoEye } from "react-icons/io5";
 import { IoEyeOff } from "react-icons/io5";
 import { AxiosError } from "axios";
+import { api } from "../../Services/api";
 
 const SignIn: React.FC = () => {
   const navigate = useNavigate();
@@ -15,10 +15,7 @@ const SignIn: React.FC = () => {
   const handleSignIn = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      const response = await axios.post(
-        "http://localhost:5000/auth/signin",
-        form
-      );
+      const response = await api.post("/auth/signin", form);
       const { token } = response.data;
 
       // Store token in localStorage

@@ -7,6 +7,7 @@ import "./FlightListOneWay.scss";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { useFilterStore } from "../../Stores/FilterStore";
 import LoadingPage from "../FlightLoadingAnimation/Loading";
+import { api } from "../../Services/api";
 
 // Helper functions to fetch the user's country and currency, and convert currency
 const fetchUserCountry = async () => {
@@ -63,7 +64,7 @@ const FlightListOneWay: React.FC = () => {
 
   const fetchToken = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/amadeus/token");
+      const response = await api.get("/amadeus/token");
       return response.data.access_token;
     } catch {
       setError("Error fetching token");

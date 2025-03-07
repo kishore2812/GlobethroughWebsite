@@ -7,6 +7,7 @@ import { FaArrowRight, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useFilterStore } from "../../Stores/FilterStore";
 import LoadingPage from "../FlightLoadingAnimation/Loading";
+import { api } from "../../Services/api";
 
 const fetchUserCountry = async () => {
   try {
@@ -58,7 +59,7 @@ const FlightListRoundTrip: React.FC = () => {
 
   const fetchToken = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/amadeus/token");
+      const response = await api.get("/amadeus/token");
       return response.data.access_token;
     } catch {
       setError("Error fetching token");

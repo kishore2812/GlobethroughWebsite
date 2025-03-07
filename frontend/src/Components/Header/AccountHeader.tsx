@@ -1,13 +1,13 @@
 import React, { useState, useEffect, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import axios from "axios";
 import { FiLogOut } from "react-icons/fi"; // Log out icon
 import { MdArrowBack, MdEdit } from "react-icons/md"; // Back arrow and edit icon
 import "./AccountHeader.scss"; // Import SCSS file
 
 // Import the default profile image
 import defaultProfileImage from "../../assets/images/defaultprofileimage.webp";
+import { api } from "../../Services/api";
 
 interface UserData {
   firstName: string;
@@ -39,10 +39,10 @@ const AccountHeader: React.FC = () => {
           // Fetch data based on userType
           const endpoint =
             decodedToken.userType === "user"
-              ? "http://localhost:5000/api/user/info"
-              : "http://localhost:5000/subuser/subuserinfo";
+              ? "/api/user/info"
+              : "/subuser/subuserinfo";
 
-          const response = await axios.get(endpoint, {
+          const response = await api.get(endpoint, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -67,14 +67,11 @@ const AccountHeader: React.FC = () => {
   useEffect(() => {
     const fetchProfileImage = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:5000/api/get-user-profile",
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        const response = await api.get("/api/get-user-profile", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
 
         if (response.data.profileImage) {
           setProfileImage(response.data.profileImage); // Use DB image if available
@@ -103,8 +100,8 @@ const AccountHeader: React.FC = () => {
           setUploading(true);
 
           // Send the base64 image to the backend
-          const response = await axios.post(
-            "http://localhost:5000/api/upload-image",
+          const response = await api.post(
+            "/api/upload-image",
             { profileImage: base64Image },
             {
               headers: {

@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom"; // For navigation and route detection
 import { jwtDecode } from "jwt-decode"; // To decode JWT token
 import { FaRegUserCircle, FaChevronRight, FaArrowLeft } from "react-icons/fa"; // For icons
-import axios from "axios"; // To make API requests
+
 import "./Header.scss";
+import { api } from "../../Services/api";
 
 interface DecodedToken {
   userType: string;
@@ -35,24 +36,18 @@ const Header = () => {
           try {
             let response;
             if (decodedToken.userType === "user") {
-              response = await axios.get(
-                "http://localhost:5000/api/user/info",
-                {
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                  },
-                }
-              );
+              response = await api.get("/api/user/info", {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              });
               setFirstName(response.data.firstName);
             } else if (decodedToken.userType === "subuser") {
-              response = await axios.get(
-                "http://localhost:5000/subuser/subuserinfo",
-                {
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                  },
-                }
-              );
+              response = await api.get("/subuser/subuserinfo", {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              });
               setFirstName(response.data.firstName);
               setParentFirstName(response.data.parentFirstName);
             }

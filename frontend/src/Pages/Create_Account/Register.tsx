@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import "./Register.scss";
+import { api } from "../../Services/api";
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
@@ -28,7 +28,7 @@ const Register: React.FC = () => {
     }
 
     try {
-      await axios.post("http://localhost:5000/auth/register", form);
+      await api.post("/auth/register", form);
       alert("Registration successful! Redirecting to Sign In.");
       navigate("/signin/:role");
     } catch {

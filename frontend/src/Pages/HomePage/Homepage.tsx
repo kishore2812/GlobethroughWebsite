@@ -18,6 +18,7 @@ import {
 import { LuCalendar1 } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 import useFlightStore from "../../Stores/FlightStore";
+import { api } from "../../Services/api";
 
 const prices: { [key: string]: number } = {
   "2024-12-01": 100,
@@ -111,11 +112,8 @@ const HomePage: React.FC = () => {
     const fetchAirports = async () => {
       if (debouncedQuery.length > 0) {
         try {
-          // Fetch token from backend
-          const tokenResponse = await fetch(
-            "http://localhost:5000/amadeus/token"
-          );
-          const { access_token } = await tokenResponse.json();
+          const tokenResponse = await api.get("/amadeus/token");
+          const { access_token } = tokenResponse.data;
 
           // Fetch airport data from Amadeus API
           const response = await fetch(

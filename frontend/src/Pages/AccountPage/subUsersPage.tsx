@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { FaMinusSquare } from "react-icons/fa";
 import { MdEditSquare } from "react-icons/md";
 import AccountHeader from "../../Components/Header/AccountHeader";
 import "./subUsersPage.scss";
+import { api } from "../../Services/api";
 
 interface SubUser {
   _id: string;
@@ -31,12 +31,9 @@ const SeeSubUsersPage: React.FC = () => {
           return;
         }
 
-        const response = await axios.get(
-          "http://localhost:5000/subuser/subusers",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        const response = await api.get("/subuser/subusers", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
         if (response.data.subUsers && response.data.subUsers.length > 0) {
           setSubUsers(response.data.subUsers);
@@ -60,12 +57,9 @@ const SeeSubUsersPage: React.FC = () => {
         return;
       }
 
-      await axios.delete(
-        `http://localhost:5000/subuser/subusers/delete/${userId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      await api.delete(`/subuser/subusers/delete/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       setSubUsers(subUsers.filter((user) => user._id !== userId));
     } catch (err) {
@@ -87,8 +81,8 @@ const SeeSubUsersPage: React.FC = () => {
         return;
       }
 
-      const response = await axios.put(
-        `http://localhost:5000/subuser/subusers/changeRole/${userId}`,
+      const response = await api.put(
+        `/subuser/subusers/changeRole/${userId}`,
         { role: newRole },
         {
           headers: { Authorization: `Bearer ${token}` },

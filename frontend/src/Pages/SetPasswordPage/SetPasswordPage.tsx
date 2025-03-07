@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./SetPassword.scss";
+import { api } from "../../Services/api";
 
 const SetPasswordModal = () => {
   const [password, setPassword] = useState("");
@@ -13,10 +14,9 @@ const SetPasswordModal = () => {
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        `http://localhost:5000/setpassword/set-password/${id}`,
-        { password }
-      );
+      const response = await api.post(`/setpassword/set-password/${id}`, {
+        password,
+      });
       setSuccess(response.data.message);
       setError("");
       setTimeout(() => navigate("/signin/:role"), 2000); // Redirect after 2 seconds

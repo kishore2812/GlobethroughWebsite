@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom"; // For redirection in React Router v6+
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import "./SignIn.scss";
+import { api } from "../../Services/api";
 
 const SubUserLoginPage = () => {
   const [email, setEmail] = useState("");
@@ -16,7 +16,7 @@ const SubUserLoginPage = () => {
     setError(""); // Reset any previous error
 
     try {
-      const response = await axios.post("http://localhost:5000/subuser/login", {
+      const response = await api.post("/subuser/login", {
         email,
         password,
       });

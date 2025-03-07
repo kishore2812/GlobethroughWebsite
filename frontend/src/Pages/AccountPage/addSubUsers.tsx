@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import axios from "axios";
 import AccountHeader from "../../Components/Header/AccountHeader";
 import { AiFillPlusSquare } from "react-icons/ai";
 import "./AddSubUsersPage.scss";
+import { api } from "../../Services/api";
 
 const AddSubUsersPage: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -59,13 +59,9 @@ const AddSubUsersPage: React.FC = () => {
       }
 
       // Simulate adding the sub-user (no email/phone validation from the DB)
-      await axios.post(
-        "http://localhost:5000/subuser/createSubUser",
-        formData,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      await api.post("/subuser/createSubUser", formData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       setMessage("Sub user added successfully. Invitation sent!");
       setFormData({
